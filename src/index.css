@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: 'Kanit', sans-serif;
+}
+
+canvas.react-pdf__Page__canvas {
+    margin-bottom: 10px;
+}
