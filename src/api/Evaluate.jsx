@@ -28,6 +28,16 @@ export const getListEvaluateAll = async () =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/getListEvaluateAll`)
 }
 
+//Sum Evaluate all
+export const sumEvaluateAll = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/sumEvaluateAll`)
+}
+
+//Get Hospital in list evaluate
+export const getHospitalInListEvaluate = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/getHospitalInListEvaluate`)
+}
+
 //Get List SubQuest
 export const getListSubQuestsForEvaluate = async (token, values) => {
     return await axios.get(import.meta.env.VITE_APP_API + `/getListSubQuestsForEvaluate/` + values,
