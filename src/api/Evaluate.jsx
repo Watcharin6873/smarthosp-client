@@ -283,3 +283,47 @@ export const getSumEvaluateByZone = async (token, zone) => {
         }
     )
 }
+
+//CHECK SSJ NOT APPROVE
+export const checkSsjNotApprove = async (token, hospcode, category_questId) =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/checkSsjNotApprove?hospcode=${hospcode}&category_questId=${category_questId}`,
+        {
+            headers:{
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
+//CHECK ZONE NOT APPROVE
+export const checkZoneNotApprove = async (token, hospcode, category_questId, province) =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/checkZoneNotApprove?hospcode=${hospcode}&category_questId=${category_questId}&province=${province}`,
+        {
+            headers:{
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
+//SSJ UNAPPROVE
+export const ssjUnApprove = async (token, values) =>{
+    return await axios.put(import.meta.env.VITE_APP_API + `/ssjUnApprove`, values,
+        {
+            headers: {
+                Authorization: `Bearer ` + token,
+            }
+        }
+    )
+}
+
+//SSJ UNAPPROVE
+export const zoneUnApprove = async (token, values) =>{
+    return await axios.put(import.meta.env.VITE_APP_API + `/zoneUnApprove`, values,
+        {
+            headers: {
+                Authorization: `Bearer ` + token,
+            }
+        }
+    )
+}
