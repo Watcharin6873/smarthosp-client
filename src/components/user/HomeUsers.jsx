@@ -182,7 +182,7 @@ const HomeUsers = () => {
                       <img className='w-32' src={Silver} alt='Gem' />
                     </div>
                   </div>
-                  : sumTotalPoint >= 700 && sumTotalPoint < 800 && sumRequirePoint < 510
+                  : sumTotalPoint >= 700 && sumRequirePoint < 510
                     ?
                     <div style={{ textAlign: 'center' }}>
                       <p className='text-4xl font-bold text-slate-400'>เงิน</p>
@@ -198,7 +198,7 @@ const HomeUsers = () => {
                           <img className='w-32' src={Gold} alt='Gem' />
                         </div>
                       </div>
-                      : sumTotalPoint >= 800 && sumRequirePoint < 510 && cyberData?.cyber_level == 'GREEN'
+                      : sumTotalPoint >= 800 && sumRequirePoint < 510
                         ?
                         <div style={{ textAlign: 'center' }}>
                           <p className='text-4xl font-bold text-slate-400'>เงิน</p>
