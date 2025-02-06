@@ -10,8 +10,9 @@ import { getListHospitalAll } from '../api/Hospital'
 import { Ban, Hospital } from 'lucide-react'
 import { getHospitalInListEvaluate, sumEvaluateAll } from '../api/Evaluate'
 import { Alert, Button, Form, Select } from 'antd'
-import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import { BarChart } from '@mui/x-charts/BarChart';
+// import Chart from "react-apexcharts";
+import { BarChart,PieChart, pieArcLabelClasses } from '@mui/x-charts';
+// import { BarChart } from '@mui/x-charts';
 
 const position = [13, 100];
 
@@ -412,14 +413,25 @@ const Home = () => {
   ]
 
 
-  // console.log('Percent: ', (((hospitalInzone10.length - hospEvaluate10.length) / hospitalInzone10.length) * 100).toFixed(0) + '%')
-  console.log('Hosp: ', hospitalInzone10.length)
-  console.log('EVA: ', hospEvaluate10.length)
-  console.log('GEM: ', gemLevel10.length)
-  console.log('GOLD: ', goldLevel10.length)
-  console.log('SILVER: ', silverLevel10.length)
-  console.log('NOTPASS: ', notPassLevel10.length)
-  console.log('NOTE: ', (hospitalInzone10.length) - (gemLevel10.length + goldLevel10.length + silverLevel10.length + notPassLevel10.length))
+  const series = [
+    {
+      data: [30, 40, 25, 50, 49, 21, 70, 51]
+    }
+  ];
+
+  const options = {
+    dataLabels: {
+      enabled: false
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true
+      }
+    },
+    xaxis: {
+      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    }
+  };
 
 
   return (
@@ -636,6 +648,7 @@ const Home = () => {
           <div className='flex justify-center items-center'>
             <p>จำนวนโรงพยาบาลที่ประเมินโรงพยาบาลอัจฉริยะรายเขต</p>
           </div>
+          {/* <Chart options={options} series={series} type="bar" width="500" /> */}
           <BarChart
             // width={400}
             height={350}

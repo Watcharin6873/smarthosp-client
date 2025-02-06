@@ -1,11 +1,15 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
   base:'/smarthosp-quest/',
   plugins: [react()],
+  optimizeDeps: {
+    include: ['@emotion/styled'],
+  },
   build: {
+    chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
         manualChunks(id) {
