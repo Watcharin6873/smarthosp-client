@@ -12,6 +12,7 @@ import { getHospitalInListEvaluate, sumEvaluateAll } from '../api/Evaluate'
 import { Alert, Button, Form, Select } from 'antd'
 // import Chart from "react-apexcharts";
 import { BarChart,PieChart, pieArcLabelClasses } from '@mui/x-charts';
+import FormHome from '../components/FormHome'
 // import { BarChart } from '@mui/x-charts';
 
 const position = [13, 100];
@@ -166,8 +167,8 @@ const Home = () => {
 
   const data2 = [
     { label: 'ระดับเพชร', value: gemLevel.length, color: '#0088FE' },
-    { label: 'ระดับทอง', value: goldLevel.length, color: '#eac97a' },
-    { label: 'ระดับเงิน', value: silverLevel.length, color: '#D8D7D7' },
+    { label: 'ระดับทอง', value: goldLevel.length, color: '#FFDC73' },
+    { label: 'ระดับเงิน', value: silverLevel.length, color: '#E0E0E0' },
     { label: 'ไม่ผ่าน', value: notPassLevel.length, color: '#fc5151' },
     { label: 'ยังไม่ประเมิน', value: hospNotEvaluate, color: '#fca951' },
   ];
@@ -436,7 +437,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className='flex justify-between items-center'>
+      {/* <div className='flex justify-between items-center'>
         <div className='flex justify-center items-center mb-5'>
           <Form
             form={formSearch}
@@ -524,7 +525,7 @@ const Home = () => {
           }
 
         </div>
-      </div>
+      </div> */}
 
       <div className='grid grid-cols-6 gap-2'>
 
@@ -611,13 +612,13 @@ const Home = () => {
               src={Silver}
               alt='Silver'
             />
-            <p className='text-xl text-slate-500 font-bold'>ระดับเงิน</p>
+            <p className='text-xl text-slate-400 font-bold'>ระดับเงิน</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3 text-slate-500'>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-slate-400'>
             <p className='text-4xl'>{silverLevel.length}</p>
             <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between  text-slate-500'>
+          <div className='p-2 flex justify-between  text-slate-400'>
             <div><p>คิดเป็น</p></div>
             <div className='flex'><p>{silverPer.toFixed(1)} % </p></div>
           </div>
@@ -646,7 +647,7 @@ const Home = () => {
       <div className='grid grid-cols-2 gap-2 mt-3'>
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex justify-center items-center'>
-            <p>จำนวนโรงพยาบาลที่ประเมินโรงพยาบาลอัจฉริยะรายเขต</p>
+            <p>จำนวน (เปอร์เซ็นต์) โรงพยาบาลที่ประเมินโรงพยาบาลอัจฉริยะรายเขต</p>
           </div>
           {/* <Chart options={options} series={series} type="bar" width="500" /> */}
           <BarChart
@@ -654,10 +655,10 @@ const Home = () => {
             height={350}
             series={[
               { data: gemData, label: 'เพชร', id: 'gemID', stack: 'total', color: '#0088FE' },
-              { data: goldData, label: 'ทอง', id: 'goldID', stack: 'total', color: '#eac97a' },
-              { data: silverData, label: 'เงิน', id: 'silverID', stack: 'total', color: '#D8D7D7' },
+              { data: goldData, label: 'ทอง', id: 'goldID', stack: 'total', color: '#FFDC73' },
+              { data: silverData, label: 'เงิน', id: 'silverID', stack: 'total', color: '#E0E0E0' },
               { data: noPassData, label: 'ไม่ผ่าน', id: 'noPassID', stack: 'total', color: '#fc5151' },
-              { data: notEvaluate, label: 'ยังไม่ประเมิน', id: 'notEvaluateID', stack: 'total', color: '#fca951' },
+              { data: notEvaluate, label: 'ยังไม่ประเมิน', id: 'notEvaluateID', stack: 'total', color: '#FCA951' },
             ]}
             xAxis={[{ data: xLabels, scaleType: 'band' }]}
             yAxis={[{ min: 0, max: 100 }]}
@@ -675,7 +676,7 @@ const Home = () => {
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex justify-center items-center'>
-            <p>จำนวนโรงพยาบาลในแต่ละระดับที่ได้จากการประเมิน</p>
+            <p>จำนวน (เปอร์เซ็นต์) โรงพยาบาลในแต่ละระดับที่ได้จากการประเมิน</p>
           </div>
           <div className='flex justify-center items-center mt-5'>
             <PieChart
@@ -701,7 +702,9 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+      <div className='bg-white rounded-md shadow-md mt-3'>
+        <FormHome />
+      </div>
     </div>
   )
 }

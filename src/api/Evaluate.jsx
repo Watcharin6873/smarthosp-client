@@ -33,6 +33,11 @@ export const sumEvaluateAll = async () =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/sumEvaluateAll`)
 }
 
+//Sum Evaluate for all
+export const getSumEvaluateForAll = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/getSumEvaluateForAll`)
+}
+
 //Get Hospital in list evaluate
 export const getHospitalInListEvaluate = async () =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/getHospitalInListEvaluate`)
