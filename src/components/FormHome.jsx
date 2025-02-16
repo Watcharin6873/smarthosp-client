@@ -214,7 +214,7 @@ const FormHome = () => {
             <div className='text-center p-2'>
                 <p className='text-2xl font-bold text-green-700'>ผลการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ 2568 รวมทั้งหมด</p>
             </div>
-            <div className='flex justify-between items-center p-2'>
+            <div className='flex justify-between items-center py-2 px-3'>
                 <div>
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
