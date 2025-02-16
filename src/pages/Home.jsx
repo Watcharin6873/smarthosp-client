@@ -178,7 +178,7 @@ const Home = () => {
 
   const getArcLabel = (params) => {
     const percent = params.value / TOTAL;
-    return `${(percent * 100).toFixed(0)}%`;
+    return `${(percent * 100).toFixed(1)}%`;
   };
 
   const gemLevel01 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '01')
@@ -350,81 +350,81 @@ const Home = () => {
   const hospEvaluate12 = totalSumEvaluateData.filter(f => f.zone === '12')
 
   const gemData = [
-    ((gemLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
-    ((gemLevel02.length / hospitalInzone2.length) * 100).toFixed(0),
-    ((gemLevel03.length / hospitalInzone3.length) * 100).toFixed(0),
-    ((gemLevel04.length / hospitalInzone4.length) * 100).toFixed(0),
-    ((gemLevel05.length / hospitalInzone5.length) * 100).toFixed(0),
-    ((gemLevel06.length / hospitalInzone6.length) * 100).toFixed(0),
-    ((gemLevel07.length / hospitalInzone7.length) * 100).toFixed(0),
-    ((gemLevel08.length / hospitalInzone8.length) * 100).toFixed(0),
-    ((gemLevel09.length / hospitalInzone9.length) * 100).toFixed(0),
-    ((gemLevel10.length / hospitalInzone10.length) * 100).toFixed(0),
-    ((gemLevel11.length / hospitalInzone11.length) * 100).toFixed(0),
-    ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
+    ((gemLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
+    ((gemLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
+    ((gemLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
+    ((gemLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
+    ((gemLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
+    ((gemLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
+    ((gemLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
+    ((gemLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
+    ((gemLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
+    ((gemLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
+    ((gemLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
+    ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
   ];
 
   console.log('Silver: ',silverLevel03.length)
 
   const goldData = [
-    ((goldLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
-    ((goldLevel02.length / hospitalInzone2.length) * 100).toFixed(0),
-    ((goldLevel03.length / hospitalInzone3.length) * 100).toFixed(0),
-    ((goldLevel04.length / hospitalInzone4.length) * 100).toFixed(0),
-    ((goldLevel05.length / hospitalInzone5.length) * 100).toFixed(0),
-    ((goldLevel06.length / hospitalInzone6.length) * 100).toFixed(0),
-    ((goldLevel07.length / hospitalInzone7.length) * 100).toFixed(0),
-    ((goldLevel08.length / hospitalInzone8.length) * 100).toFixed(0),
-    ((goldLevel09.length / hospitalInzone9.length) * 100).toFixed(0),
-    ((goldLevel10.length / hospitalInzone10.length) * 100).toFixed(0),
-    ((goldLevel11.length / hospitalInzone11.length) * 100).toFixed(0),
-    ((goldLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
+    ((goldLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
+    ((goldLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
+    ((goldLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
+    ((goldLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
+    ((goldLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
+    ((goldLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
+    ((goldLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
+    ((goldLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
+    ((goldLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
+    ((goldLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
+    ((goldLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
+    ((goldLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
   ];
   const silverData = [
-    ((silverLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
-    ((silverLevel02.length / hospitalInzone2.length) * 100).toFixed(0),
-    ((silverLevel03.length / hospitalInzone3.length) * 100).toFixed(0),
-    ((silverLevel04.length / hospitalInzone4.length) * 100).toFixed(0),
-    ((silverLevel05.length / hospitalInzone5.length) * 100).toFixed(0),
-    ((silverLevel06.length / hospitalInzone6.length) * 100).toFixed(0),
-    ((silverLevel07.length / hospitalInzone7.length) * 100).toFixed(0),
-    ((silverLevel08.length / hospitalInzone8.length) * 100).toFixed(0),
-    ((silverLevel09.length / hospitalInzone9.length) * 100).toFixed(0),
-    ((silverLevel10.length / hospitalInzone10.length) * 100).toFixed(0),
-    ((silverLevel11.length / hospitalInzone11.length) * 100).toFixed(0),
-    ((silverLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
+    ((silverLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
+    ((silverLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
+    ((silverLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
+    ((silverLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
+    ((silverLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
+    ((silverLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
+    ((silverLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
+    ((silverLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
+    ((silverLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
+    ((silverLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
+    ((silverLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
+    ((silverLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
   ];
   const noPassData = [
-    ((notPassLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
-    ((notPassLevel02.length / hospitalInzone2.length) * 100).toFixed(0),
-    ((notPassLevel03.length / hospitalInzone3.length) * 100).toFixed(0),
-    ((notPassLevel04.length / hospitalInzone4.length) * 100).toFixed(0),
-    ((notPassLevel05.length / hospitalInzone5.length) * 100).toFixed(0),
-    ((notPassLevel06.length / hospitalInzone6.length) * 100).toFixed(0),
-    ((notPassLevel07.length / hospitalInzone7.length) * 100).toFixed(0),
-    ((notPassLevel08.length / hospitalInzone8.length) * 100).toFixed(0),
-    ((notPassLevel09.length / hospitalInzone9.length) * 100).toFixed(0),
-    ((notPassLevel10.length / hospitalInzone10.length) * 100).toFixed(0),
-    ((notPassLevel11.length / hospitalInzone11.length) * 100).toFixed(0),
-    ((notPassLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
+    ((notPassLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
+    ((notPassLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
+    ((notPassLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
+    ((notPassLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
+    ((notPassLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
+    ((notPassLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
+    ((notPassLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
+    ((notPassLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
+    ((notPassLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
+    ((notPassLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
+    ((notPassLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
+    ((notPassLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
   ];
 
   const xLabels = ['เขต1', 'เขต2', 'เขต3', 'เขต4', 'เขต5', 'เขต6', 'เขต7', 'เขต8', 'เขต9', 'เขต10', 'เขต11', 'เขต12']
 
 
   const notEvaluate = [
-    (((hospitalInzone1.length - (gemLevel01.length + goldLevel01.length + silverLevel01.length + notPassLevel01.length)) / (hospitalInzone1.length)) * 100).toFixed(0),
-    (((hospitalInzone2.length - (gemLevel02.length + goldLevel02.length + silverLevel02.length + notPassLevel02.length)) / (hospitalInzone2.length)) * 100).toFixed(0),
-    (((hospitalInzone3.length - (gemLevel03.length + goldLevel03.length + silverLevel03.length + notPassLevel03.length)) / (hospitalInzone3.length)) * 100).toFixed(0),
-    (((hospitalInzone4.length - (gemLevel04.length + goldLevel04.length + silverLevel04.length + notPassLevel04.length)) / (hospitalInzone4.length)) * 100).toFixed(0),
-    (((hospitalInzone5.length - (gemLevel05.length + goldLevel05.length + silverLevel05.length + notPassLevel05.length)) / (hospitalInzone5.length)) * 100).toFixed(0),
-    (((hospitalInzone6.length - (gemLevel06.length + goldLevel06.length + silverLevel06.length + notPassLevel06.length)) / (hospitalInzone6.length)) * 100).toFixed(0),
-    (((hospitalInzone7.length - (gemLevel07.length + goldLevel07.length + silverLevel07.length + notPassLevel07.length)) / (hospitalInzone7.length)) * 100).toFixed(0),
-    (((hospitalInzone8.length - (gemLevel08.length + goldLevel08.length + silverLevel08.length + notPassLevel08.length)) / (hospitalInzone8.length)) * 100).toFixed(0),
-    (((hospitalInzone9.length - (gemLevel09.length + goldLevel09.length + silverLevel09.length + notPassLevel09.length)) / (hospitalInzone9.length)) * 100).toFixed(0),
-    (((hospitalInzone10.length - (gemLevel10.length + goldLevel10.length + silverLevel10.length + notPassLevel10.length)) / (hospitalInzone10.length)) * 100).toFixed(0),
-    (((hospitalInzone11.length - (gemLevel11.length + goldLevel11.length + silverLevel11.length + notPassLevel11.length)) / (hospitalInzone11.length)) * 100).toFixed(0),
-    (((hospitalInzone12.length - (gemLevel12.length + goldLevel12.length + silverLevel12.length + notPassLevel12.length)) / (hospitalInzone12.length)) * 100).toFixed(0)
+    (((hospitalInzone1.length - (gemLevel01.length + goldLevel01.length + silverLevel01.length + notPassLevel01.length)) / (hospitalInzone1.length)) * 100).toFixed(1),
+    (((hospitalInzone2.length - (gemLevel02.length + goldLevel02.length + silverLevel02.length + notPassLevel02.length)) / (hospitalInzone2.length)) * 100).toFixed(1),
+    (((hospitalInzone3.length - (gemLevel03.length + goldLevel03.length + silverLevel03.length + notPassLevel03.length)) / (hospitalInzone3.length)) * 100).toFixed(1),
+    (((hospitalInzone4.length - (gemLevel04.length + goldLevel04.length + silverLevel04.length + notPassLevel04.length)) / (hospitalInzone4.length)) * 100).toFixed(1),
+    (((hospitalInzone5.length - (gemLevel05.length + goldLevel05.length + silverLevel05.length + notPassLevel05.length)) / (hospitalInzone5.length)) * 100).toFixed(1),
+    (((hospitalInzone6.length - (gemLevel06.length + goldLevel06.length + silverLevel06.length + notPassLevel06.length)) / (hospitalInzone6.length)) * 100).toFixed(1),
+    (((hospitalInzone7.length - (gemLevel07.length + goldLevel07.length + silverLevel07.length + notPassLevel07.length)) / (hospitalInzone7.length)) * 100).toFixed(1),
+    (((hospitalInzone8.length - (gemLevel08.length + goldLevel08.length + silverLevel08.length + notPassLevel08.length)) / (hospitalInzone8.length)) * 100).toFixed(1),
+    (((hospitalInzone9.length - (gemLevel09.length + goldLevel09.length + silverLevel09.length + notPassLevel09.length)) / (hospitalInzone9.length)) * 100).toFixed(1),
+    (((hospitalInzone10.length - (gemLevel10.length + goldLevel10.length + silverLevel10.length + notPassLevel10.length)) / (hospitalInzone10.length)) * 100).toFixed(1),
+    (((hospitalInzone11.length - (gemLevel11.length + goldLevel11.length + silverLevel11.length + notPassLevel11.length)) / (hospitalInzone11.length)) * 100).toFixed(1),
+    (((hospitalInzone12.length - (gemLevel12.length + goldLevel12.length + silverLevel12.length + notPassLevel12.length)) / (hospitalInzone12.length)) * 100).toFixed(1)
   ]
 
 
@@ -682,7 +682,7 @@ const Home = () => {
             sx={{
               '& .MuiBarLabel-root': {
                 fill: 'white',
-                fontSize: 12,
+                fontSize: 10,
               },
             }}
           />
