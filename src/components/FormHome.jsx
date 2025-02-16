@@ -181,9 +181,9 @@ const FormHome = () => {
                                     : total_cat >= 800 && total_require < 510
                                         ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
                                         : total_cat >= 700 && total_cat < 800 && total_require == 510
-                                            ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
+                                            ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
                                             : total_cat >= 800 && total_require == 510 && cyber_level != 'GREEN'
-                                                ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
+                                                ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
                                                 : total_cat >= 800 && total_require == 510 && cyber_level == 'GREEN'
                                                     ? <span className='text-blue-500 font-bold' style={{ fontSize: '13px' }}>เพชร</span>
                                                     : null
