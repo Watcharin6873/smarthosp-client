@@ -32,7 +32,7 @@ const FormHome = () => {
         setSearchQuery(listSumEvaluate.filter(f =>
             f.hcode.toLowerCase().includes(e.target.value) ||
             f.hname_th.toLowerCase().includes(e.target.value) ||
-            f.provname.toLowerCase().includes(e.target.value) 
+            f.provname.toLowerCase().includes(e.target.value)
             // || f.zone.toLowerCase().includes(e.target.value)
         ))
     }
@@ -53,6 +53,8 @@ const FormHome = () => {
         point_require_cat3: item.point_require_cat3,
         point_total_cat4: item.point_total_cat4,
         point_require_cat4: item.point_require_cat4,
+        total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+        total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
         cyber_level: item.cyber_level,
         cyber_levelname: item.cyber_levelname
 
@@ -62,114 +64,144 @@ const FormHome = () => {
 
     const columns = [
         {
-            title: 'เขตฯ',
-            dataIndex: 'zone',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>เขตฯ</p>,
             align: 'center',
+            render: ({ zone }) =>
+                <span style={{ fontSize: '13px' }}>{zone}</span>
         },
         {
-            title: 'จังหวัด',
-            dataIndex: 'provname',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>จังหวัด</p>,
             align: 'center',
+            render: ({ provname }) =>
+                <span style={{ fontSize: '13px' }}>{provname}</span>
         },
         {
-            title: <p className='text-center'>หน่วยบริการ</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>หน่วยบริการ</p>,
             render: ({ hname_th, hcode }) =>
                 <>
-                    <span style={{ fontSize: '14px' }}>{hname_th} [{hcode}]</span>
+                    <span style={{ fontSize: '13px' }}>{hname_th} [{hcode}]</span>
                 </>
 
         },
         {
-            title: 'ด้านโครงสร้าง',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านโครงสร้าง</p>,
             children: [
                 {
-                    title: 'คะแนนที่ได้',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
                     dataIndex: 'point_total_cat1',
                     align: 'center',
-                    render: (point_total_cat1)=> 
-                        <span>{point_total_cat1 === null ? 0 : point_total_cat1}</span>
+                    render: (point_total_cat1) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat1 === null ? 0 : point_total_cat1}</span>
                 },
                 {
-                    title: 'คะแนนจำเป็น',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
                     dataIndex: 'point_require_cat1',
                     align: 'center',
-                    render: (point_require_cat1)=> 
-                        <span>{point_require_cat1 === null ? 0 : point_require_cat1}</span>
+                    render: (point_require_cat1) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat1 === null ? 0 : point_require_cat1}</span>
                 }
             ]
         },
         {
-            title: 'ด้านบริหารจัดการ',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบริหารจัดการ</p>,
             children: [
                 {
-                    title: 'คะแนนที่ได้',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
                     dataIndex: 'point_total_cat2',
                     align: 'center',
-                    render: (point_total_cat2)=> 
-                        <span>{point_total_cat2 === null ? 0 : point_total_cat2}</span>
+                    render: (point_total_cat2) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat2 === null ? 0 : point_total_cat2}</span>
                 },
                 {
-                    title: 'คะแนนจำเป็น',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
                     dataIndex: 'point_require_cat2',
                     align: 'center',
-                    render: (point_require_cat2)=> 
-                        <span>{point_require_cat2 === null ? 0 : point_require_cat2}</span>
+                    render: (point_require_cat2) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat2 === null ? 0 : point_require_cat2}</span>
                 }
             ]
         },
         {
-            title: 'ด้านการบริการ',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านการบริการ</p>,
             children: [
                 {
-                    title: 'คะแนนที่ได้',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
                     dataIndex: 'point_total_cat3',
                     align: 'center',
-                    render: (point_total_cat3)=> 
-                        <span>{point_total_cat3 === null ? 0 : point_total_cat3}</span>
+                    render: (point_total_cat3) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat3 === null ? 0 : point_total_cat3}</span>
                 },
                 {
-                    title: 'คะแนนจำเป็น',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
                     dataIndex: 'point_require_cat3',
                     align: 'center',
-                    render: (point_require_cat3)=> 
-                        <span>{point_require_cat3 === null ? 0 : point_require_cat3}</span>
+                    render: (point_require_cat3) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat3 === null ? 0 : point_require_cat3}</span>
                 }
             ]
         },
         {
-            title: <p className='text-center'>ด้านบุคลากร</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบุคลากร</p>,
             children: [
                 {
-                    title: 'คะแนนที่ได้',
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
                     dataIndex: 'point_total_cat4',
                     align: 'center',
-                    render: (point_total_cat4)=> 
-                        <span>{point_total_cat4 === null ? 0 : point_total_cat4}</span>
+                    render: (point_total_cat4) =>
+                        <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat4 === null ? 0 : point_total_cat4}</span>
                 }
             ]
         },
-        // {
-        //     title: 'คะแนนรวม',
-        //     dataIndex: '',
-        //     align: 'center',
-        // },
-        // {
-        //     title: 'ระดับที่ได้',
-        //     dataIndex: '',
-        //     align: 'center',
-        // },
         {
-            title: 'ระดับ Cyber Secuerity',
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนที่ได้<br/>(รวม)</p>,
+            dataIndex: 'total_cat',
+            align: 'center',
+            render: (total_cat) =>
+                <span className='text-center font-bold' style={{ fontSize: '13px' }}>{total_cat === null ? 0 : total_cat}</span>
+        },
+        {
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนจำเป็น<br/>(รวม)</p>,
+            dataIndex: 'total_require',
+            align: 'center',
+            render: (total_require) =>
+                <span className='text-center font-bold' style={{ fontSize: '13px' }}>{total_require === null ? 0 : total_require}</span>
+        },
+        {
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ระดับที่ได้</p>,
+            align: 'center',
+            render: ({ total_cat, total_require, cyber_level }) =>
+                <>
+                    {
+                        total_cat < 600
+                            ? <span className='text-red-500 font-bold' style={{ fontSize: '13px' }}>ไม่ผ่าน</span>
+                            : total_cat >= 600 && total_cat <= 700
+                                ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
+                                : total_cat >= 700 && total_require < 510
+                                    ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
+                                    : total_cat >= 800 && total_require < 510
+                                        ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
+                                        : total_cat >= 700 && total_cat < 800 && total_require == 510
+                                            ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
+                                            : total_cat >= 800 && total_require == 510 && cyber_level != 'GREEN'
+                                                ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
+                                                : total_cat >= 800 && total_require == 510 && cyber_level == 'GREEN'
+                                                    ? <span className='text-blue-500 font-bold' style={{ fontSize: '13px' }}>เพชร</span>
+                                                    : null
+                    }
+                </>
+        },
+        {
+            title: <p className='text-center' style={{ fontSize: '13px' }}>ระดับ Cyber Secuerity</p>,
             align: 'center',
             render: ({ cyber_level, cyber_levelname }) =>
                 <>
                     {
                         cyber_level === 'GREEN'
-                            ? <p className='text-green-400'>{cyber_levelname}</p>
+                            ? <p className='text-green-600' style={{ fontSize: '13px' }}>{cyber_levelname}</p>
                             : cyber_level === 'YELLOW'
-                                ? <p className='text-yellow-400'>{cyber_levelname}</p>
+                                ? <p className='text-yellow-500' style={{ fontSize: '13px' }}>{cyber_levelname}</p>
                                 : cyber_level === 'RED'
-                                    ? <p className='text-red-500'>{cyber_levelname}</p>
+                                    ? <p className='text-red-500' style={{ fontSize: '13px' }}>{cyber_levelname}</p>
                                     : null
                     }
 
@@ -179,10 +211,10 @@ const FormHome = () => {
 
     return (
         <>
-            <div className='text-center p-3'>
+            <div className='text-center p-2'>
                 <p className='text-2xl font-bold text-green-700'>ผลการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ 2568 รวมทั้งหมด</p>
             </div>
-            <div className='flex justify-between items-center p-3'>
+            <div className='flex justify-between items-center p-2'>
                 <div>
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
@@ -204,8 +236,18 @@ const FormHome = () => {
                 }}
                 columns={columns}
                 dataSource={dataSource}
+                components={{
+                    header: {
+                        cell: ({ children, ...restProps }) => (
+                            <th {...restProps} style={{ background: "#388e3c", color: "white" }}>
+                                {children}
+                            </th>
+                        ),
+                    },
+                }}
                 bordered
                 size='small'
+                // pagination={{pageSize:12}}
             />
         </>
     )

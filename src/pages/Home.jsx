@@ -44,6 +44,7 @@ const Home = () => {
   const loadListHospitalAll = async () => {
     await getListHospitalAll()
       .then(res => {
+        // console.log('Hosp: ',res.data)
         setListHospitalAll(res.data)
       })
       .catch(err => {
@@ -149,8 +150,8 @@ const Home = () => {
     (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN')
   )
   const silverLevel = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700) ||
-    (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510) ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
+    (f.sumTotalPoint >= 700&& f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
   )
 
@@ -163,7 +164,7 @@ const Home = () => {
   const hospNotPer = ((listHospitalAll.length - hospitalInList.length) / listHospitalAll.length) * 100
   const notPassPer = (notPassLevel.length / listHospitalAll.length) * 100
 
-  // console.log('List: ', hospNotEvaluate)
+  console.log('Level: ', gemLevel.length)
 
   const data2 = [
     { label: 'ระดับเพชร', value: gemLevel.length, color: '#0088FE' },
@@ -243,51 +244,63 @@ const Home = () => {
   )
 
   const silverLevel01 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '01') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '01') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '01') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '01') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '01')
   )
   const silverLevel02 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '02') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '02') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '02') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '02') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '02')
   )
   const silverLevel03 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '03') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '03') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '03') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '03') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '03')
   )
   const silverLevel04 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '04') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '04') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '04') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '04') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '04')
   )
   const silverLevel05 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '05') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '05') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '05') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '05') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '05')
   )
   const silverLevel06 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '06') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '06') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '06') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '06') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '06')
   )
   const silverLevel07 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '07') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '07') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '07') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '07') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '07')
   )
   const silverLevel08 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '08') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '08') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '08') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '08') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '08')
   )
   const silverLevel09 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '09') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '09') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '09') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '09') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '09')
   )
   const silverLevel10 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '10') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '10') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '10') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '10') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '10')
   )
   const silverLevel11 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '11') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '11') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '11') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '11') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '11')
   )
   const silverLevel12 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '12') || (f.sumTotalPoint >= 700 && f.sumRequirePoint < 510 && f.zone === '12') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '12') || 
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '12') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '12')
   )
 
@@ -351,6 +364,7 @@ const Home = () => {
     ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
   ];
 
+  console.log('Silver: ',silverLevel03.length)
 
   const goldData = [
     ((goldLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
@@ -364,7 +378,7 @@ const Home = () => {
     ((goldLevel09.length / hospitalInzone9.length) * 100).toFixed(0),
     ((goldLevel10.length / hospitalInzone10.length) * 100).toFixed(0),
     ((goldLevel11.length / hospitalInzone11.length) * 100).toFixed(0),
-    ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
+    ((goldLevel12.length / hospitalInzone12.length) * 100).toFixed(0)
   ];
   const silverData = [
     ((silverLevel01.length / hospitalInzone1.length) * 100).toFixed(0),
