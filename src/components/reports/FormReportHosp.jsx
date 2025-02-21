@@ -708,7 +708,18 @@ const FormReportHosp = () => {
                                                         {
                                                             evaluateById?.sub_quests?.sub_quest_lists?.map((it1, k1) => (
                                                                 <div className='flex gap-1'>
-                                                                    <Checkbox key={k1} value={it1.choice} /><p className='text-green-700'>{it1.sub_quest_listname}</p>
+                                                                    {
+                                                                        it1.sub_quest_listname === 'ไม่มีการดำเนินการ'
+                                                                            ?
+                                                                            <>
+                                                                                <Checkbox key={k1} value={it1.choice} /><p className='text-red-500'>{it1.sub_quest_listname}</p>
+                                                                            </>
+                                                                            :
+                                                                            <>
+                                                                                <Checkbox key={k1} value={it1.choice} /><p className='text-green-700'>{it1.sub_quest_listname}</p>
+                                                                            </>
+                                                                    }
+                                                                    
                                                                 </div>
                                                             ))
                                                         }

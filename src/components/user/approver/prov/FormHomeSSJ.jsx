@@ -5,9 +5,9 @@ import Gold from '../../../../assets/Gold2.png'
 import Silver from '../../../../assets/Silver2.png'
 import HospitalIcon from '../../../../assets/Hospital.png'
 import { useNavigate } from 'react-router-dom'
-import { Hospital, UserPlus, Users } from 'lucide-react'
+import { Ban, Hospital, UserPlus, Users } from 'lucide-react'
 import { getHospitalOnProv } from '../../../../api/Hospital'
-import { getListEvaluateByProv } from '../../../../api/Evaluate'
+import { getListEvaluateByProv, sumEvaluateAll } from '../../../../api/Evaluate'
 import { approveUserOnProv, notApproveUserOnProv } from '../../../../api/User'
 import { ArrowUpOutlined } from '@ant-design/icons'
 
@@ -22,7 +22,7 @@ const FormHomeSSJ = () => {
   const [listEvaluateByProv, setListEvaluateByHosp] = useState([])
   const [isApproveUser, setIsApproveUser] = useState([])
   const [isNotApproveUser, setIsNotApproveUser] = useState([])
-
+  const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
   const province = user.province
 
   useEffect(() => {
@@ -30,12 +30,13 @@ const FormHomeSSJ = () => {
     loadListEvaluateByProv(token)
     loadSumApproveUser(token)
     loadSumNotApproveUser(token)
+    loadTotalSumEvaluate()
   }, [])
 
   const loadListHospital = async () => {
     await getHospitalOnProv(token, province)
       .then(res => {
-        console.log('Hosp: ', res.data)
+        // console.log('Hosp: ', res.data)
         setListHospital(res.data)
       })
       .catch(err => {
@@ -46,7 +47,6 @@ const FormHomeSSJ = () => {
   const loadListEvaluateByProv = async () => {
     await getListEvaluateByProv(token, province)
       .then(res => {
-        console.log("List: ",res.data)
         setListEvaluateByHosp(res.data)
       })
       .catch(err => {
@@ -54,15 +54,43 @@ const FormHomeSSJ = () => {
       })
   }
 
-  const evaluateCat1 = listEvaluateByProv.filter((item) => item.category_quests.id === 1)
-  const evaluateCat2 = listEvaluateByProv.filter((item) => item.category_quests.id === 2)
-  const evaluateCat3 = listEvaluateByProv.filter((item) => item.category_quests.id === 3)
-  const evaluateCat4 = listEvaluateByProv.filter((item) => item.category_quests.id === 4)
+  const listEvaluateProvData = listEvaluateByProv.map((item) => ({
+    id: item.id,
+    file_name: item.file_name,
+    ssj_approve: item.ssj_approve,
+    zone_approve: item.zone_approve,
+    category_questId: item.category_questId,
+    questId: item.questId,
+    sub_questId: item.sub_questId,
+    check: item.check,
+    userId: item.userId,
+    hcode: item.hcode,
+    hname_th: item.hospitals.hname_th,
+    tmbname: item.hospitals.tmbname,
+    ampname: item.hospitals.ampname,
+    provcode: item.hospitals.provcode,
+    provname: item.hospitals.provname,
+    zone: item.hospitals.zone
+  }))
 
-  const listEvaluateHospCat1 = [...new Map(evaluateCat1.map(item=>[item['hcode'], item])).values()]
-  const listEvaluateHospCat2 = [...new Map(evaluateCat2.map(item=>[item['hcode'], item])).values()]
-  const listEvaluateHospCat3 = [...new Map(evaluateCat3.map(item=>[item['hcode'], item])).values()]
-  const listEvaluateHospCat4 = [...new Map(evaluateCat4.map(item=>[item['hcode'], item])).values()]
+  // console.log("List: ", listEvaluateProvData)
+
+  const evaluateCat1 = listEvaluateProvData.filter((item) => item.category_questId === 1)
+  const evaluateCat2 = listEvaluateProvData.filter((item) => item.category_questId === 2)
+  const evaluateCat3 = listEvaluateProvData.filter((item) => item.category_questId === 3)
+  const evaluateCat4 = listEvaluateProvData.filter((item) => item.category_questId === 4)
+
+  const listEvaluateHospCat1 = [...new Map(evaluateCat1.map(item => [item['hcode'], item])).values()]
+  const listEvaluateHospCat2 = [...new Map(evaluateCat2.map(item => [item['hcode'], item])).values()]
+  const listEvaluateHospCat3 = [...new Map(evaluateCat3.map(item => [item['hcode'], item])).values()]
+  const listEvaluateHospCat4 = [...new Map(evaluateCat4.map(item => [item['hcode'], item])).values()]
+
+  const cat1Approve = listEvaluateHospCat1.filter((item) => item.ssj_approve === true)
+  const cat2Approve = listEvaluateHospCat2.filter((item) => item.ssj_approve === true)
+  const cat3Approve = listEvaluateHospCat3.filter((item) => item.ssj_approve === true)
+  const cat4Approve = listEvaluateHospCat4.filter((item) => item.ssj_approve === true)
+
+  // console.log("AP: ", listEvaluateHospCat1)
 
   const loadSumApproveUser = async () => {
     await approveUserOnProv(token, province)
@@ -84,10 +112,55 @@ const FormHomeSSJ = () => {
       })
   }
 
+  const loadTotalSumEvaluate = async () => {
+    await sumEvaluateAll()
+      .then(res => {
+        // console.log('Total: ', res.data)
+        setTotalSumEvaluate(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  const sumEvaluateData = totalSumEvaluate.filter(f => f.provname === province)
+
+  const totalSumEvaluateData = sumEvaluateData.map((item) => ({
+    zone: item.zone,
+    provcode: item.provcode,
+    provname: item.provname,
+    hcode: item.hcode,
+    hname_th: item.hname_th,
+    sumTotalPoint: item.sub_quest_total_point,
+    sumRequirePoint: item.sub_quest_require_point,
+    cyber_level: item.cyber_level,
+    cyber_levelname: item.cyber_levelname
+  }))
+
+  // console.log('Hosp: ', totalSumEvaluateData)
+
+  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
+  const goldLevel = totalSumEvaluateData.filter(f =>
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN')
+  )
+  const silverLevel = totalSumEvaluateData.filter(f =>
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
+  )
+  const notPassLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600)
+  const hospNotEvaluate = listHospital.length - totalSumEvaluateData.length
+
+  const gemPer = (gemLevel.length / listHospital.length) * 100
+  const goldPer = (goldLevel.length / listHospital.length) * 100
+  const silverPer = (silverLevel.length / listHospital.length) * 100
+  const hospNotPer = (hospNotEvaluate / listHospital.length) * 100
+  const notPassPer = (notPassLevel.length / listHospital.length) * 100
+
   return (
     <div>
 
-      <div className='grid grid-cols-4 gap-4'>
+      <div className='grid grid-cols-5 gap-2'>
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
@@ -96,17 +169,18 @@ const FormHomeSSJ = () => {
               src={Gem}
               alt='Gem'
             />
-            <p className='text-2xl text-green-700 font-bold'>ระดับเพชร</p>
+            <p className='text-2xl text-blue-500 font-bold'>ระดับเพชร</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3'>
-            <p className='text-4xl'>0</p>
-            <p>รพ.</p>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-blue-500'>
+            <p className='text-4xl'>{gemLevel.length}</p>
+            <p>แห่ง</p>
           </div>
           <div className='p-2 flex justify-between'>
-            <div className='text-slate-400'><p>จำนวนทั้งหมด</p></div>
-            <div className='flex text-green-700'><p>0.0 % </p></div>
+            <div className='text-blue-500'><p>คิดเป็น</p></div>
+            <div className='flex text-blue-500'><p>{gemPer.toFixed(1)} % </p></div>
           </div>
         </div>
+
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
             <img
@@ -114,17 +188,18 @@ const FormHomeSSJ = () => {
               src={Gold}
               alt='Gold'
             />
-            <p className='text-2xl text-green-700 font-bold'>ระดับทอง</p>
+            <p className='text-2xl text-yellow-500 font-bold'>ระดับทอง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3'>
-            <p className='text-4xl'>0</p>
-            <p>รพ.</p>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-yellow-500'>
+            <p className='text-4xl'>{goldLevel.length}</p>
+            <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between'>
-            <div className='text-slate-400'><p>จำนวนทั้งหมด</p></div>
-            <div className='flex text-green-700'><p>0.0 % </p></div>
+          <div className='p-2 flex justify-between text-yellow-500'>
+            <div><p>คิดเป็น</p></div>
+            <div><p>{goldPer.toFixed(1)} % </p></div>
           </div>
         </div>
+
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
             <img
@@ -132,17 +207,35 @@ const FormHomeSSJ = () => {
               src={Silver}
               alt='Silver'
             />
-            <p className='text-2xl text-green-700 font-bold'>ระดับเงิน</p>
+            <p className='text-2xl text-slate-400 font-bold'>ระดับเงิน</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3'>
-            <p className='text-4xl'>0</p>
-            <p>รพ.</p>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-slate-400'>
+            <p className='text-4xl'>{silverLevel.length}</p>
+            <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between'>
-            <div className='text-slate-400'><p>จำนวนทั้งหมด</p></div>
-            <div className='flex text-green-700'><p>0.0 % </p></div>
+          <div className='p-2 flex justify-between text-slate-400'>
+            <div><p>คิดเป็น</p></div>
+            <div><p>{silverPer.toFixed(1)} % </p></div>
           </div>
         </div>
+
+        <div className='bg-white rounded-md shadow-md p-3'>
+          <div className='flex items-center gap-2'>
+            <div className='flex justify-center items-center bg-amber-50 w-12 h-12 rounded-full shadow-md'>
+              <Ban size={40} className='text-red-500' />
+            </div>
+            <p className='text-xl text-red-500 font-bold'>ไม่ผ่าน</p>
+          </div>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-red-500'>
+            <p className='text-4xl'>{notPassLevel.length}</p>
+            <p>แห่ง</p>
+          </div>
+          <div className='p-2 flex justify-between  text-red-500'>
+            <div><p>คิดเป็น</p></div>
+            <div><p>{notPassPer.toFixed(1)} % </p></div>
+          </div>
+        </div>
+
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
             <img
@@ -150,99 +243,89 @@ const FormHomeSSJ = () => {
               src={HospitalIcon}
               alt='HospitalIcon'
             />
-            <p className='text-2xl text-green-700 font-bold'>รพ.ทั้งหมด</p>
+            <p className='text-xl text-orange-400 font-bold'>ยังไม่ประเมิน</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3'>
-            <p className='text-4xl'>0/{listHospital.length}</p>
-            <p>รพ.</p>
+          <div className='flex justify-center items-baseline gap-2 my-3 text-orange-400'>
+            <p className='text-4xl'>{hospNotEvaluate}</p>
+            <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between'>
-            <div className='text-slate-400'><p>จำนวนทั้งหมด</p></div>
-            <div className='flex text-green-700'><p>0.0 % </p></div>
+          <div className='p-2 flex justify-between text-orange-400'>
+            <div><p>คิดเป็น</p></div>
+            <div><p>{hospNotPer.toFixed(1)} % </p></div>
           </div>
         </div>
 
+      </div>
+
+      <div className='grid grid-cols-5 gap-2 mt-2'>
+
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <Hospital /><p className='text-green-800'>หน่วยงานที่ประเมินด้านโครงสร้าง</p>
+          <div className='flex justify-center gap-2 p-1'>
+            <Hospital /><p className='text-green-800 text-xl font-bold'>ด้านโครงสร้าง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{listEvaluateHospCat1.length} /</p>
-            <p className='text-4xl'>{listHospital.length}</p>
-            <p className='text-xs'>รพ.</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-blue-600'>
+            <p className=''>ประเมินแล้ว</p>
+            <p className=''>{listEvaluateHospCat1.length} แห่ง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 text-blue-800'>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-green-600'>
             <p>อนุมัติแล้ว</p>
-            <p>0</p>
-            <p>รพ.</p>
+            <p>{cat1Approve.length} แห่ง</p>
           </div>
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <Hospital /><p className='text-green-800'>หน่วยงานที่ประเมินด้านบริหารจัดการ</p>
+          <div className='flex justify-center gap-2 p-1'>
+            <Hospital /><p className='text-green-800 text-xl font-bold'>ด้านบริหารจัดการ</p>
           </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{listEvaluateHospCat2.length} /</p>
-            <p className='text-4xl'>{listHospital.length}</p>
-            <p className='text-xs'>รพ.</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-blue-600'>
+            <p className=''>ประเมินแล้ว</p>
+            <p className=''>{listEvaluateHospCat2.length} แห่ง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 text-blue-800'>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-green-600'>
             <p>อนุมัติแล้ว</p>
-            <p>0</p>
-            <p>รพ.</p>
+            <p>{cat2Approve.length} แห่ง</p>
           </div>
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <Hospital /><p className='text-green-800'>หน่วยงานที่ประเมินด้านการบริการ</p>
+          <div className='flex justify-center gap-2 p-1'>
+            <Hospital /><p className='text-green-800 text-xl font-bold'>ด้านการบริการ</p>
           </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{listEvaluateHospCat3.length} /</p>
-            <p className='text-4xl'>{listHospital.length}</p>
-            <p className='text-xs'>รพ.</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-blue-600'>
+            <p>ประเมินแล้ว</p>
+            <p className=''>{listEvaluateHospCat3.length} แห่ง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 text-blue-800'>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-green-600'>
             <p>อนุมัติแล้ว</p>
-            <p>0</p>
-            <p>รพ.</p>
+            <p>{cat3Approve.length} แห่ง</p>
           </div>
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <Hospital /><p className='text-green-800'>หน่วยงานที่ประเมินด้านบุคลากร</p>
+          <div className='flex justify-center gap-2 p-1'>
+            <Hospital /><p className='text-green-800 text-xl font-bold'>ด้านบุคลากร</p>
           </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{listEvaluateHospCat4.length} /</p>
-            <p className='text-4xl'>{listHospital.length}</p>
-            <p className='text-xs'>รพ.</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-blue-600'>
+            <p className=''>ประเมินแล้ว</p>
+            <p className=''>{listEvaluateHospCat4.length} แห่ง</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 text-blue-800'>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-green-600'>
             <p>อนุมัติแล้ว</p>
-            <p>0</p>
-            <p>รพ.</p>
+            <p>{cat4Approve.length} แห่ง</p>
           </div>
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <UserPlus /><p className='text-green-800'>ผู้ประเมินรายใหม่ที่ยังไม่อนุมัติ</p>
+          <div className='flex justify-center gap-2 p-1'>
+            <Users /><p className='text-green-800 text-xl font-bold'>จำนวนผู้ประเมิน</p>
           </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{isNotApproveUser.length}</p>
-            <p className='text-xs'>ราย</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-orange-400'>
+            <p className=''>ยังไม่อนุมัติ</p>
+            <p className=''>{isNotApproveUser.length} ราย</p>
           </div>
-        </div>
-
-        <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center gap-2'>
-            <Users /><p className='text-green-800'>ผู้ประเมินรายใหม่ที่อนุมัติแล้ว</p>
-          </div>
-          <div className='flex justify-center items-baseline gap-1 p-3'>
-            <p className='text-4xl'>{isApproveUser.length}</p>
-            <p className='text-xs'>ราย</p>
+          <div className='flex justify-between items-baseline gap-1 p-1 text-green-600'>
+            <p className=''>อนุมัติแล้ว</p>
+            <p className=''>{isApproveUser.length} ราย</p>
           </div>
         </div>
 
