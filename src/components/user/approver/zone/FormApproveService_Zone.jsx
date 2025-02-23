@@ -4,7 +4,7 @@ import { getDocumentByEvaluateByHosp, getListEvaluateByZone, getSubQuetList, zon
 import { Button, Checkbox, Divider, Empty, Form, Image, Select, Switch, Input } from 'antd'
 import { getListQuests } from '../../../../api/Quest'
 import { toast } from 'react-toastify'
-import { SnippetsOutlined } from '@ant-design/icons'
+import { EyeTwoTone, SnippetsOutlined } from '@ant-design/icons'
 import { Save } from 'lucide-react'
 
 const FormApproveService_Zone = () => {
@@ -441,18 +441,15 @@ const FormApproveService_Zone = () => {
                                       item2.file_name
                                         ?
                                         <>
-                                          <Image
-                                            className='px-1 py-1'
-                                            width={100}
-                                            src={`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${item2.file_name}`}
-                                          />
+                                          <Button onClick={() => showPDF(item2.file_name)}>
+                                            <EyeTwoTone /> ดูไฟล์
+                                          </Button>
                                         </>
                                         :
                                         <>
                                           -
                                         </>
                                     }
-
                                   </div>
                                 </td>
                                 {/* <td className='text-center border-l px-1'>

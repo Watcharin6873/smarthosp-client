@@ -9,7 +9,9 @@ import { Ban, Hospital, UserPlus, Users } from 'lucide-react'
 import { getHospitalOnProv } from '../../../../api/Hospital'
 import { getListEvaluateByProv, sumEvaluateAll } from '../../../../api/Evaluate'
 import { approveUserOnProv, notApproveUserOnProv } from '../../../../api/User'
-import { ArrowUpOutlined } from '@ant-design/icons'
+import { ArrowUpOutlined, SearchOutlined } from '@ant-design/icons'
+import { Input, Table } from 'antd'
+import TableProvinceList from './TableProvinceList'
 
 const FormHomeSSJ = () => {
 
@@ -23,6 +25,7 @@ const FormHomeSSJ = () => {
   const [isApproveUser, setIsApproveUser] = useState([])
   const [isNotApproveUser, setIsNotApproveUser] = useState([])
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
+  const [searchQuery, setSearchQuery] = useState([])
   const province = user.province
 
   useEffect(() => {
@@ -224,7 +227,7 @@ const FormHomeSSJ = () => {
             <div className='flex justify-center items-center bg-amber-50 w-12 h-12 rounded-full shadow-md'>
               <Ban size={40} className='text-red-500' />
             </div>
-            <p className='text-xl text-red-500 font-bold'>ไม่ผ่าน</p>
+            <p className='text-2xl text-red-500 font-bold'>ไม่ผ่าน</p>
           </div>
           <div className='flex justify-center items-baseline gap-2 my-3 text-red-500'>
             <p className='text-4xl'>{notPassLevel.length}</p>
@@ -243,7 +246,7 @@ const FormHomeSSJ = () => {
               src={HospitalIcon}
               alt='HospitalIcon'
             />
-            <p className='text-xl text-orange-400 font-bold'>ยังไม่ประเมิน</p>
+            <p className='text-2xl text-orange-400 font-bold'>ยังไม่ประเมิน</p>
           </div>
           <div className='flex justify-center items-baseline gap-2 my-3 text-orange-400'>
             <p className='text-4xl'>{hospNotEvaluate}</p>
@@ -317,7 +320,7 @@ const FormHomeSSJ = () => {
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex justify-center gap-2 p-1'>
-            <Users /><p className='text-green-800 text-xl font-bold'>จำนวนผู้ประเมิน</p>
+            <Users /><p className='text-green-800 text-xl font-bold'>ผู้ประเมิน รพ.</p>
           </div>
           <div className='flex justify-between items-baseline gap-1 p-1 text-orange-400'>
             <p className=''>ยังไม่อนุมัติ</p>
@@ -329,6 +332,10 @@ const FormHomeSSJ = () => {
           </div>
         </div>
 
+      </div>
+
+      <div className='bg-white rounded-md shadow-md p-3 my-2'>
+        <TableProvinceList />
       </div>
 
     </div>

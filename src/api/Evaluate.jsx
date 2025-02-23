@@ -299,6 +299,17 @@ export const getSumEvaluateByZone = async (token, zone) => {
     )
 }
 
+//Get sum evaluate by prov
+export const getSumEvaluateByProv = async (token, province) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/getSumEvaluateByProv?province=${province}`,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
 //CHECK SSJ NOT APPROVE
 export const checkSsjNotApprove = async (token, hospcode, category_questId) =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/checkSsjNotApprove?hospcode=${hospcode}&category_questId=${category_questId}`,

@@ -202,6 +202,7 @@ const FormApproveInfrastructure_Zone = () => {
   }
 
   const showPDF = (pdf) => {
+    // window.open(`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${pdf}`, "_blank", "noreferer")
     window.open(`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${pdf}`, "_blank", "noreferer")
   }
 
@@ -444,7 +445,7 @@ const FormApproveInfrastructure_Zone = () => {
                                       item2.file_name
                                         ?
                                         <>
-                                          <Button onClick={() => showPDF(item1.file_name)}>
+                                          <Button onClick={() => showPDF(item2.file_name)}>
                                             <EyeTwoTone /> ดูไฟล์
                                           </Button>
                                         </>
@@ -453,7 +454,6 @@ const FormApproveInfrastructure_Zone = () => {
                                           -
                                         </>
                                     }
-
                                   </div>
                                 </td>
                                 {/* <td className='text-center border-l px-1'>
