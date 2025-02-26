@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { getSumEvaluateForAll } from '../api/Evaluate'
-import { Input, Table } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Button, Input, Table } from 'antd'
+import { DownloadOutlined, SearchOutlined } from '@ant-design/icons'
+import { getEvaluateReportAll } from '../api/Report'
+import * as XLSX from 'xlsx';
+import ExportExcel from './ExportExcel'
 
 const FormHome = () => {
 
     const [listSumEvaluate, setListSumEvaluate] = useState([])
+    const [evaluateReportAll, setEvaluateReportAll] = useState([])
     const [searchQuery, setSearchQuery] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         loadListSumEvaluate()
+        loadEvaluateReportAll()
     }, [])
 
     const loadListSumEvaluate = async () => {
         setIsLoading(true)
         await getSumEvaluateForAll()
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setListSumEvaluate(res.data)
                 setSearchQuery(res.data)
             })
@@ -25,6 +30,18 @@ const FormHome = () => {
                 console.log(err)
             })
             .finally(() => setIsLoading(false))
+    }
+
+
+    const loadEvaluateReportAll = async () =>{
+        await getEvaluateReportAll()
+            .then(res=>{
+                // console.log('Data: ',res.data)
+                setEvaluateReportAll(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
 
@@ -209,16 +226,76 @@ const FormHome = () => {
         },
     ]
 
+    const data2 = evaluateReportAll.map((item) => ({
+        zone: Number(item.zone),
+        provcode: item.provcode,
+        provname: item.provname,
+        hcode: item.hcode,
+        hname_th: item.hname_th,
+        point_total_cat1: item.point_total_cat1,
+        point_require_cat1: item.point_require_cat1,
+        point_total_cat2: item.point_total_cat2,
+        point_require_cat2: item.point_require_cat2,
+        point_total_cat3: item.point_total_cat3,
+        point_require_cat3: item.point_require_cat3,
+        point_total_cat4: item.point_total_cat4,
+        point_require_cat4: item.point_require_cat4,
+        total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+        total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+        cyber_level: item.cyber_level,
+        cyber_levelname: item.cyber_levelname
+
+    }))
+
+
+    const data3 = data2.map((item) => ({
+        เขตสุขภาพ: Number(item.zone),
+        รหัสจังหวัด: item.provcode,
+        จังหวัด: item.provname,
+        รหัสหน่วยบริการ: item.hcode,
+        ชื่อหน่วยบริการ: item.hname_th,
+        คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
+        คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+        คะแนนที่ได้ด้านบริการจัดการ: item.point_total_cat2,
+        คะแนนจำเป็นด้านบริการจัดการ: item.point_require_cat2,
+        คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
+        คะแนนจำเป็นด้านหารบริการ: item.point_require_cat3,
+        คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+        คะแนนที่ได้รวม: item.total_cat,
+        คะแนนจำเป็นรวม: item.total_require,
+        ระดับที่ได้: item.total_cat < 600
+                    ? 'ไม่ผ่าน'
+                    : item.total_cat >= 600 && item.total_cat <= 700
+                        ? 'เงิน'
+                        : item.total_cat >= 700 && item.total_require < 510
+                            ? 'เงิน'
+                            : item.total_cat >= 800 && item.total_require < 510
+                                ? 'เงิน'
+                                : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+                                    ? 'ทอง'
+                                    : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                                        ? 'ทอง'                                                
+                                        : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                                            ? 'เพชร'
+                                            : null,
+        ระดับ_cyber_security: item.cyber_levelname
+
+    }))
+
+    console.log('Data: ',data3)
+
     return (
         <>
             <div className='text-center p-2'>
                 <p className='text-2xl font-bold text-green-700'>ผลการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ 2568 รวมทั้งหมด</p>
             </div>
             <div className='flex justify-between items-center py-2 px-3'>
-                <div>
+                <div className='flex items-center gap-2'>
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
                     </p>
+                    <ExportExcel data={data3} fileName={"SmartHospReport"} />
+                    {/* <Button type='primary' icon={<DownloadOutlined shape='round' />} size='small'>ดาวน์โหลดทั้งหมด</Button> */}
                 </div>
                 <div>
                     <Input
