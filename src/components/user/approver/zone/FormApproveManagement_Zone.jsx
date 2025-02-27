@@ -1,35 +1,52 @@
 import React, { useState, useEffect } from 'react'
 import useGlobalStore from '../../../../store/global-store'
-import { getDocumentByEvaluateByHosp, getListEvaluateByZone, getSubQuetList, zoneChangeStatusApprove } from '../../../../api/Evaluate'
-import { Button, Checkbox, Divider, Empty, Form, Image, Select, Switch, Input } from 'antd'
+import { getDocumentByEvaluateByHosp, getListEvaluateByZone, getSubQuetList, zoneChangeStatusApprove, zoneUnApprove } from '../../../../api/Evaluate'
+import { Button, Checkbox, Divider, Empty, Form, Image, Select, Switch, Input, Modal } from 'antd'
 import { getListQuests } from '../../../../api/Quest'
 import { toast } from 'react-toastify'
-import { EyeTwoTone, SnippetsOutlined } from '@ant-design/icons'
-import { Save } from 'lucide-react'
+import { ExclamationCircleFilled, EyeTwoTone, SnippetsOutlined } from '@ant-design/icons'
+import { Ban, RefreshCcw, Save } from 'lucide-react'
+import { getListHospitalOnZone } from '../../../../api/Hospital'
 
 const FormApproveManagement_Zone = () => {
 
   const user = useGlobalStore((state) => state.user)
   const token = useGlobalStore((state) => state.token)
-  const zone = user.zone
+
   const [formSearch] = Form.useForm()
   const [isLoading, setIsLoading] = useState(false)
   const [listQuests, setListQuests] = useState([])
   const [evaluateByZone, setEvaluateByZone] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
+  const [listHospitals, setListHospitals] = useState([])
   const [subQuestList, setSubQuestList] = useState([])
   const [values, setValues] = useState({ provcode: "" })
   const [documentFile, setDocumentFile] = useState(null)
-  const [clientReady, setClientReady] = useState(false);
-
+  const [clientReady, setClientReady] = useState(false)
+  const [unApproveModal, setUnApproveModal] = useState(false)
+  const [hospcode, setHospcode] = useState('')
 
   const [formZoneApprove] = Form.useForm()
+  const [formUnApprove] = Form.useForm()
+  const zone = user.zone
 
   useEffect(() => {
     loadListEvaluateByZone(token, zone)
     setClientReady(true);
     loadSubQuestList(token)
+    loadListHospitals(token)
   }, [])
+
+  const loadListHospitals = async () => {
+    await getListHospitalOnZone(token, zone)
+      .then(res => {
+        // console.log(res.data)
+        setListHospitals(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
 
   const loadSubQuestList = async () => {
@@ -131,6 +148,7 @@ const FormApproveManagement_Zone = () => {
   const handleSubmit = async (fieldValue) => {
     const provcode = fieldValue.provcode
     const hcode = fieldValue.hcode
+    setHospcode(hcode)
     loadListQuests(token)
     setSearchQuery(dataSource.filter(f => f.provcode === provcode && f.hcode === hcode))
 
@@ -158,17 +176,33 @@ const FormApproveManagement_Zone = () => {
   })
 
   const handleApprove = async (fieldValue) => {
-    console.log(fieldValue)
-    // const result = []
-    // searchQuery.forEach((qItem) => {
-    //   result.push({
-    //     evaluateId: fieldValue["evaluateId" + qItem.id],
-    //     usersId: fieldValue["usersId" + qItem.id],
-    //     province: fieldValue["province" + qItem.id],
-    //     zone: fieldValue["zone" + qItem.id],
-    //   })
-    // })
-    // console.log('Result: ', result)
+    // console.log(fieldValue)
+    const result = []
+    searchQuery.forEach((qItem) => {
+      result.push({
+        evaluateId: fieldValue["evaluateId" + qItem.id],
+        usersId: fieldValue["usersId" + qItem.id],
+        hcode: fieldValue["hcode" + qItem.id],
+        hname_th: fieldValue["hname_th" + qItem.id],
+        province: fieldValue["province" + qItem.id],
+        zone: fieldValue["zone" + qItem.id],
+        zone_approve: fieldValue["zone_approve" + qItem.id],
+      })
+    })
+    console.log('Result: ', result)
+
+    await zoneChangeStatusApprove(token, result)
+      .then(res => {
+        toast.success(res.data.message)
+        loadListEvaluateByZone(token, zone)
+        loadSubQuestList(token)
+        loadListQuests(token)
+        loadListHospitals(token)
+        setSearchQuery(dataSource.filter(f => f.provcode === values.provcode && f.hcode === hospcode))
+      })
+      .catch(err => {
+        console.log(err)
+      })
 
   }
 
@@ -180,29 +214,77 @@ const FormApproveManagement_Zone = () => {
 
 
 
-  const searchQuets = listQuests.filter(f => f.category_questId === 2)
+  const searchQuests = listQuests.filter(f => f.category_questId === 2)
 
-  // console.log("Quest: ", searchQuets)
-  const changeStatusApprove = async (e, value) => {
-    console.log(e, value.id)
-    const values = {
-      id: value.id,
-      zone_approve: e
-    }
+  const hospitalData = listHospitals.filter(f => f.hcode === hospcode)
 
-    await zoneChangeStatusApprove(token, values)
+  const showPDF = (pdf) => {
+    window.open(`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${pdf}`, "_blank", "noreferer")
+  }
+
+  const subQuestLength = searchQuery.map((item1) =>
+    searchQuests.map((item2) =>
+      item1.quest_name === item2.quest_name
+        ? {
+          quest_name: item1.quest_name,
+          sub_quest_name: item2.sub_quest_name
+        }
+        : null
+    )
+  )
+
+  const showUnAproveModal = () => {
+    setUnApproveModal(true)
+  }
+
+  const cancelModal = () => {
+    setUnApproveModal(false)
+  }
+
+  useEffect(() => {
+    formUnApprove.setFieldsValue({
+      evaluateId: searchQuery.id,
+      usersId: user.id,
+      province: user.province,
+      zone: user.zone
+    })
+  })
+
+  const handleUnApprove = async (fieldValue) => {
+    const result2 = []
+    searchQuery.forEach((qItem) => {
+      result2.push({
+        evaluateId: fieldValue["evaluateId" + qItem.id],
+        zone_approve: fieldValue["zone_approve" + qItem.id],
+        usersId: fieldValue["usersId" + qItem.id],
+        hcode: fieldValue["hcode" + qItem.id],
+        province: fieldValue["province" + qItem.id],
+        zone: fieldValue["zone" + qItem.id],
+
+      })
+    })
+    console.log('Result2: ', result2)
+
+    await zoneUnApprove(token, result2)
       .then(res => {
+        toast.error(res.data.message)
+        setUnApproveModal(false)
         loadListEvaluateByZone(token, zone)
-        setSearchQuery(dataSource.filter(f => f.provcode === value.provcode && f.hcode === value.hcode))
-        toast.success(res.data.message)
+        loadSubQuestList(token)
+        loadListHospitals(token)
+        setSearchQuery(dataSource.filter(f => f.provcode === values.provcode && f.hcode === hospcode))
       })
       .catch(err => {
         console.log(err)
       })
   }
 
-  const showPDF = (pdf) => {
-    window.open(`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${pdf}`, "_blank", "noreferer")
+  
+  const refreshData = () => {
+    loadListEvaluateByZone(token, zone)
+    loadSubQuestList(token)
+    loadListHospitals(token)
+    setSearchQuery(dataSource.filter(f => f.provcode === values.provcode && f.hcode === hospcode))
   }
 
 
@@ -310,12 +392,12 @@ const FormApproveManagement_Zone = () => {
                   <th className='text-center p-4 border-r w-32'>คะแนนเต็ม</th>
                   <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
                   <th className='text-center p-4 border-r w-32'>ภาพหลักฐาน</th>
-                  {/* <th className='text-center p-4 border-r w-32'>การอนุมัติ</th> */}
+                  <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  searchQuets.map((item1, k1) =>
+                  searchQuests.map((item1, k1) =>
                     <>
                       <tr key={k1} className='border-b border-l border-r'>
                         <td colSpan={4}>
@@ -441,7 +523,7 @@ const FormApproveManagement_Zone = () => {
                                 </td>
                                 <td className='text-center border-l'>
                                   <div className='flex justify-center items-center'>
-                                  {
+                                    {
                                       item2.file_name
                                         ?
                                         <>
@@ -456,9 +538,13 @@ const FormApproveManagement_Zone = () => {
                                     }
                                   </div>
                                 </td>
-                                {/* <td className='text-center border-l px-1'>
-                                <Switch size='small' checked={item2.zone_approve} onChange={(e) => changeStatusApprove(e, item2)} />
-                              </td> */}
+                                <td className='text-center border-l px-1'>
+                                  {
+                                    item2.zone_approve === true
+                                      ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
+                                      : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
+                                  }
+                                </td>
                               </tr>
                             </>
                             : null
@@ -469,21 +555,133 @@ const FormApproveManagement_Zone = () => {
                 }
               </tbody>
             </table>
-            <div className='flex justify-center space-x-1 mt-3'>
-              <div className='m-3'>
-                <Form.Item>
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    style={{ width: 500 }}
-                  >
-                    <Save /> Approve ผลการประเมินด้านโครงสร้าง
-                  </Button>
-                </Form.Item>
-              </div>
-            </div>
+            {
+              subQuestLength.length === 42
+                ?
+                <>
+                  <div className='flex justify-center space-x-1 mt-3 gap-3'>
+                    <div className='mt-3'>
+                      <Form.Item>
+                        <Button
+                          type='primary'
+                          htmlType='submit'
+                          style={{ width: 180 }}
+                        >
+                          <Save /> Approve (อนุมัติ!)
+                        </Button>
+                      </Form.Item>
+                    </div>
+
+                    <div className='flex justify-center space-x-1 mt-3'>
+                      <div>
+                        <Button
+                          color='danger'
+                          style={{ width: 180 }}
+                          variant='solid'
+                          onClick={showUnAproveModal}
+                        >
+                          <Ban /> Cancel (ยกเลิก!)
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className='flex justify-center space-x-1 mt-3'>
+                      <div>
+                        <Button
+                          style={{ width: 180 }}
+                          variant='solid'
+                          onClick={() => refreshData(hospcode)}
+                        >
+                          <RefreshCcw /> Refresh (รีเฟรช!)
+                        </Button>
+                      </div>
+                    </div>
+
+                  </div>
+                </>
+                : null
+            }
+
           </Form>
         </div>
+
+        <Modal
+          title={
+            <div className='flex items-center gap-2'>
+              <ExclamationCircleFilled className='text-yellow-500' />
+              <span className='font-bold'>คุณต้องการยกเลิกการอนุมัติด้านโครงสร้าง ของ{hospitalData[0]?.hname_th} [{hospitalData[0]?.hcode}] หรือไม่?</span>
+            </div>
+          }
+          open={unApproveModal}
+          onOk={formUnApprove.submit}
+          onCancel={cancelModal}
+          width={500}
+          style={{ top: 20 }}
+
+        >
+          <div className='h-4'>
+            <Form
+              name='formUnApprove'
+              form={formUnApprove}
+              onFinish={handleUnApprove}
+              onFinishFailed={onFinishFailed}
+            >
+              {
+                searchQuests.map((it1) =>
+                  searchQuery.map((it2) => (
+                    it2.quest_name === it1.quest_name
+                      ?
+                      <>
+                        <Form.Item
+                          name={'evaluateId' + it2.id}
+                          hidden={true}
+                          initialValue={it2.id}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={'hcode' + it2.id}
+                          hidden={true}
+                          initialValue={hospcode}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={'usersId' + it2.id}
+                          hidden={true}
+                          initialValue={user.id}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={'province' + it2.id}
+                          hidden={true}
+                          initialValue={user.province}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={'zone' + it2.id}
+                          hidden={true}
+                          initialValue={user.zone}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={'zone_approve' + it2.id}
+                          hidden={true}
+                          initialValue={false}
+                        >
+                          <Input />
+                        </Form.Item>
+                      </>
+                      : null
+                  ))
+                )
+              }
+            </Form>
+          </div>
+        </Modal>
 
 
       </div>

@@ -364,7 +364,7 @@ const Home = () => {
     ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
   ];
 
-  console.log('Silver: ',silverLevel03.length)
+  // console.log('Silver: ',silverLevel03.length)
 
   const goldData = [
     ((goldLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
