@@ -43,6 +43,12 @@ export const getHospitalInListEvaluate = async () =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/getHospitalInListEvaluate`)
 }
 
+//Get evaluate for barchart
+export const getEvaluateForBarChartStackZone = async (zone) =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/getEvaluateForBarChartStackZone?zone=${zone}`)
+}
+
+
 //Get List SubQuest
 export const getListSubQuestsForEvaluate = async (token, values) => {
     return await axios.get(import.meta.env.VITE_APP_API + `/getListSubQuestsForEvaluate/` + values,

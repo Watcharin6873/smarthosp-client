@@ -11,8 +11,9 @@ import { Ban, Hospital } from 'lucide-react'
 import { getHospitalInListEvaluate, sumEvaluateAll } from '../api/Evaluate'
 import { Alert, Button, Form, Select } from 'antd'
 // import Chart from "react-apexcharts";
-import { BarChart,PieChart, pieArcLabelClasses } from '@mui/x-charts';
+import { BarChart, PieChart, pieArcLabelClasses } from '@mui/x-charts';
 import FormHome from '../components/FormHome'
+import FormZoneSearchEvaluate from '../components/FormZoneSearchEvaluate'
 // import { BarChart } from '@mui/x-charts';
 
 const position = [13, 100];
@@ -21,6 +22,7 @@ const Home = () => {
 
   UseTitle('Dashboard')
   const [listHospitalAll, setListHospitalAll] = useState([])
+  const [listHospitalZone, setListHospitalZone] = useState([])
   const [hospitalInList, setHospitalInList] = useState([])
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
@@ -78,6 +80,10 @@ const Home = () => {
 
   const handleChangeZone = (zone) => {
     setZoneSearch(zone)
+    setSearchQuery(totalSumEvaluate.filter(f => f.zone === zone))
+    setSearchQueryHosp(hospitalInList.filter(f => f.zone === zone))
+    setListHospitalZone(listHospitalAll.filter(f => f.zone === zone))
+    formSearch.resetFields()
   }
 
   const handleChangeProv = (prov) => {
@@ -103,9 +109,10 @@ const Home = () => {
   }
 
   const clearForm = () => {
-    // formSearch.resetFields()
+    formSearch.resetFields()
     setSearchQuery(totalSumEvaluate.map((item) => ({ ...item })))
     setSearchQueryHosp(hospitalInList.map((item) => ({ ...item })))
+    setZoneSearch('')
   }
 
 
@@ -144,6 +151,8 @@ const Home = () => {
 
   const provData = unique(zoneData, ['zone', 'provcode', 'provname'])
 
+  // console.log('Prov: ', provData)
+
   const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510) ||
@@ -151,27 +160,32 @@ const Home = () => {
   )
   const silverLevel = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
-    (f.sumTotalPoint >= 700&& f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
   )
 
   const hospNotEvaluate = (listHospitalAll.length - hospitalInList.length)
   const notPassLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600)
-  const gemPer = (gemLevel.length / listHospitalAll.length) * 100
-  const goldPer = (goldLevel.length / listHospitalAll.length) * 100
-  const silverPer = (silverLevel.length / listHospitalAll.length) * 100
-  const hospPer = (hospitalInList.length / listHospitalAll.length) * 100
+  const gemPer = (gemLevel.length / hospitalInList.length) * 100
+  const gemPerZone = (gemLevel.length / searchQueryHosp.length) * 100
+  const goldPer = (goldLevel.length / hospitalInList.length) * 100
+  const goldPerZone = (goldLevel.length / searchQueryHosp.length) * 100
+  const silverPer = (silverLevel.length / hospitalInList.length) * 100
+  const silverPerZone = (silverLevel.length / searchQueryHosp.length) * 100
+  const hospPerAll = (hospitalInList.length / listHospitalAll.length) * 100
+  const hospPerZone = (searchQueryHosp.length / listHospitalZone.length) * 100
   const hospNotPer = ((listHospitalAll.length - hospitalInList.length) / listHospitalAll.length) * 100
-  const notPassPer = (notPassLevel.length / listHospitalAll.length) * 100
+  const notPassPer = (notPassLevel.length / hospitalInList.length) * 100
+  const notPassPerZone = (notPassLevel.length / searchQueryHosp.length) * 100
 
-  console.log('Level: ', gemLevel.length)
+  // console.log('Level: ', gemLevel.length)
 
   const data2 = [
     { label: 'ระดับเพชร', value: gemLevel.length, color: '#0088FE' },
     { label: 'ระดับทอง', value: goldLevel.length, color: '#FFDC73' },
-    { label: 'ระดับเงิน', value: silverLevel.length, color: '#E0E0E0' },
+    { label: 'ระดับเงิน', value: silverLevel.length, color: '#d1cfcf' },
     { label: 'ไม่ผ่าน', value: notPassLevel.length, color: '#fc5151' },
-    { label: 'ยังไม่ประเมิน', value: hospNotEvaluate, color: '#fca951' },
+    // { label: 'ยังไม่ประเมิน', value: hospNotEvaluate, color: '#fca951' },
   ];
 
   const TOTAL = data2.map((item) => item.value).reduce((a, b) => a + b, 0);
@@ -244,62 +258,62 @@ const Home = () => {
   )
 
   const silverLevel01 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '01') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '01') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '01') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '01')
   )
   const silverLevel02 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '02') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '02') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '02') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '02')
   )
   const silverLevel03 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '03') || 
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '03') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '03') ||
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '03') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '03')
   )
   const silverLevel04 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '04') || 
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '04') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '04') ||
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '04') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '04')
   )
   const silverLevel05 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '05') || 
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 &&  f.sumRequirePoint < 510 && f.zone === '05') ||
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '05') ||
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '05') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '05')
   )
   const silverLevel06 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '06') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '06') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '06') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '06')
   )
   const silverLevel07 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '07') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '07') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '07') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '07')
   )
   const silverLevel08 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '08') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '08') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '08') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '08')
   )
   const silverLevel09 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '09') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '09') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '09') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '09')
   )
   const silverLevel10 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '10') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '10') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '10') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '10')
   )
   const silverLevel11 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '11') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '11') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '11') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '11')
   )
   const silverLevel12 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '12') || 
+    (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '12') ||
     (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '12') ||
     (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '12')
   )
@@ -317,6 +331,7 @@ const Home = () => {
   const notPassLevel11 = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600 && f.zone === '11')
   const notPassLevel12 = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600 && f.zone === '12')
 
+  //ใช้เมื่อมี Block "ยังไม่ได้ประเมิน"
   const hospitalInzone1 = listHospitalAll.filter((f => f.zone === '01'))
   const hospitalInzone2 = listHospitalAll.filter((f => f.zone === '02'))
   const hospitalInzone3 = listHospitalAll.filter((f => f.zone === '03'))
@@ -336,122 +351,107 @@ const Home = () => {
     hospitalInzone9.length, hospitalInzone10.length, hospitalInzone11.length, hospitalInzone12.length,
   ]
 
-  const hospEvaluate1 = totalSumEvaluateData.filter(f => f.zone === '01')
-  const hospEvaluate2 = totalSumEvaluateData.filter(f => f.zone === '02')
-  const hospEvaluate3 = totalSumEvaluateData.filter(f => f.zone === '03')
-  const hospEvaluate4 = totalSumEvaluateData.filter(f => f.zone === '04')
-  const hospEvaluate5 = totalSumEvaluateData.filter(f => f.zone === '05')
-  const hospEvaluate6 = totalSumEvaluateData.filter(f => f.zone === '06')
-  const hospEvaluate7 = totalSumEvaluateData.filter(f => f.zone === '07')
-  const hospEvaluate8 = totalSumEvaluateData.filter(f => f.zone === '08')
-  const hospEvaluate9 = totalSumEvaluateData.filter(f => f.zone === '09')
-  const hospEvaluate10 = totalSumEvaluateData.filter(f => f.zone === '10')
-  const hospEvaluate11 = totalSumEvaluateData.filter(f => f.zone === '11')
-  const hospEvaluate12 = totalSumEvaluateData.filter(f => f.zone === '12')
+  //ใช้เมื่อนำ Block "ยังไม่ประเมิน" ออก
+  const hospEvaluate1 = hospitalInList.filter(f => f.zone === '01')
+  const hospEvaluate2 = hospitalInList.filter(f => f.zone === '02')
+  const hospEvaluate3 = hospitalInList.filter(f => f.zone === '03')
+  const hospEvaluate4 = hospitalInList.filter(f => f.zone === '04')
+  const hospEvaluate5 = hospitalInList.filter(f => f.zone === '05')
+  const hospEvaluate6 = hospitalInList.filter(f => f.zone === '06')
+  const hospEvaluate7 = hospitalInList.filter(f => f.zone === '07')
+  const hospEvaluate8 = hospitalInList.filter(f => f.zone === '08')
+  const hospEvaluate9 = hospitalInList.filter(f => f.zone === '09')
+  const hospEvaluate10 = hospitalInList.filter(f => f.zone === '10')
+  const hospEvaluate11 = hospitalInList.filter(f => f.zone === '11')
+  const hospEvaluate12 = hospitalInList.filter(f => f.zone === '12')
 
   const gemData = [
-    ((gemLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
-    ((gemLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
-    ((gemLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
-    ((gemLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
-    ((gemLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
-    ((gemLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
-    ((gemLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
-    ((gemLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
-    ((gemLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
-    ((gemLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
-    ((gemLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
-    ((gemLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
+    ((gemLevel01.length / hospEvaluate1.length) * 100).toFixed(1),
+    ((gemLevel02.length / hospEvaluate2.length) * 100).toFixed(1),
+    ((gemLevel03.length / hospEvaluate3.length) * 100).toFixed(1),
+    ((gemLevel04.length / hospEvaluate4.length) * 100).toFixed(1),
+    ((gemLevel05.length / hospEvaluate5.length) * 100).toFixed(1),
+    ((gemLevel06.length / hospEvaluate6.length) * 100).toFixed(1),
+    ((gemLevel07.length / hospEvaluate7.length) * 100).toFixed(1),
+    ((gemLevel08.length / hospEvaluate8.length) * 100).toFixed(1),
+    ((gemLevel09.length / hospEvaluate9.length) * 100).toFixed(1),
+    ((gemLevel10.length / hospEvaluate10.length) * 100).toFixed(1),
+    ((gemLevel11.length / hospEvaluate11.length) * 100).toFixed(1),
+    ((gemLevel12.length / hospEvaluate12.length) * 100).toFixed(1)
   ];
 
   // console.log('Silver: ',silverLevel03.length)
 
   const goldData = [
-    ((goldLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
-    ((goldLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
-    ((goldLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
-    ((goldLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
-    ((goldLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
-    ((goldLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
-    ((goldLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
-    ((goldLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
-    ((goldLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
-    ((goldLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
-    ((goldLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
-    ((goldLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
+    ((goldLevel01.length / hospEvaluate1.length) * 100).toFixed(1),
+    ((goldLevel02.length / hospEvaluate2.length) * 100).toFixed(1),
+    ((goldLevel03.length / hospEvaluate3.length) * 100).toFixed(1),
+    ((goldLevel04.length / hospEvaluate4.length) * 100).toFixed(1),
+    ((goldLevel05.length / hospEvaluate5.length) * 100).toFixed(1),
+    ((goldLevel06.length / hospEvaluate6.length) * 100).toFixed(1),
+    ((goldLevel07.length / hospEvaluate7.length) * 100).toFixed(1),
+    ((goldLevel08.length / hospEvaluate8.length) * 100).toFixed(1),
+    ((goldLevel09.length / hospEvaluate9.length) * 100).toFixed(1),
+    ((goldLevel10.length / hospEvaluate10.length) * 100).toFixed(1),
+    ((goldLevel11.length / hospEvaluate11.length) * 100).toFixed(1),
+    ((goldLevel12.length / hospEvaluate12.length) * 100).toFixed(1)
   ];
   const silverData = [
-    ((silverLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
-    ((silverLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
-    ((silverLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
-    ((silverLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
-    ((silverLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
-    ((silverLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
-    ((silverLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
-    ((silverLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
-    ((silverLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
-    ((silverLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
-    ((silverLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
-    ((silverLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
+    ((silverLevel01.length / hospEvaluate1.length) * 100).toFixed(1),
+    ((silverLevel02.length / hospEvaluate2.length) * 100).toFixed(1),
+    ((silverLevel03.length / hospEvaluate3.length) * 100).toFixed(1),
+    ((silverLevel04.length / hospEvaluate4.length) * 100).toFixed(1),
+    ((silverLevel05.length / hospEvaluate5.length) * 100).toFixed(1),
+    ((silverLevel06.length / hospEvaluate6.length) * 100).toFixed(1),
+    ((silverLevel07.length / hospEvaluate7.length) * 100).toFixed(1),
+    ((silverLevel08.length / hospEvaluate8.length) * 100).toFixed(1),
+    ((silverLevel09.length / hospEvaluate9.length) * 100).toFixed(1),
+    ((silverLevel10.length / hospEvaluate10.length) * 100).toFixed(1),
+    ((silverLevel11.length / hospEvaluate11.length) * 100).toFixed(1),
+    ((silverLevel12.length / hospEvaluate12.length) * 100).toFixed(1)
   ];
   const noPassData = [
-    ((notPassLevel01.length / hospitalInzone1.length) * 100).toFixed(1),
-    ((notPassLevel02.length / hospitalInzone2.length) * 100).toFixed(1),
-    ((notPassLevel03.length / hospitalInzone3.length) * 100).toFixed(1),
-    ((notPassLevel04.length / hospitalInzone4.length) * 100).toFixed(1),
-    ((notPassLevel05.length / hospitalInzone5.length) * 100).toFixed(1),
-    ((notPassLevel06.length / hospitalInzone6.length) * 100).toFixed(1),
-    ((notPassLevel07.length / hospitalInzone7.length) * 100).toFixed(1),
-    ((notPassLevel08.length / hospitalInzone8.length) * 100).toFixed(1),
-    ((notPassLevel09.length / hospitalInzone9.length) * 100).toFixed(1),
-    ((notPassLevel10.length / hospitalInzone10.length) * 100).toFixed(1),
-    ((notPassLevel11.length / hospitalInzone11.length) * 100).toFixed(1),
-    ((notPassLevel12.length / hospitalInzone12.length) * 100).toFixed(1)
+    ((notPassLevel01.length / hospEvaluate1.length) * 100).toFixed(1),
+    ((notPassLevel02.length / hospEvaluate2.length) * 100).toFixed(1),
+    ((notPassLevel03.length / hospEvaluate3.length) * 100).toFixed(1),
+    ((notPassLevel04.length / hospEvaluate4.length) * 100).toFixed(1),
+    ((notPassLevel05.length / hospEvaluate5.length) * 100).toFixed(1),
+    ((notPassLevel06.length / hospEvaluate6.length) * 100).toFixed(1),
+    ((notPassLevel07.length / hospEvaluate7.length) * 100).toFixed(1),
+    ((notPassLevel08.length / hospEvaluate8.length) * 100).toFixed(1),
+    ((notPassLevel09.length / hospEvaluate9.length) * 100).toFixed(1),
+    ((notPassLevel10.length / hospEvaluate10.length) * 100).toFixed(1),
+    ((notPassLevel11.length / hospEvaluate11.length) * 100).toFixed(1),
+    ((notPassLevel12.length / hospEvaluate12.length) * 100).toFixed(1)
   ];
 
-  const xLabels = ['เขต1', 'เขต2', 'เขต3', 'เขต4', 'เขต5', 'เขต6', 'เขต7', 'เขต8', 'เขต9', 'เขต10', 'เขต11', 'เขต12']
+  const xLabels = ['เขตฯ 1', 'เขตฯ 2', 'เขตฯ 3', 'เขตฯ 4', 'เขตฯ 5', 'เขตฯ 6', 'เขตฯ 7', 'เขตฯ 8', 'เขตฯ 9', 'เขตฯ 10', 'เขตฯ 11', 'เขตฯ 12']
 
+  const xLabelsProv = provData.map((item) => item.provname)
 
   const notEvaluate = [
-    (((hospitalInzone1.length - (gemLevel01.length + goldLevel01.length + silverLevel01.length + notPassLevel01.length)) / (hospitalInzone1.length)) * 100).toFixed(1),
-    (((hospitalInzone2.length - (gemLevel02.length + goldLevel02.length + silverLevel02.length + notPassLevel02.length)) / (hospitalInzone2.length)) * 100).toFixed(1),
-    (((hospitalInzone3.length - (gemLevel03.length + goldLevel03.length + silverLevel03.length + notPassLevel03.length)) / (hospitalInzone3.length)) * 100).toFixed(1),
-    (((hospitalInzone4.length - (gemLevel04.length + goldLevel04.length + silverLevel04.length + notPassLevel04.length)) / (hospitalInzone4.length)) * 100).toFixed(1),
-    (((hospitalInzone5.length - (gemLevel05.length + goldLevel05.length + silverLevel05.length + notPassLevel05.length)) / (hospitalInzone5.length)) * 100).toFixed(1),
-    (((hospitalInzone6.length - (gemLevel06.length + goldLevel06.length + silverLevel06.length + notPassLevel06.length)) / (hospitalInzone6.length)) * 100).toFixed(1),
-    (((hospitalInzone7.length - (gemLevel07.length + goldLevel07.length + silverLevel07.length + notPassLevel07.length)) / (hospitalInzone7.length)) * 100).toFixed(1),
-    (((hospitalInzone8.length - (gemLevel08.length + goldLevel08.length + silverLevel08.length + notPassLevel08.length)) / (hospitalInzone8.length)) * 100).toFixed(1),
-    (((hospitalInzone9.length - (gemLevel09.length + goldLevel09.length + silverLevel09.length + notPassLevel09.length)) / (hospitalInzone9.length)) * 100).toFixed(1),
-    (((hospitalInzone10.length - (gemLevel10.length + goldLevel10.length + silverLevel10.length + notPassLevel10.length)) / (hospitalInzone10.length)) * 100).toFixed(1),
-    (((hospitalInzone11.length - (gemLevel11.length + goldLevel11.length + silverLevel11.length + notPassLevel11.length)) / (hospitalInzone11.length)) * 100).toFixed(1),
-    (((hospitalInzone12.length - (gemLevel12.length + goldLevel12.length + silverLevel12.length + notPassLevel12.length)) / (hospitalInzone12.length)) * 100).toFixed(1)
+
+    (((hospEvaluate1.length - (gemLevel01.length + goldLevel01.length + silverLevel01.length + notPassLevel01.length)) / (hospEvaluate1.length)) * 100).toFixed(1),
+    (((hospEvaluate2.length - (gemLevel02.length + goldLevel02.length + silverLevel02.length + notPassLevel02.length)) / (hospEvaluate2.length)) * 100).toFixed(1),
+    (((hospEvaluate4.length - (gemLevel04.length + goldLevel04.length + silverLevel04.length + notPassLevel04.length)) / (hospEvaluate4.length)) * 100).toFixed(1),
+    (((hospEvaluate3.length - (gemLevel03.length + goldLevel03.length + silverLevel03.length + notPassLevel03.length)) / (hospEvaluate3.length)) * 100).toFixed(1),
+    (((hospEvaluate5.length - (gemLevel05.length + goldLevel05.length + silverLevel05.length + notPassLevel05.length)) / (hospEvaluate5.length)) * 100).toFixed(1),
+    (((hospEvaluate6.length - (gemLevel06.length + goldLevel06.length + silverLevel06.length + notPassLevel06.length)) / (hospEvaluate6.length)) * 100).toFixed(1),
+    (((hospEvaluate7.length - (gemLevel07.length + goldLevel07.length + silverLevel07.length + notPassLevel07.length)) / (hospEvaluate7.length)) * 100).toFixed(1),
+    (((hospEvaluate8.length - (gemLevel08.length + goldLevel08.length + silverLevel08.length + notPassLevel08.length)) / (hospEvaluate8.length)) * 100).toFixed(1),
+    (((hospEvaluate9.length - (gemLevel09.length + goldLevel09.length + silverLevel09.length + notPassLevel09.length)) / (hospEvaluate9.length)) * 100).toFixed(1),
+    (((hospEvaluate10.length - (gemLevel10.length + goldLevel10.length + silverLevel10.length + notPassLevel10.length)) / (hospEvaluate10.length)) * 100).toFixed(1),
+    (((hospEvaluate11.length - (gemLevel11.length + goldLevel11.length + silverLevel11.length + notPassLevel11.length)) / (hospEvaluate11.length)) * 100).toFixed(1),
+    (((hospEvaluate12.length - (gemLevel12.length + goldLevel12.length + silverLevel12.length + notPassLevel12.length)) / (hospEvaluate12.length)) * 100).toFixed(1)
   ]
 
-
-  const series = [
-    {
-      data: [30, 40, 25, 50, 49, 21, 70, 51]
-    }
-  ];
-
-  const options = {
-    dataLabels: {
-      enabled: false
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true
-      }
-    },
-    xaxis: {
-      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    }
-  };
-
+  function valueFormatter(value) {
+    return `${value} %`;
+  }
 
   return (
     <div>
-      {/* <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center'>
         <div className='flex justify-center items-center mb-5'>
           <Form
             form={formSearch}
@@ -470,8 +470,12 @@ const Home = () => {
               ]}
             >
               <Select
+                showSearch
                 style={{ width: 180 }}
                 placeholder='เลือกเขตสุขภาพ...'
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                }
                 onChange={handleChangeZone}
               >
                 {zoneUnique.sort((a, b) => a - b).map((val1, k1) => (
@@ -479,41 +483,49 @@ const Home = () => {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item
-              name={`provcode`}
-              rules={[
-                {
-                  required: true,
-                  message: 'กรุณาเลือกเขตสุขภาพ!'
-                }
-              ]}
-            >
-              <Select
-                style={{ width: 180 }}
-                placeholder='เลือกจังหวัด...'
-                onChange={handleChangeProv}
-              >
-                {provData.map((val2, k2) => (
-                  zoneSearch === val2.zone
-                    ? <Select.Option key={k2} value={val2.provcode}>{val2.provname}</Select.Option>
-                    : null
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item>
+            {/* {
+              zoneSearch
+                ?
+                <>
+                  <Form.Item
+                    name={`provcode`}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'กรุณาเลือกเขตสุขภาพ!'
+                      }
+                    ]}
+                  >
+                    <Select
+                      style={{ width: 180 }}
+                      placeholder='เลือกจังหวัด...'
+                      onChange={handleChangeProv}
+                    >
+                      {provData.map((val2, k2) => (
+                        zoneSearch === val2.zone
+                          ? <Select.Option key={k2} value={val2.provcode}>{val2.provname}</Select.Option>
+                          : null
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </>
+                : null
+            } */}
+
+            {/* <Form.Item>
               <Button
                 type='primary'
                 htmlType='submit'
               >
                 <SearchOutlined /> ค้นหา
               </Button>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item>
               <Button
                 danger
                 onClick={clearForm}
               >
-                <ClearOutlined /> ล้างค่า
+                <ClearOutlined /> Reset ค่า
               </Button>
             </Form.Item>
           </Form>
@@ -539,9 +551,9 @@ const Home = () => {
           }
 
         </div>
-      </div> */}
+      </div>
 
-      <div className='grid grid-cols-6 gap-2'>
+      <div className='grid grid-cols-5 gap-2'>
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
@@ -550,19 +562,55 @@ const Home = () => {
               src={HospitalIcon}
               alt='HospitalIcon'
             />
-            <p className='text-xl text-green-700 font-bold'>ประเมินแล้ว</p>
+            <p className='text-xl text-green-700 font-bold'>ข้อมูลการประเมิน</p>
           </div>
-          <div className='flex justify-center items-baseline gap-2 my-3 text-green-700'>
-            <p className='text-4xl'>{searchQueryHosp.length}</p>
-            <p>แห่ง</p>
+
+          <div className='flex justify-between items-baseline text-green-700 p-2'>
+            <p>ประเมินแล้ว</p>
+            <div className='flex justify-center items-baseline gap-2'>
+              <p className='text-xl'>{searchQueryHosp.length}</p>
+              <p>แห่ง</p>
+            </div>
           </div>
-          <div className='p-2 flex justify-between text-green-700'>
-            <div><p>คิดเป็น</p></div>
-            <div className='flex'><p>{hospPer.toFixed(1)} % </p></div>
-          </div>
+          {
+            zoneSearch
+              ?
+              <>
+                <div className='flex justify-between items-baseline text-orange-400 px-2'>
+                  <p>ยังไม่ประเมิน</p>
+                  <div className='flex justify-center items-baseline gap-2'>
+                    <p className='text-xl'>{listHospitalZone.length - searchQueryHosp.length}</p>
+                    <p>แห่ง</p>
+                  </div>
+                </div>
+                <div className='px-2 flex justify-between text-green-700 mt-1'>
+                  <div><p>คิดเป็น</p></div>
+                  <div className='flex'><p>{hospPerZone.toFixed(1)} % </p></div>
+                </div>
+              </>
+              :
+              <>
+                <div className='flex justify-between items-baseline text-orange-400 px-2'>
+                  <p>ยังไม่ประเมิน</p>
+                  <div className='flex justify-center items-baseline gap-2'>
+                    <p className='text-xl'>{listHospitalAll.length - searchQueryHosp.length}</p>
+                    <p>แห่ง</p>
+                  </div>
+                </div>
+
+                <div className='px-2 flex justify-between text-green-700 mt-1'>
+                  <div><p>คิดเป็น</p></div>
+                  <div className='flex'><p>{hospPerAll.toFixed(1)} % </p></div>
+                </div>
+              </>
+
+
+
+          }
+
         </div>
 
-        <div className='bg-white rounded-md shadow-md p-3'>
+        {/* <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
             <img
               className='bg-amber-50 w-12 rounded-full shadow-md'
@@ -579,7 +627,7 @@ const Home = () => {
             <div><p>คิดเป็น</p></div>
             <div className='flex'><p>{hospNotPer.toFixed(1)} % </p></div>
           </div>
-        </div>
+        </div> */}
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
@@ -594,10 +642,19 @@ const Home = () => {
             <p className='text-4xl'>{gemLevel.length}</p>
             <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between text-blue-500'>
-            <div ><p>คิดเป็น</p></div>
-            <div className='flex'><p>{gemPer.toFixed(1)} % </p></div>
-          </div>
+          {
+            zoneSearch
+              ?
+              <div className='px-2 flex justify-between text-blue-500 mt-7'>
+                <div ><p>คิดเป็น</p></div>
+                <div className='flex'><p>{gemPerZone.toFixed(1)} % </p></div>
+              </div>
+              :
+              <div className='px-2 flex justify-between text-blue-500 mt-7'>
+                <div ><p>คิดเป็น</p></div>
+                <div className='flex'><p>{gemPer.toFixed(1)} % </p></div>
+              </div>
+          }
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
@@ -613,10 +670,19 @@ const Home = () => {
             <p className='text-4xl'>{goldLevel.length}</p>
             <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between text-yellow-500'>
-            <div><p>คิดเป็น</p></div>
-            <div className='flex'><p>{goldPer.toFixed(1)} % </p></div>
-          </div>
+          {
+            zoneSearch
+              ?
+              <div className='px-2 flex justify-between text-yellow-500 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{goldPerZone.toFixed(1)} % </p></div>
+              </div>
+              :
+              <div className='px-2 flex justify-between text-yellow-500 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{goldPer.toFixed(1)} % </p></div>
+              </div>
+          }
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
@@ -632,10 +698,19 @@ const Home = () => {
             <p className='text-4xl'>{silverLevel.length}</p>
             <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between  text-slate-400'>
-            <div><p>คิดเป็น</p></div>
-            <div className='flex'><p>{silverPer.toFixed(1)} % </p></div>
-          </div>
+          {
+            zoneSearch
+              ?
+              <div className='px-2 flex justify-between  text-slate-400 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{silverPerZone.toFixed(1)} % </p></div>
+              </div>
+              :
+              <div className='px-2 flex justify-between  text-slate-400 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{silverPer.toFixed(1)} % </p></div>
+              </div>
+          }
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
@@ -649,10 +724,19 @@ const Home = () => {
             <p className='text-4xl'>{notPassLevel.length}</p>
             <p>แห่ง</p>
           </div>
-          <div className='p-2 flex justify-between  text-red-500'>
-            <div><p>คิดเป็น</p></div>
-            <div className='flex'><p>{notPassPer.toFixed(1)} % </p></div>
-          </div>
+          {
+            zoneSearch
+              ?
+              <div className='px-2 flex justify-between  text-red-500 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{notPassPerZone.toFixed(1)} % </p></div>
+              </div>
+              :
+              <div className='px-2 flex justify-between  text-red-500 mt-7'>
+                <div><p>คิดเป็น</p></div>
+                <div className='flex'><p>{notPassPer.toFixed(1)} % </p></div>
+              </div>
+          }
         </div>
 
 
@@ -660,37 +744,46 @@ const Home = () => {
 
       <div className='grid grid-cols-2 gap-2 mt-3'>
         <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex justify-center items-center'>
-            <p>จำนวน (เปอร์เซ็นต์) โรงพยาบาลที่ประเมินโรงพยาบาลอัจฉริยะรายเขต</p>
-          </div>
-          {/* <Chart options={options} series={series} type="bar" width="500" /> */}
-          <BarChart
-            // width={400}
-            height={350}
-            series={[
-              { data: gemData, label: 'เพชร', id: 'gemID', stack: 'total', color: '#0088FE' },
-              { data: goldData, label: 'ทอง', id: 'goldID', stack: 'total', color: '#FFDC73' },
-              { data: silverData, label: 'เงิน', id: 'silverID', stack: 'total', color: '#E0E0E0' },
-              { data: noPassData, label: 'ไม่ผ่าน', id: 'noPassID', stack: 'total', color: '#fc5151' },
-              { data: notEvaluate, label: 'ยังไม่ประเมิน', id: 'notEvaluateID', stack: 'total', color: '#FCA951' },
-            ]}
-            xAxis={[{ data: xLabels, scaleType: 'band' }]}
-            yAxis={[{ min: 0, max: 100 }]}
-            barLabel={(item) => {
-              return `${item.value}%`
-            }}
-            sx={{
-              '& .MuiBarLabel-root': {
-                fill: 'white',
-                fontSize: 10,
-              },
-            }}
-          />
+          {
+            zoneSearch
+              ?
+              <>
+                <FormZoneSearchEvaluate zoneSearch={zoneSearch} />
+              </>
+              :
+              <>
+                <div className='flex justify-center items-center'>
+                  <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้จากคะแนนในการประเมิน รายเขตสุขภาพ</p>
+                </div>
+                <BarChart
+                  height={350}
+                  margin={{ top: 50, right: 10, bottom: 60, left: 40 }}
+                  series={[
+                    { data: gemData, label: 'ระดับเพชร', id: 'gemID', stack: 'total', color: '#0088FE', valueFormatter},
+                    { data: goldData, label: 'ระดับทอง', id: 'goldID', stack: 'total', color: '#FFDC73', valueFormatter },
+                    { data: silverData, label: 'ระดับเงิน', id: 'silverID', stack: 'total', color: '#d1cfcf', valueFormatter },
+                    { data: noPassData, label: 'ไม่ผ่าน', id: 'noPassID', stack: 'total', color: '#fc5151', valueFormatter },
+                    // { data: notEvaluate, label: 'ยังไม่ประเมิน', id: 'notEvaluateID', stack: 'total', color: '#FCA951' },
+                  ]}
+                  xAxis={[{ data: xLabels, scaleType: 'band', tickLabelStyle: { angle: -35, textAnchor: "end" } }]}
+                  yAxis={[{ min: 0, max: 100 }]}
+                  sx={{
+                    '& .MuiBarLabel-root': {
+                      fill: 'white',
+                      fontSize: 10,
+                    },
+                    ['.MuiChartsLegend-mark']: {
+                      rx: '50%', // circle legend
+                    },
+                  }}
+                />
+              </>
+          }
         </div>
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex justify-center items-center'>
-            <p>จำนวน (เปอร์เซ็นต์) โรงพยาบาลในแต่ละระดับที่ได้จากการประเมิน</p>
+            <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้จากคะแนนในการประเมิน รวมทั้งหมด</p>
           </div>
           <div className='flex justify-center items-center mt-5'>
             <PieChart
@@ -710,6 +803,9 @@ const Home = () => {
                 [`& .${pieArcLabelClasses.root}`]: {
                   fill: 'white',
                   fontSize: 12,
+                },
+                ['.MuiChartsLegend-mark']: {
+                  rx: '50%', // circle legend
                 },
               }}
             />

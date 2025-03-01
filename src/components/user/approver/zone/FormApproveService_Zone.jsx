@@ -287,7 +287,7 @@ const FormApproveService_Zone = () => {
     setSearchQuery(dataSource.filter(f => f.provcode === values.provcode && f.hcode === hospcode))
   }
 
-
+  const approved = [...new Set(searchQuery.map(item => item.ssj_approve))]
 
   return (
     <div>
@@ -392,7 +392,8 @@ const FormApproveService_Zone = () => {
                   <th className='text-center p-4 border-r w-32'>คะแนนเต็ม</th>
                   <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
                   <th className='text-center p-4 border-r w-32'>ภาพหลักฐาน</th>
-                  <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
+                  <th className='text-center p-4 border-r w-32'>สสจ. อนุมัติ</th>
+                  <th className='text-center p-4 border-r w-32'>เขตฯ อนุมัติ</th>
                 </tr>
               </thead>
               <tbody>
@@ -540,6 +541,13 @@ const FormApproveService_Zone = () => {
                                 </td>
                                 <td className='text-center border-l px-1'>
                                   {
+                                    item2.ssj_approve === true
+                                      ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
+                                      : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
+                                  }
+                                </td>
+                                <td className='text-center border-l px-1'>
+                                  {
                                     item2.zone_approve === true
                                       ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
                                       : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
@@ -567,6 +575,11 @@ const FormApproveService_Zone = () => {
                           type='primary'
                           htmlType='submit'
                           style={{ width: 180 }}
+                          disabled={
+                            approved[0] === true
+                              ? false
+                              : true
+                          }
                         >
                           <Save /> Approve (อนุมัติ!)
                         </Button>
@@ -580,6 +593,11 @@ const FormApproveService_Zone = () => {
                           style={{ width: 180 }}
                           variant='solid'
                           onClick={showUnAproveModal}
+                          disabled={
+                            approved[0] === true
+                              ? false
+                              : true
+                          }
                         >
                           <Ban /> Cancel (ยกเลิก!)
                         </Button>

@@ -282,7 +282,7 @@ const FormHome = () => {
 
     }))
 
-    console.log('Data: ',data3)
+    // console.log('Data: ',data3)
 
     return (
         <>

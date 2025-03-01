@@ -248,7 +248,7 @@ const FormApproveInfrastructure_Zone = () => {
   }
 
   const hospitalData = listHospitals.filter(f => f.hcode === hospcode)
-  console.log('Hospital: ', hospitalData)
+  // console.log('Hospital: ', hospitalData)
 
   useEffect(() => {
     formUnAprove.setFieldsValue({
@@ -272,7 +272,7 @@ const FormApproveInfrastructure_Zone = () => {
 
       })
     })
-    console.log('Result2: ', result2)
+    // console.log('Result2: ', result2)
 
     await zoneUnApprove(token, result2)
       .then(res => {
@@ -295,6 +295,10 @@ const FormApproveInfrastructure_Zone = () => {
     setSearchQuery(dataSource.filter(f => f.provcode === values.provcode && f.hcode === hospcode))
   }
 
+
+  const approved = [...new Set(searchQuery.map(item => item.ssj_approve))];
+
+  // console.log("SSJ: ", approved)
 
   return (
     <div>
@@ -399,7 +403,8 @@ const FormApproveInfrastructure_Zone = () => {
                   <th className='text-center p-4 border-r w-32'>คะแนนเต็ม</th>
                   <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
                   <th className='text-center p-4 border-r w-32'>ไฟล์หลักฐาน</th>
-                  <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
+                  <th className='text-center p-4 border-r w-32'>สสจ. อนุมัติ</th>
+                  <th className='text-center p-4 border-r w-32'>เขตฯ อนุมัติ</th>
                 </tr>
               </thead>
               <tbody>
@@ -547,6 +552,13 @@ const FormApproveInfrastructure_Zone = () => {
                                 </td>
                                 <td className='text-center border-l px-1'>
                                   {
+                                    item2.ssj_approve === true
+                                      ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
+                                      : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
+                                  }
+                                </td>
+                                <td className='text-center border-l px-1'>
+                                  {
                                     item2.zone_approve === true
                                       ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
                                       : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
@@ -574,10 +586,9 @@ const FormApproveInfrastructure_Zone = () => {
                           htmlType='submit'
                           style={{ width: 180 }}
                           disabled={
-                            subQuestLength.length === 67
+                            approved[0] === true
                               ? false
                               : true
-
                           }
                         >
                           <Save /> Approve (อนุมัติ!)
@@ -592,6 +603,11 @@ const FormApproveInfrastructure_Zone = () => {
                           style={{ width: 180 }}
                           variant='solid'
                           onClick={showUnAproveModal}
+                          disabled={
+                            approved[0] === true
+                              ? false
+                              : true
+                          }
                         >
                           <Ban /> Cancel (ยกเลิก!)
                         </Button>
