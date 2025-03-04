@@ -1,8 +1,11 @@
 import React from 'react'
+import FormReportCentre from '../../components/reports/FormReportCentre'
 
 const ReportCentre = () => {
   return (
-    <div>ReportCentre</div>
+    <div>
+      <FormReportCentre />
+    </div>
   )
 }
 

@@ -445,9 +445,10 @@ const Home = () => {
     (((hospEvaluate12.length - (gemLevel12.length + goldLevel12.length + silverLevel12.length + notPassLevel12.length)) / (hospEvaluate12.length)) * 100).toFixed(1)
   ]
 
-  function valueFormatter(value) {
-    return `${value} %`;
+  const valueFormatter = (params) => {
+    return `${params} %`;
   }
+
 
   return (
     <div>
@@ -759,7 +760,7 @@ const Home = () => {
                   height={350}
                   margin={{ top: 50, right: 10, bottom: 60, left: 40 }}
                   series={[
-                    { data: gemData, label: 'ระดับเพชร', id: 'gemID', stack: 'total', color: '#0088FE', valueFormatter},
+                    { data: gemData, label: 'ระดับเพชร', id: 'gemID', stack: 'total', color: '#0088FE', valueFormatter },
                     { data: goldData, label: 'ระดับทอง', id: 'goldID', stack: 'total', color: '#FFDC73', valueFormatter },
                     { data: silverData, label: 'ระดับเงิน', id: 'silverID', stack: 'total', color: '#d1cfcf', valueFormatter },
                     { data: noPassData, label: 'ไม่ผ่าน', id: 'noPassID', stack: 'total', color: '#fc5151', valueFormatter },
@@ -767,6 +768,7 @@ const Home = () => {
                   ]}
                   xAxis={[{ data: xLabels, scaleType: 'band', tickLabelStyle: { angle: -35, textAnchor: "end" } }]}
                   yAxis={[{ min: 0, max: 100 }]}
+                  // barLabel={({ value }) => `${value} %`}
                   sx={{
                     '& .MuiBarLabel-root': {
                       fill: 'white',
@@ -815,6 +817,7 @@ const Home = () => {
       <div className='bg-white rounded-md shadow-md mt-3'>
         <FormHome />
       </div>
+
     </div>
   )
 }

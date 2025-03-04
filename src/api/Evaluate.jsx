@@ -360,6 +360,17 @@ export const zoneUnApprove = async (token, values) =>{
     )
 }
 
+//Get sum evaluate by zone
+export const selectApproveEvaluate = async (token, zone) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/selectApproveEvaluate?zone=${zone}`,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
 
 //ZONE APPROVE
 
