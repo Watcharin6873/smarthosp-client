@@ -141,29 +141,29 @@ const FormReportZone = () => {
                       <table className='w-full table-fixed text-slate-700' style={{ fontSize: '12px' }}>
                         <thead className='bg-slate-50'>
                           <tr>
-                            <th rowSpan={4} className='text-center border'>หน่วยบริการ</th>
-                            <th colSpan={4} className='text-center border w-52'>ด้านโครงสร้าง</th>
-                            <th colSpan={4} className='text-center border w-52'>ด้านบริหารจัดการ</th>
-                            <th colSpan={4} className='text-center border w-52'>ด้านการบริการ</th>
-                            <th colSpan={3} className='text-center border w-52'>ด้านบุคลากร</th>
-                            <th rowSpan={2} className='text-xs text-center border w-32'>ระดับ Cyber Security</th>
+                            <th rowSpan={2} className='text-center border'>หน่วยบริการ</th>
+                            <th colSpan={2} className='text-center border w-52'>ด้านโครงสร้าง</th>
+                            <th colSpan={2} className='text-center border w-52'>ด้านบริหารจัดการ</th>
+                            <th colSpan={2} className='text-center border w-52'>ด้านการบริการ</th>
+                            <th colSpan={1} className='text-center border w-24'>ด้านบุคลากร</th>
+                            <th rowSpan={2} className='text-xs text-center border w-40'>ระดับ Cyber Security</th>
                           </tr>
                           <tr>
                             <th className='text-center border'>คะแนน<br />เต็ม</th>
                             <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-center border'>คะแนน<br />เต็ม</th>
                             <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-center border'>คะแนน<br />เต็ม</th>
                             <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-center border'>คะแนน<br />เต็ม</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                           </tr>
                         </thead>
                         {
@@ -186,7 +186,7 @@ const FormReportZone = () => {
                                           <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_require_cat1 === null ? 0 : item3.point_require_cat1}</p>
                                           </td>
-                                          <td className='border text-center'>
+                                          {/* <td className='border text-center'>
                                             {
                                               item3.ssjapp_cat1 === '1'
                                                 ?
@@ -211,15 +211,15 @@ const FormReportZone = () => {
                                                   <CircleX size={12} />
                                                 </div>
                                             }
-                                          </td>
+                                          </td> */}
 
                                           <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_total_cat2 === null ? 0 : item3.point_total_cat2}</p>
                                           </td>
-                                          <td className='border text-center'>
+                                          <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_require_cat2 === null ? 0 : item3.point_require_cat2}</p>
                                           </td>
-                                          <td className='border text-center text-blue-600'>
+                                          {/* <td className='border text-center text-blue-600'>
                                             {
                                               item3.ssjapp_cat2 === '1'
                                                 ?
@@ -244,7 +244,7 @@ const FormReportZone = () => {
                                                   <CircleX size={12} />
                                                 </div>
                                             }
-                                          </td>
+                                          </td> */}
 
                                           <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_total_cat3 === null ? 0 : item3.point_total_cat3}</p>
@@ -252,7 +252,7 @@ const FormReportZone = () => {
                                           <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_require_cat3 === null ? 0 : item3.point_require_cat3}</p>
                                           </td>
-                                          <td className='border text-center'>
+                                          {/* <td className='border text-center'>
                                             {
                                               item3.ssjapp_cat3 === '1'
                                                 ?
@@ -277,12 +277,12 @@ const FormReportZone = () => {
                                                   <CircleX size={12} />
                                                 </div>
                                             }
-                                          </td>
+                                          </td> */}
 
                                           <td className='border text-center text-blue-600'>
                                             <p className='pl-2'>{item3.point_total_cat4 === null ? 0 : item3.point_total_cat4}</p>
                                           </td>
-                                          <td className='border text-center'>
+                                          {/* <td className='border text-center'>
                                             {
                                               item3.ssjapp_cat4 === '1'
                                                 ?
@@ -307,7 +307,7 @@ const FormReportZone = () => {
                                                   <CircleX size={12} />
                                                 </div>
                                             }
-                                          </td>
+                                          </td> */}
                                           <td className='border text-center'>
                                             {
                                               item3.cyber_level === 'GREEN'

@@ -139,7 +139,7 @@ const FormHomeSSJ = () => {
     cyber_levelname: item.cyber_levelname
   }))
 
-  // console.log('Hosp: ', totalSumEvaluateData)
+  console.log('Hosp: ', totalSumEvaluateData)
 
   const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>

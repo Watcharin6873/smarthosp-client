@@ -100,28 +100,28 @@ const FormReportProv = () => {
                       <table className='w-full table-fixed text-slate-700'>
                         <thead className=''>
                           <tr>
-                            <th colSpan={4} className='text-xs text-center border w-28 p-1'>ด้านโครงสร้าง</th>
-                            <th colSpan={4} className='text-xs text-center border w-28'>ด้านบริหารจัดการ</th>
-                            <th colSpan={4} className='text-xs text-center border w-28'>ด้านการบริการ</th>
-                            <th colSpan={3} className='text-xs text-center border w-28'>ด้านบุคลากร</th>
+                            <th colSpan={2} className='text-xs text-center border w-28 p-1'>ด้านโครงสร้าง</th>
+                            <th colSpan={2} className='text-xs text-center border w-28'>ด้านบริหารจัดการ</th>
+                            <th colSpan={2} className='text-xs text-center border w-28'>ด้านการบริการ</th>
+                            <th colSpan={1} className='text-xs text-center border w-28'>ด้านบุคลากร</th>
                             <th rowSpan={2} className='text-xs text-center border w-28'>ระดับ Cyber Security</th>
                           </tr>
                           <tr>
                             <th className='text-xs text-center border p-1'>คะแนนที่ได้</th>
                             <th className='text-xs text-center border'>คะแนนจำเป็น</th>
-                            <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-xs text-center border'>คะแนนที่ได้</th>
                             <th className='text-xs text-center border'>คะแนนจำเป็น</th>
-                            <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-xs text-center border'>คะแนนที่ได้</th>
                             <th className='text-xs text-center border'>คะแนนจำเป็น</th>
-                            <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                             <th className='text-xs text-center border'>คะแนนที่ได้</th>
-                            <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th>
+                            {/* <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
+                            <th className='text-xs text-center border'>เขตฯ.<br />อนุมัติ</th> */}
                           </tr>
                         </thead>
                         <tbody className=''>
@@ -145,7 +145,7 @@ const FormReportProv = () => {
                                           : <p className='text-blue-600'>{item2.point_require_cat1}</p>
                                       }
                                     </td>
-                                    <td className='border text-center'>
+                                    {/* <td className='border text-center'>
                                       {
                                         item2.ssjapp_cat1 === '1'
                                           ?
@@ -170,7 +170,7 @@ const FormReportProv = () => {
                                             <CircleX size={12} />
                                           </div>
                                       }
-                                    </td>
+                                    </td> */}
 
                                     <td className='border text-center'>
                                       {
@@ -186,7 +186,7 @@ const FormReportProv = () => {
                                           : <p className='text-blue-600'>{item2.point_require_cat2}</p>
                                       }
                                     </td>
-                                    <td className='border text-center'>
+                                    {/* <td className='border text-center'>
                                       {
                                         item2.ssjapp_cat2 === '1'
                                           ?
@@ -211,7 +211,7 @@ const FormReportProv = () => {
                                             <CircleX size={12} />
                                           </div>
                                       }
-                                    </td>
+                                    </td> */}
 
                                     <td className='border text-center'>
                                       {
@@ -227,7 +227,7 @@ const FormReportProv = () => {
                                           : <p className='text-blue-600'>{item2.point_require_cat3}</p>
                                       }
                                     </td>
-                                    <td className='border text-center'>
+                                    {/* <td className='border text-center'>
                                       {
                                         item2.ssjapp_cat4 === '1'
                                           ?
@@ -252,7 +252,7 @@ const FormReportProv = () => {
                                             <CircleX size={12} />
                                           </div>
                                       }
-                                    </td>
+                                    </td> */}
 
                                     <td className='border text-center'>
                                       {
@@ -261,7 +261,7 @@ const FormReportProv = () => {
                                           : <p className='text-blue-600'>{item2.point_total_cat4}</p>
                                       }
                                     </td>
-                                    <td className='border text-center'>
+                                    {/* <td className='border text-center'>
                                       {
                                         item2.ssjapp_cat4 === '1'
                                           ?
@@ -286,7 +286,7 @@ const FormReportProv = () => {
                                             <CircleX size={12} />
                                           </div>
                                       }
-                                    </td>
+                                    </td> */}
 
                                     <td className='border text-center'>
                                       {
