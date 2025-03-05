@@ -8,7 +8,7 @@ const ProtectRoteAdmin = ({element}) => {
   const user = useGlobalStore((state) => state.user)
   const token = useGlobalStore((state) => state.token)
   const [ok, setOk] = useState(false)
-  console.log('pAdmin: ', user, token)
+  // console.log('pAdmin: ', user, token)
 
   useEffect(() => {
     if (user.role && token) {
