@@ -3,6 +3,7 @@ import useGlobalStore from '../../../../store/global-store'
 import { Input, Table } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { getSumEvaluateByZone } from '../../../../api/Evaluate'
+import ExportExcel_zone from './ExportExcel_zone'
 
 const TableZoneList = () => {
 
@@ -22,7 +23,7 @@ const TableZoneList = () => {
         setIsLoading(true)
         await getSumEvaluateByZone(token, zone)
             .then(res => {
-                console.log(res.data)
+                console.log('Data: ',res.data)
                 setListSumEvaluate(res.data)
                 setSearchQuery(res.data)
             })
@@ -49,17 +50,23 @@ const TableZoneList = () => {
         hname_th: item.hname_th,
         point_total_cat1: item.point_total_cat1,
         point_require_cat1: item.point_require_cat1,
+        ssjapp_cat1: item.ssjapp_cat1,
+        zoneapp_cat1: item.zoneapp_cat1,
         point_total_cat2: item.point_total_cat2,
         point_require_cat2: item.point_require_cat2,
+        ssjapp_cat2: item.ssjapp_cat2,
+        zoneapp_cat2: item.zoneapp_cat2,
         point_total_cat3: item.point_total_cat3,
         point_require_cat3: item.point_require_cat3,
+        ssjapp_cat3: item.ssjapp_cat3,
+        zoneapp_cat3: item.zoneapp_cat3,
         point_total_cat4: item.point_total_cat4,
-        point_require_cat4: item.point_require_cat4,
+        ssjapp_cat4: item.ssjapp_cat4,
+        zoneapp_cat4: item.zoneapp_cat4,
         total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
         total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
         cyber_level: item.cyber_level,
         cyber_levelname: item.cyber_levelname
-
     }))
 
     const dataSource = data.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1)
@@ -211,6 +218,75 @@ const TableZoneList = () => {
         },
     ]
 
+    const data2 = listSumEvaluate.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1).map((item, k) => ({
+        key: k,
+        zone: Number(item.zone),
+        provcode: item.provcode,
+        provname: item.provname,
+        hcode: item.hcode,
+        hname_th: item.hname_th,
+        point_total_cat1: item.point_total_cat1,
+        point_require_cat1: item.point_require_cat1,
+        ssjapp_cat1: item.ssjapp_cat1,
+        zoneapp_cat1: item.zoneapp_cat1,
+        point_total_cat2: item.point_total_cat2,
+        point_require_cat2: item.point_require_cat2,
+        ssjapp_cat2: item.ssjapp_cat2,
+        zoneapp_cat2: item.zoneapp_cat2,
+        point_total_cat3: item.point_total_cat3,
+        point_require_cat3: item.point_require_cat3,
+        ssjapp_cat3: item.ssjapp_cat3,
+        zoneapp_cat3: item.zoneapp_cat3,
+        point_total_cat4: item.point_total_cat4,
+        ssjapp_cat4: item.ssjapp_cat4,
+        zoneapp_cat4: item.zoneapp_cat4,
+        total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+        total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+        cyber_level: item.cyber_level,
+        cyber_levelname: item.cyber_levelname
+    }))
+
+    const data3 = data2.map((item) => ({
+        เขตสุขภาพ: Number(item.zone),
+        รหัสจังหวัด: item.provcode,
+        จังหวัด: item.provname,
+        รหัสหน่วยบริการ: item.hcode,
+        ชื่อหน่วยบริการ: item.hname_th,
+        คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
+        คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+        สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
+        คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
+        สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
+        คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
+        สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+        สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้รวม: item.total_cat,
+        คะแนนจำเป็นรวม: item.total_require,
+        ระดับที่ได้: item.total_cat < 600
+            ? 'ไม่ผ่าน'
+            : item.total_cat >= 600 && item.total_cat <= 700
+                ? 'เงิน'
+                : item.total_cat >= 700 && item.total_require < 510
+                    ? 'เงิน'
+                    : item.total_cat >= 800 && item.total_require < 510
+                        ? 'เงิน'
+                        : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+                            ? 'ทอง'
+                            : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                                ? 'ทอง'
+                                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                                    ? 'เพชร'
+                                    : null,
+        ระดับ_cyber_security: item.cyber_levelname
+    }))
+
 
     return (
         <>
@@ -218,11 +294,11 @@ const TableZoneList = () => {
                 <p className='text-2xl font-bold text-green-700'>ผลการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ 2568 ของเขตสุขภาพที่ {parseInt(zone)}</p>
             </div>
             <div className='flex justify-between items-center py-2 px-3'>
-                <div>
+                <div className='flex items-center gap-2'>
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
                     </p>
-
+                    <ExportExcel_zone  data={data3} fileName={"SmartHospReport-zone"} />
                 </div>
                 <div>
                     <Input

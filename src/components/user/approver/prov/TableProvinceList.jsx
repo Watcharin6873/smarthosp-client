@@ -3,6 +3,8 @@ import useGlobalStore from '../../../../store/global-store'
 import { getSumEvaluateByProv } from '../../../../api/Evaluate'
 import { Input, Table } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import ExportExcel_prov from './ExportExcel_prov'
+import { CircleCheck, CircleX } from 'lucide-react'
 
 const TableProvinceList = () => {
 
@@ -22,7 +24,7 @@ const TableProvinceList = () => {
         setIsLoading(true)
         await getSumEvaluateByProv(token, province)
             .then(res => {
-                console.log(res.data)
+                console.log('Data: ', res.data)
                 setListSumEvaluate(res.data)
                 setSearchQuery(res.data)
             })
@@ -48,12 +50,19 @@ const TableProvinceList = () => {
         hname_th: item.hname_th,
         point_total_cat1: item.point_total_cat1,
         point_require_cat1: item.point_require_cat1,
+        ssjapp_cat1: item.ssjapp_cat1,
+        zoneapp_cat1: item.zoneapp_cat1,
         point_total_cat2: item.point_total_cat2,
         point_require_cat2: item.point_require_cat2,
+        ssjapp_cat2: item.ssjapp_cat2,
+        zoneapp_cat2: item.zoneapp_cat2,
         point_total_cat3: item.point_total_cat3,
         point_require_cat3: item.point_require_cat3,
+        ssjapp_cat3: item.ssjapp_cat3,
+        zoneapp_cat3: item.zoneapp_cat3,
         point_total_cat4: item.point_total_cat4,
-        point_require_cat4: item.point_require_cat4,
+        ssjapp_cat4: item.ssjapp_cat4,
+        zoneapp_cat4: item.zoneapp_cat4,
         total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
         total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
         cyber_level: item.cyber_level,
@@ -61,7 +70,7 @@ const TableProvinceList = () => {
 
     }))
 
-    const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+    const dataSource = data.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1)
 
     const columns = [
         {
@@ -88,14 +97,14 @@ const TableProvinceList = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านโครงสร้าง</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat1',
                     align: 'center',
                     render: (point_total_cat1) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat1 === null ? 0 : point_total_cat1}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat1',
                     align: 'center',
                     render: (point_require_cat1) =>
@@ -107,14 +116,14 @@ const TableProvinceList = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบริหารจัดการ</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat2',
                     align: 'center',
                     render: (point_total_cat2) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat2 === null ? 0 : point_total_cat2}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat2',
                     align: 'center',
                     render: (point_require_cat2) =>
@@ -126,14 +135,14 @@ const TableProvinceList = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านการบริการ</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat3',
                     align: 'center',
                     render: (point_total_cat3) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat3 === null ? 0 : point_total_cat3}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat3',
                     align: 'center',
                     render: (point_require_cat3) =>
@@ -145,7 +154,7 @@ const TableProvinceList = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบุคลากร</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat4',
                     align: 'center',
                     render: (point_total_cat4) =>
@@ -154,14 +163,14 @@ const TableProvinceList = () => {
             ]
         },
         {
-            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนที่ได้<br/>(รวม)</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนที่ได้<br />(รวม)</p>,
             dataIndex: 'total_cat',
             align: 'center',
             render: (total_cat) =>
                 <span className='text-center font-bold' style={{ fontSize: '13px' }}>{total_cat === null ? 0 : total_cat}</span>
         },
         {
-            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนจำเป็น<br/>(รวม)</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนจำเป็น<br />(รวม)</p>,
             dataIndex: 'total_require',
             align: 'center',
             render: (total_require) =>
@@ -210,6 +219,75 @@ const TableProvinceList = () => {
         },
     ]
 
+    const data2 = listSumEvaluate.map((item, k) => ({
+        key: k,
+        zone: Number(item.zone),
+        provcode: item.provcode,
+        provname: item.provname,
+        hcode: item.hcode,
+        hname_th: item.hname_th,
+        point_total_cat1: item.point_total_cat1,
+        point_require_cat1: item.point_require_cat1,
+        ssjapp_cat1: item.ssjapp_cat1,
+        zoneapp_cat1: item.zoneapp_cat1,
+        point_total_cat2: item.point_total_cat2,
+        point_require_cat2: item.point_require_cat2,
+        ssjapp_cat2: item.ssjapp_cat2,
+        zoneapp_cat2: item.zoneapp_cat2,
+        point_total_cat3: item.point_total_cat3,
+        point_require_cat3: item.point_require_cat3,
+        ssjapp_cat3: item.ssjapp_cat3,
+        zoneapp_cat3: item.zoneapp_cat3,
+        point_total_cat4: item.point_total_cat4,
+        ssjapp_cat4: item.ssjapp_cat4,
+        zoneapp_cat4: item.zoneapp_cat4,
+        total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+        total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+        cyber_level: item.cyber_level,
+        cyber_levelname: item.cyber_levelname
+    }))
+
+    const data3 = data2.map((item) => ({
+        เขตสุขภาพ: Number(item.zone),
+        รหัสจังหวัด: item.provcode,
+        จังหวัด: item.provname,
+        รหัสหน่วยบริการ: item.hcode,
+        ชื่อหน่วยบริการ: item.hname_th,
+        คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
+        คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+        สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
+        คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
+        สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
+        คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
+        สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+        สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        คะแนนที่ได้รวม: item.total_cat,
+        คะแนนจำเป็นรวม: item.total_require,
+        ระดับที่ได้: item.total_cat < 600
+            ? 'ไม่ผ่าน'
+            : item.total_cat >= 600 && item.total_cat <= 700
+                ? 'เงิน'
+                : item.total_cat >= 700 && item.total_require < 510
+                    ? 'เงิน'
+                    : item.total_cat >= 800 && item.total_require < 510
+                        ? 'เงิน'
+                        : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+                            ? 'ทอง'
+                            : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                                ? 'ทอง'
+                                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                                    ? 'เพชร'
+                                    : null,
+        ระดับ_cyber_security: item.cyber_levelname
+    }))
+
 
     return (
         <>
@@ -217,11 +295,11 @@ const TableProvinceList = () => {
                 <p className='text-2xl font-bold text-green-700'>ผลการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ 2568 ของจังหวัด{province}</p>
             </div>
             <div className='flex justify-between items-center py-2 px-3'>
-                <div>
+                <div className='flex items-center gap-2'>
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
                     </p>
-                    
+                    <ExportExcel_prov data={data3} fileName={"SmartHospReport-prov"} />
                 </div>
                 <div>
                     <Input
@@ -250,7 +328,7 @@ const TableProvinceList = () => {
                 }}
                 bordered
                 size='small'
-                // pagination={{pageSize:12}}
+            // pagination={{pageSize:12}}
             />
         </>
     )

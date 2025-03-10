@@ -82,7 +82,7 @@ const FormReportZone = () => {
   }
 
 
-  const data = listEvaluateByZone.map((item, k) => ({
+  const data = listEvaluateByZone.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1).map((item, k) => ({
     key: k,
     zone: Number(item.zone),
     provcode: item.provcode,
@@ -121,221 +121,196 @@ const FormReportZone = () => {
       </div>
 
       <div className='bg-white rounded-md shadow-md p-3'>
-        <table className='w-full text-left table-fixed text-slate-800'>
-          <thead>
-            <tr className='text-slate-800 border border-l border-r border-slate-300 bg-slate-50'>
-              <th className='text-center p-2 border-r'>รายชื่อจังหวัดในเขตสุขภาพที่ {Number(zone)}</th>
+
+        <table className='w-full table-fixed text-slate-700' style={{ fontSize: '12px' }}>
+          <thead className='bg-slate-50'>
+            <tr style={{ backgroundColor: '#388e3c', color: 'white' }}>
+              <th rowSpan={2} className='text-xs text-center border w-10 p-1'>เขตสุขภาพ</th>
+              <th rowSpan={2} className='text-xs text-center border w-16'>จังหวัด</th>
+              <th rowSpan={2} className='text-xs text-center border w-28'>หน่วยบริการ</th>
+              <th colSpan={4} className='text-xs text-center border w-28 p-1'>ด้านโครงสร้าง</th>
+              <th colSpan={4} className='text-xs text-center border w-28'>ด้านบริหารจัดการ</th>
+              <th colSpan={4} className='text-xs text-center border w-28'>ด้านการบริการ</th>
+              <th colSpan={3} className='text-xs text-center border w-28'>ด้านบุคลากร</th>
+              <th rowSpan={2} className='text-xs text-center border w-24'>ระดับ Cyber Security</th>
+            </tr>
+            <tr style={{ backgroundColor: '#388e3c', color: 'white' }}>
+              <th className='text-center border'>คะแนน<br />เต็ม</th>
+              <th className='text-center border'>คะแนน<br />จำเป็น</th>
+              <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+              <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+              <th className='text-center border'>คะแนน<br />เต็ม</th>
+              <th className='text-center border'>คะแนน<br />จำเป็น</th>
+              <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+              <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+              <th className='text-center border'>คะแนน<br />เต็ม</th>
+              <th className='text-center border'>คะแนน<br />จำเป็น</th>
+              <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+              <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
+              <th className='text-center border'>คะแนน<br />เต็ม</th>
+              <th className='text-center border'>สสจ.<br />อนุมัติ</th>
+              <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
             </tr>
           </thead>
-          {
-            provData.map((item1, k1) => (
-              <tbody>
-                <tr key={k1} className='cursor-pointer hover:bg-slate-50 text-sm' onClick={() => handleExpandedRow(k1)}>
-                  <td className='border p-1 text-center font-bold text-yellow-700'>
-                    <p>{item1.provname}</p>
+
+          <tbody>
+            {
+              data.map((item3, k3) => (
+
+                <tr key={k3}>
+                  <td className='border text-center'>
+                    <p>{Number(item3.zone)}</p>
+                  </td>
+                  <td className='border text-center px-1'>
+                    <p>{item3.provname}</p>
+                  </td>
+                  <td className='border'>
+                    <p className='pl-2'>{item3.hname_th} [{item3.hcode}]</p>
+                  </td>
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_total_cat1 === null ? 0 : item3.point_total_cat1}</p>
+                  </td>
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_require_cat1 === null ? 0 : item3.point_require_cat1}</p>
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.ssjapp_cat1 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.zoneapp_cat1 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_total_cat2 === null ? 0 : item3.point_total_cat2}</p>
+                  </td>
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_require_cat2 === null ? 0 : item3.point_require_cat2}</p>
+                  </td>
+                  <td className='border text-center text-blue-600'>
+                    {
+                      item3.ssjapp_cat2 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.zoneapp_cat2 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_total_cat3 === null ? 0 : item3.point_total_cat3}</p>
+                  </td>
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_require_cat3 === null ? 0 : item3.point_require_cat3}</p>
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.ssjapp_cat3 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.zoneapp_cat3 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+
+                  <td className='border text-center text-blue-600'>
+                    <p className='pl-2'>{item3.point_total_cat4 === null ? 0 : item3.point_total_cat4}</p>
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.ssjapp_cat4 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.zoneapp_cat4 === '1'
+                        ?
+                        <div className='text-green-600 flex justify-center'>
+                          <CircleCheck size={12} />
+                        </div>
+                        :
+                        <div className='text-red-500 flex justify-center'>
+                          <CircleX size={12} />
+                        </div>
+                    }
+                  </td>
+                  <td className='border text-center'>
+                    {
+                      item3.cyber_level === 'GREEN'
+                        ? <p className='text-green-700'>{item3.cyber_levelname}</p>
+                        : item3.cyber_level === 'YELLOW'
+                          ? <p className='text-yellow-600'>{item3.cyber_levelname}</p>
+                          : item3.cyber_level === 'RED'
+                            ? <p className='text-red-500'>{item3.cyber_levelname}</p>
+                            : null
+                    }
                   </td>
                 </tr>
-                {expandedRows === k1 ? (
-                  <tr>
-                    <td className='border'>
-                      <table className='w-full table-fixed text-slate-700' style={{ fontSize: '12px' }}>
-                        <thead className='bg-slate-50'>
-                          <tr>
-                            <th rowSpan={4} className='text-center border'>หน่วยบริการ</th>
-                            <th colSpan={4} className='text-center border w-56'>ด้านโครงสร้าง</th>
-                            <th colSpan={4} className='text-center border w-56'>ด้านบริหารจัดการ</th>
-                            <th colSpan={4} className='text-center border w-56'>ด้านการบริการ</th>
-                            <th colSpan={3} className='text-center border w-40'>ด้านบุคลากร</th>
-                            <th rowSpan={2} className='text-xs text-center border w-40'>ระดับ Cyber Security</th>
-                          </tr>
-                          <tr>
-                            <th className='text-center border'>คะแนน<br />เต็ม</th>
-                            <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
-                            <th className='text-center border'>คะแนน<br />เต็ม</th>
-                            <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
-                            <th className='text-center border'>คะแนน<br />เต็ม</th>
-                            <th className='text-center border'>คะแนน<br />จำเป็น</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
-                            <th className='text-center border'>คะแนน<br />เต็ม</th>
-                            <th className='text-center border'>สสจ.<br />อนุมัติ</th>
-                            <th className='text-center border'>เขตฯ.<br />อนุมัติ</th>
-                          </tr>
-                        </thead>
-                        {
-                          listHospitals.map((item2, k2) => (
-                            item2.provcode === item1.provcode
-                              ?
-                              <tbody>
-                                {
-                                  data.map((item3) => (
-                                    item3.hcode === item2.hcode
-                                      ?
-                                      <>
-                                        <tr key={k2}>
-                                          <td className='border'>
-                                            <p className='pl-2'>{item2.hname_th} [{item2.hcode}]</p>
-                                          </td>
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_total_cat1 === null ? 0 : item3.point_total_cat1}</p>
-                                          </td>
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_require_cat1 === null ? 0 : item3.point_require_cat1}</p>
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.ssjapp_cat1 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.zoneapp_cat1 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
 
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_total_cat2 === null ? 0 : item3.point_total_cat2}</p>
-                                          </td>
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_require_cat2 === null ? 0 : item3.point_require_cat2}</p>
-                                          </td>
-                                          <td className='border text-center text-blue-600'>
-                                            {
-                                              item3.ssjapp_cat2 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.zoneapp_cat2 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_total_cat3 === null ? 0 : item3.point_total_cat3}</p>
-                                          </td>
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_require_cat3 === null ? 0 : item3.point_require_cat3}</p>
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.ssjapp_cat3 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.zoneapp_cat3 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-
-                                          <td className='border text-center text-blue-600'>
-                                            <p className='pl-2'>{item3.point_total_cat4 === null ? 0 : item3.point_total_cat4}</p>
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.ssjapp_cat4 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.zoneapp_cat4 === '1'
-                                                ?
-                                                <div className='text-green-600 flex justify-center'>
-                                                  <CircleCheck size={12} />
-                                                </div>
-                                                :
-                                                <div className='text-red-500 flex justify-center'>
-                                                  <CircleX size={12} />
-                                                </div>
-                                            }
-                                          </td>
-                                          <td className='border text-center'>
-                                            {
-                                              item3.cyber_level === 'GREEN'
-                                                ? <p className='text-green-700'>{item3.cyber_levelname}</p>
-                                                : item3.cyber_level === 'YELLOW'
-                                                  ? <p className='text-yellow-600'>{item3.cyber_levelname}</p>
-                                                  : item3.cyber_level === 'RED'
-                                                    ? <p className='text-red-500'>{item3.cyber_levelname}</p>
-                                                    : null
-                                            }
-                                          </td>
-                                        </tr>
-                                      </>
-                                      : null
-                                  ))
-                                }
-                              </tbody>
-                              : null
-
-                          ))
-                        }
-                      </table>
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            ))
-          }
+              ))
+            }
+          </tbody>
         </table>
       </div>
 

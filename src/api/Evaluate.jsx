@@ -49,6 +49,12 @@ export const getEvaluateForBarChartStackZone = async (zone) =>{
 }
 
 
+//Get evaluate for barchart
+export const getEvaluateForChart = async (zone) =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/getEvaluateForChart`)
+}
+
+
 //Get List SubQuest
 export const getListSubQuestsForEvaluate = async (token, values) => {
     return await axios.get(import.meta.env.VITE_APP_API + `/getListSubQuestsForEvaluate/` + values,
