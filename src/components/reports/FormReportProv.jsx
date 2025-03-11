@@ -5,6 +5,7 @@ import { getHospitalOnProv } from '../../api/Hospital'
 import { getSumEvaluateByProv, getSumEvaluateByZone } from '../../api/Evaluate'
 import { Table } from 'antd'
 import { CircleCheck, CircleX } from 'lucide-react'
+import ExportExcel_prov from '../user/approver/prov/ExportExcel_prov'
 
 const FormReportProv = () => {
 
@@ -61,6 +62,75 @@ const FormReportProv = () => {
     }
   }
 
+  const data2 = listEvaluateByProv.map((item, k) => ({
+    key: k,
+    zone: Number(item.zone),
+    provcode: item.provcode,
+    provname: item.provname,
+    hcode: item.hcode,
+    hname_th: item.hname_th,
+    point_total_cat1: item.point_total_cat1,
+    point_require_cat1: item.point_require_cat1,
+    ssjapp_cat1: item.ssjapp_cat1,
+    zoneapp_cat1: item.zoneapp_cat1,
+    point_total_cat2: item.point_total_cat2,
+    point_require_cat2: item.point_require_cat2,
+    ssjapp_cat2: item.ssjapp_cat2,
+    zoneapp_cat2: item.zoneapp_cat2,
+    point_total_cat3: item.point_total_cat3,
+    point_require_cat3: item.point_require_cat3,
+    ssjapp_cat3: item.ssjapp_cat3,
+    zoneapp_cat3: item.zoneapp_cat3,
+    point_total_cat4: item.point_total_cat4,
+    ssjapp_cat4: item.ssjapp_cat4,
+    zoneapp_cat4: item.zoneapp_cat4,
+    total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+    total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+    cyber_level: item.cyber_level,
+    cyber_levelname: item.cyber_levelname
+  }))
+
+  const data3 = data2.map((item) => ({
+    เขตสุขภาพ: Number(item.zone),
+    รหัสจังหวัด: item.provcode,
+    จังหวัด: item.provname,
+    รหัสหน่วยบริการ: item.hcode,
+    ชื่อหน่วยบริการ: item.hname_th,
+    คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
+    คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+    สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
+    คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
+    สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
+    คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
+    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+    สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    คะแนนที่ได้รวม: item.total_cat,
+    คะแนนจำเป็นรวม: item.total_require,
+    ระดับที่ได้: item.total_cat < 600
+      ? 'ไม่ผ่าน'
+      : item.total_cat >= 600 && item.total_cat <= 700
+        ? 'เงิน'
+        : item.total_cat >= 700 && item.total_require < 510
+          ? 'เงิน'
+          : item.total_cat >= 800 && item.total_require < 510
+            ? 'เงิน'
+            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+              ? 'ทอง'
+              : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                ? 'ทอง'
+                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                  ? 'เพชร'
+                  : null,
+    ระดับ_cyber_security: item.cyber_levelname
+  }))
+
 
   return (
     <div>
@@ -71,9 +141,16 @@ const FormReportProv = () => {
 
       <div className='bg-white rounded-md shadow-md p-3'>
 
+        <div className='flex items-center gap-2 mb-2'>
+          <p style={{ fontSize: '14px' }} className='text-blue-500'>
+            จำนวนหน่วยบริการทีประเมินทั้งหมด {listEvaluateByProv.length} รายการ
+          </p>
+          <ExportExcel_prov data={data3} fileName={"SmartHospReport-prov"} />
+        </div>
+
         <table className='w-full table-fixed text-slate-700'>
           <thead className=''>
-            <tr style={{backgroundColor:'#388e3c', color:'white'}}>
+            <tr style={{ backgroundColor: '#388e3c', color: 'white' }}>
               <th rowSpan={2} className='text-xs text-center border w-10 p-1'>เขตสุขภาพ</th>
               <th rowSpan={2} className='text-xs text-center border w-14'>จังหวัด</th>
               <th rowSpan={2} className='text-xs text-center border w-28'>หน่วยบริการ</th>
@@ -83,7 +160,7 @@ const FormReportProv = () => {
               <th colSpan={3} className='text-xs text-center border w-28'>ด้านบุคลากร</th>
               <th rowSpan={2} className='text-xs text-center border w-28'>ระดับ Cyber Security</th>
             </tr>
-            <tr style={{backgroundColor:'#388e3c', color:'white'}}>
+            <tr style={{ backgroundColor: '#388e3c', color: 'white' }}>
               <th className='text-xs text-center border p-1'>คะแนนที่ได้</th>
               <th className='text-xs text-center border'>คะแนนจำเป็น</th>
               <th className='text-xs text-center border'>สสจ.<br />อนุมัติ</th>
@@ -109,7 +186,7 @@ const FormReportProv = () => {
                     <p>{Number(item2.zone)}</p>
                   </td>
                   <td className='border text-center'>
-                  <p>{item2.provname}</p>
+                    <p>{item2.provname}</p>
                   </td>
                   <td className='border pl-1'>
                     <p>{item2.hname_th} [{item2.hcode}]</p>

@@ -453,7 +453,7 @@ const Home = () => {
   return (
     <div>
       <div className='flex justify-between items-center'>
-        <div className='flex justify-center items-center mb-5'>
+        <div className='flex justify-center items-center'>
           <Form
             form={formSearch}
             name='formSearch'
@@ -531,7 +531,7 @@ const Home = () => {
             </Form.Item>
           </Form>
         </div>
-        <div className='flex justify-center items-center mb-5 gap-2 text-base font-bold text-green-700 pr-5'>
+        <div className='flex justify-center items-center gap-2 text-base font-bold text-green-700 pr-5'>
           {
             zoneUnique.length > 1
               ?
@@ -552,7 +552,10 @@ const Home = () => {
           }
 
         </div>
+        
       </div>
+
+      <p className='text-xs text-orange-500 m-3'>***ข้อมูลที่แสดงเป็นผลคะแนนจาก รพ. ประเมินตนเอง***</p>
 
       <div className='grid grid-cols-5 gap-2'>
 

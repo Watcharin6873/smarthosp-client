@@ -162,7 +162,7 @@ const FormHomeSSJ = () => {
 
   return (
     <div>
-
+      <p className='text-xs text-orange-500 m-3'>***ข้อมูลที่แสดงเป็นผลคะแนนจาก รพ. ประเมินตนเอง***</p>
       <div className='grid grid-cols-5 gap-2'>
 
         <div className='bg-white rounded-md shadow-md p-3'>
