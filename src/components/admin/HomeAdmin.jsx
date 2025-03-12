@@ -6,10 +6,10 @@ import HospitalIcon from '../../assets/Hospital.png'
 import { Ban, Blocks, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
 import { getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
-import { ArrowUpOutlined, ClearOutlined, ExclamationCircleFilled } from '@ant-design/icons'
+import { ArrowUpOutlined, ClearOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../../api/Hospital'
-import { Button, Checkbox, Form, Modal, Select, Table } from 'antd'
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import { Button, Checkbox, Form, Input, Modal, Select, Table } from 'antd'
+import ExportExcel_admin from './ExportExcel_admin'
 
 
 const HomeAdmin = () => {
@@ -150,6 +150,16 @@ const HomeAdmin = () => {
   }))
 
   const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+
+
+  const handleFilter = (e) => {
+    setSearchQuery(listSumEvaluateForAll.filter(f =>
+      f.hcode.toLowerCase().includes(e.target.value) ||
+      f.hname_th.toLowerCase().includes(e.target.value) ||
+      f.provname.toLowerCase().includes(e.target.value)
+      // || f.zone.toLowerCase().includes(e.target.value)
+    ))
+  }
 
   const columns = [
     {
@@ -298,53 +308,65 @@ const HomeAdmin = () => {
     },
   ]
 
+  const data2 = listSumEvaluateForAll.map((item) => ({
+    zone: Number(item.zone),
+    provcode: item.provcode,
+    provname: item.provname,
+    hcode: item.hcode,
+    hname_th: item.hname_th,
+    point_total_cat1: item.point_total_cat1,
+    point_require_cat1: item.point_require_cat1,
+    point_total_cat2: item.point_total_cat2,
+    point_require_cat2: item.point_require_cat2,
+    point_total_cat3: item.point_total_cat3,
+    point_require_cat3: item.point_require_cat3,
+    point_total_cat4: item.point_total_cat4,
+    point_require_cat4: item.point_require_cat4,
+    total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+    total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+    cyber_level: item.cyber_level,
+    cyber_levelname: item.cyber_levelname
+  }))
+
+  const data3 = data2.map((item) => ({
+    เขตสุขภาพ: Number(item.zone),
+    รหัสจังหวัด: item.provcode,
+    จังหวัด: item.provname,
+    รหัสหน่วยบริการ: item.hcode,
+    ชื่อหน่วยบริการ: item.hname_th,
+    คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
+    คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+    คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
+    คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
+    คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
+    คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
+    คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+    คะแนนที่ได้รวม: item.total_cat,
+    คะแนนจำเป็นรวม: item.total_require,
+    ระดับที่ได้: item.total_cat < 600
+      ? 'ไม่ผ่าน'
+      : item.total_cat >= 600 && item.total_cat <= 700
+        ? 'เงิน'
+        : item.total_cat >= 700 && item.total_require < 510
+          ? 'เงิน'
+          : item.total_cat >= 800 && item.total_require < 510
+            ? 'เงิน'
+            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+              ? 'ทอง'
+              : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                ? 'ทอง'
+                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                  ? 'เพชร'
+                  : null,
+    ระดับ_cyber_security: item.cyber_levelname
+  }))
+
+  const downloadReport = () =>{
+    window.open(`https://bdh-service.moph.go.th/api/smarthosp/cyber-image/Report_all.xlsx`)
+  }
+
   return (
     <div>
-
-      {/* <div className='flex justify-between mb-5'>
-        <div>
-          <Form
-            name='formSelectZone'
-            form={formSelectZone}
-            layout='inline'
-          >
-            <Form.Item name='zoneSearch'>
-              <Select
-                className='w-48'
-                showSearch
-                placeholder='กรุณาเลือกเขตสุขภาพ...'
-                optionFilterProp='label'
-                onChange={onChange}
-                options={optionZone}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                danger
-                onClick={clearForm}
-              >
-                <ClearOutlined /> Reset ค่า
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div>
-          {
-            listProvcode?.length > 0
-              ?
-              <>
-                <span>ข้อมูลของจังหวัด : </span>
-                {
-                  provinceData.map((item) => (
-                    <span>{item.province + ' '}</span>
-                  ))
-                }
-              </>
-              : null
-
-          }
-        </div>
-      </div> */}
 
       <div className='grid grid-cols-5 gap-2 mt-3'>
 
@@ -461,6 +483,31 @@ const HomeAdmin = () => {
       <div className='w-full bg-white rounded-md shadow-md p-3'>
         <div className='flex justify-center items-center'>
           <p className='text-2xl font-bold text-green-700'>ผลการประเมินแต่ละระดับที่ได้จากคะแนนในการประเมินโรงพยาบาลอัจฉริยะ ปีงบประมาณ พ.ศ.2568</p>
+        </div>
+        <div className='flex justify-between items-center py-2 px-3'>
+          <div className='flex items-center gap-2'>
+            <p style={{ fontSize: '14px' }} className='text-blue-500'>
+              จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
+            </p>
+            <ExportExcel_admin data={data3} fileName={"SmartHospReport-All"} />
+            <Button 
+              type='primary' 
+              icon={<DownloadOutlined shape='round' />} 
+              size='small'
+              onClick={downloadReport}
+            >
+              ดาวน์โหลดข้อมูลการประเมินรายข้อ
+            </Button>
+          </div>
+          <div>
+            <Input
+              placeholder='จังหวัด, รหัส 5 หลัก, ชื่อหน่วยบริการ...'
+              className='rounded-full'
+              style={{ width: 250 }}
+              prefix={<SearchOutlined />}
+              onChange={handleFilter}
+            />
+          </div>
         </div>
         <Table
           style={{

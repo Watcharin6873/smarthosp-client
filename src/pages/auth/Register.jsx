@@ -36,8 +36,8 @@ const Register = () => {
     const values = {
       grant_type: 'authorization_code',
       code: code,
-      // redirect_uri: 'https://bdh-service.moph.go?.th/smarthosp-quest/register/',
-      redirect_uri: 'http://localhost:5173/smartho?sp-quest/register/',
+      // redirect_uri: 'https://bdh-service.moph.go.th/smarthosp-quest/register/',
+      redirect_uri: 'http://localhost:5173/smarthosp-quest/register/',
       client_id: '019274d1-ac2a-7352-b73a-ca66a5b135fb',
       client_secret: '97e76d1d6eff9ac1ee377d598c0fe995f018a9c3'
     }
@@ -134,19 +134,19 @@ const Register = () => {
 
 
   const optionZone = [
-    {value:'01', label:'เขตสุขภาพที่ 1'},
-    {value:'02', label:'เขตสุขภาพที่ 2'},
-    {value:'03', label:'เขตสุขภาพที่ 3'},
-    {value:'04', label:'เขตสุขภาพที่ 4'},
-    {value:'05', label:'เขตสุขภาพที่ 5'},
-    {value:'06', label:'เขตสุขภาพที่ 6'},
-    {value:'07', label:'เขตสุขภาพที่ 7'},
-    {value:'08', label:'เขตสุขภาพที่ 8'},
-    {value:'09', label:'เขตสุขภาพที่ 9'},
-    {value:'10', label:'เขตสุขภาพที่ 10'},
-    {value:'11', label:'เขตสุขภาพที่ 11'},
-    {value:'12', label:'เขตสุขภาพที่ 12'},
-    {value:'13', label:'เขตสุขภาพที่ 13'},
+    { value: '01', label: 'เขตสุขภาพที่ 1' },
+    { value: '02', label: 'เขตสุขภาพที่ 2' },
+    { value: '03', label: 'เขตสุขภาพที่ 3' },
+    { value: '04', label: 'เขตสุขภาพที่ 4' },
+    { value: '05', label: 'เขตสุขภาพที่ 5' },
+    { value: '06', label: 'เขตสุขภาพที่ 6' },
+    { value: '07', label: 'เขตสุขภาพที่ 7' },
+    { value: '08', label: 'เขตสุขภาพที่ 8' },
+    { value: '09', label: 'เขตสุขภาพที่ 9' },
+    { value: '10', label: 'เขตสุขภาพที่ 10' },
+    { value: '11', label: 'เขตสุขภาพที่ 11' },
+    { value: '12', label: 'เขตสุขภาพที่ 12' },
+    { value: '13', label: 'เขตสุขภาพที่ 13' },
   ]
 
 
@@ -192,7 +192,7 @@ const Register = () => {
                 block
                 // href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=https://bdh-service.moph.go.th/smarthosp-quest/register/&response_type=code'
                 href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=http://localhost:5173/smarthosp-quest/register/&response_type=code'
-                // disabled
+              // disabled
               >
                 <img
                   className='w-32 p-2'
@@ -410,11 +410,11 @@ const Register = () => {
                     rules={[
                       {
                         required: true,
-                        message:'กรุณาระบุเขตสุขภาพ!'
+                        message: 'กรุณาระบุเขตสุขภาพ!'
                       }
                     ]}
                     style={{ marginBottom: '10px' }}
-                    
+
                   >
                     <Select options={optionZone} placeholder="กรุณาระบุเขตสุขภาพ..." />
                   </Form.Item>
@@ -435,7 +435,7 @@ const Register = () => {
                     ]}
                     style={{ marginBottom: '10px' }}
                   >
-                    <Radio.Group onChange={(e)=>e.target.value}>
+                    <Radio.Group onChange={(e) => e.target.value}>
                       <Space direction='vertical'>
                         <Radio value='4'>หน่วยบริการ</Radio>
                         <Radio value='3'>จังหวัด</Radio>
@@ -455,7 +455,7 @@ const Register = () => {
                     ]}
                     style={{ marginBottom: '10px' }}
                   >
-                    <Radio.Group onChange={(e)=>e.target.value}>
+                    <Radio.Group onChange={(e) => e.target.value}>
                       <Space direction='vertical'>
                         <Radio value='zone_approve'>คกก.รพ.อัจฉริยะเขตฯ Approve</Radio>
                         <Radio value='prov_approve'>คกก.รพ.อัจฉริยะ สสจ. Approve</Radio>
