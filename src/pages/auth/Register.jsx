@@ -427,7 +427,7 @@ const Register = () => {
                   </div>
                   <Form.Item
                     name='level'
-                    label={<b>ระดับหน่วยงาน :</b>}
+                    label={<b>ระดับหน่วยงานของท่าน :</b>}
                     rules={[
                       {
                         required: true
@@ -447,7 +447,7 @@ const Register = () => {
 
                   <Form.Item
                     name='objective'
-                    label={<b>ประเภทผู้ใช้ :</b>}
+                    label={<b>ประเภทผู้ใช้งาน :</b>}
                     rules={[
                       {
                         required: true,

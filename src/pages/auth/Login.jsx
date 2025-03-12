@@ -219,7 +219,7 @@ const Login = () => {
           </Form.Item>
           <Form.Item
             name='level'
-            label={<b>ระดับหน่วยงาน :</b>}
+            label={<b>เลือกประเภทผู้ใช้งาน :</b>}
             rules={[
               {
                 required: true,
@@ -229,10 +229,10 @@ const Login = () => {
           >
             <Radio.Group onChange={(e) => e.target.value}>
               <Space direction='vertical'>
-                <Radio value='4'>หน่วยบริการ</Radio>
-                <Radio value='3'>จังหวัด</Radio>
-                <Radio value='2'>เขตสุขภาพ</Radio>
-                <Radio value='1'>ส่วนกลาง (กระทรวงสาธารณสุข)</Radio>
+                <Radio value='4'>ผู้ประเมินโรงพยาบาลตนเอง</Radio>
+                <Radio value='3'>คณะกรรมการระดับจังหวัด</Radio>
+                <Radio value='2'>คณะกรรมการระดับเขตสุขภาพ</Radio>
+                <Radio value='1'>แอดมินส่วนกลาง (กระทรวงสาธารณสุข)</Radio>
               </Space>
             </Radio.Group>
           </Form.Item>

@@ -129,27 +129,39 @@ const HomeAdmin = () => {
   const data = searchQuery.map((item, k) => ({
     key: k,
     zone: Number(item.zone),
-    zone_name: 'เขตสุขภาพที่ ' + Number(item.zone),
     provcode: item.provcode,
     provname: item.provname,
     hcode: item.hcode,
     hname_th: item.hname_th,
     point_total_cat1: item.point_total_cat1,
     point_require_cat1: item.point_require_cat1,
+    ssjapp_cat1: item.ssjapp_cat1,
+    zoneapp_cat1: item.zoneapp_cat1,
     point_total_cat2: item.point_total_cat2,
     point_require_cat2: item.point_require_cat2,
+    ssjapp_cat2: item.ssjapp_cat2,
+    zoneapp_cat2: item.zoneapp_cat2,
     point_total_cat3: item.point_total_cat3,
     point_require_cat3: item.point_require_cat3,
+    ssjapp_cat3: item.ssjapp_cat3,
+    zoneapp_cat3: item.zoneapp_cat3,
     point_total_cat4: item.point_total_cat4,
-    point_require_cat4: item.point_require_cat4,
+    ssjapp_cat4: item.ssjapp_cat4,
+    zoneapp_cat4: item.zoneapp_cat4,
     total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
     total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
     cyber_level: item.cyber_level,
     cyber_levelname: item.cyber_levelname
-
   }))
 
-  const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+  // const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+
+  const dataSource = [...data].sort((a, b) => {
+    if(a.zone !== b.zone){
+      return a.zone - b.zone //Primary sort
+    }
+    return a.provcode.localeCompare(b.provcode) //Secondary sort
+  })
 
 
   const handleFilter = (e) => {
@@ -308,7 +320,8 @@ const HomeAdmin = () => {
     },
   ]
 
-  const data2 = listSumEvaluateForAll.map((item) => ({
+  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item,k) => ({
+    key: k,
     zone: Number(item.zone),
     provcode: item.provcode,
     provname: item.provname,
@@ -316,12 +329,19 @@ const HomeAdmin = () => {
     hname_th: item.hname_th,
     point_total_cat1: item.point_total_cat1,
     point_require_cat1: item.point_require_cat1,
+    ssjapp_cat1: item.ssjapp_cat1,
+    zoneapp_cat1: item.zoneapp_cat1,
     point_total_cat2: item.point_total_cat2,
     point_require_cat2: item.point_require_cat2,
+    ssjapp_cat2: item.ssjapp_cat2,
+    zoneapp_cat2: item.zoneapp_cat2,
     point_total_cat3: item.point_total_cat3,
     point_require_cat3: item.point_require_cat3,
+    ssjapp_cat3: item.ssjapp_cat3,
+    zoneapp_cat3: item.zoneapp_cat3,
     point_total_cat4: item.point_total_cat4,
-    point_require_cat4: item.point_require_cat4,
+    ssjapp_cat4: item.ssjapp_cat4,
+    zoneapp_cat4: item.zoneapp_cat4,
     total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
     total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
     cyber_level: item.cyber_level,
@@ -336,11 +356,19 @@ const HomeAdmin = () => {
     ชื่อหน่วยบริการ: item.hname_th,
     คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
     คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
+    สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
     คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
+    สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
     คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
+    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
+    สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้รวม: item.total_cat,
     คะแนนจำเป็นรวม: item.total_require,
     ระดับที่ได้: item.total_cat < 600
@@ -361,7 +389,7 @@ const HomeAdmin = () => {
     ระดับ_cyber_security: item.cyber_levelname
   }))
 
-  const downloadReport = () =>{
+  const downloadReport = () => {
     window.open(`https://bdh-service.moph.go.th/api/smarthosp/cyber-image/Report_all.xlsx`)
   }
 
@@ -490,9 +518,9 @@ const HomeAdmin = () => {
               จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
             </p>
             <ExportExcel_admin data={data3} fileName={"SmartHospReport-All"} />
-            <Button 
-              type='primary' 
-              icon={<DownloadOutlined shape='round' />} 
+            <Button
+              type='primary'
+              icon={<DownloadOutlined shape='round' />}
               size='small'
               onClick={downloadReport}
             >
