@@ -289,20 +289,19 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.ssjapp_cat4 === '1'
+                      item2.ssjapp_cat3 === '1'
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
                         </div>
-                        :
-                        <div className='text-red-500 flex justify-center'>
+                        : <div className='text-red-500 flex justify-center'>
                           <CircleX size={12} />
                         </div>
                     }
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.zoneapp_cat4 === '1'
+                      item2.zoneapp_cat3 === '1'
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />

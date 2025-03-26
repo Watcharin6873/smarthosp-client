@@ -3,7 +3,7 @@ import Gem from '../../assets/Blue-gem.png'
 import Gold from '../../assets/Gold2.png'
 import Silver from '../../assets/Silver2.png'
 import HospitalIcon from '../../assets/Hospital.png'
-import { Ban, Blocks, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
+import { Ban, Blocks, CircleCheck, CircleX, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
 import { getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
 import { ArrowUpOutlined, ClearOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
@@ -157,7 +157,7 @@ const HomeAdmin = () => {
   // const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
 
   const dataSource = [...data].sort((a, b) => {
-    if(a.zone !== b.zone){
+    if (a.zone !== b.zone) {
       return a.zone - b.zone //Primary sort
     }
     return a.provcode.localeCompare(b.provcode) //Secondary sort
@@ -210,6 +210,44 @@ const HomeAdmin = () => {
           align: 'center',
           render: (point_require_cat1) =>
             <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat1 === null ? 0 : point_require_cat1}</span>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>สสจ.<br />อนุมัติ</p>,
+          dataIndex: 'ssjapp_cat1',
+          align: 'center',
+          render: (ssjapp_cat1) =>
+            <>
+              {
+                ssjapp_cat1 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>เขตฯ<br />อนุมัติ</p>,
+          dataIndex: 'zoneapp_cat1',
+          align: 'center',
+          render: (zoneapp_cat1) =>
+            <>
+              {
+                zoneapp_cat1 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
         }
       ]
     },
@@ -229,6 +267,44 @@ const HomeAdmin = () => {
           align: 'center',
           render: (point_require_cat2) =>
             <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat2 === null ? 0 : point_require_cat2}</span>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>สสจ.<br />อนุมัติ</p>,
+          dataIndex: 'ssjapp_cat2',
+          align: 'center',
+          render: (ssjapp_cat2) =>
+            <>
+              {
+                ssjapp_cat2 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>เขตฯ<br />อนุมัติ</p>,
+          dataIndex: 'zoneapp_cat2',
+          align: 'center',
+          render: (zoneapp_cat2) =>
+            <>
+              {
+                zoneapp_cat2 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
         }
       ]
     },
@@ -248,6 +324,44 @@ const HomeAdmin = () => {
           align: 'center',
           render: (point_require_cat3) =>
             <span className='text-center' style={{ fontSize: '13px' }}>{point_require_cat3 === null ? 0 : point_require_cat3}</span>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>สสจ.<br />อนุมัติ</p>,
+          dataIndex: 'ssjapp_cat3',
+          align: 'center',
+          render: (ssjapp_cat3) =>
+            <>
+              {
+                ssjapp_cat3 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>เขตฯ<br />อนุมัติ</p>,
+          dataIndex: 'zoneapp_cat3',
+          align: 'center',
+          render: (zoneapp_cat3) =>
+            <>
+              {
+                zoneapp_cat3 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
         }
       ]
     },
@@ -260,6 +374,44 @@ const HomeAdmin = () => {
           align: 'center',
           render: (point_total_cat4) =>
             <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat4 === null ? 0 : point_total_cat4}</span>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>สสจ.<br />อนุมัติ</p>,
+          dataIndex: 'ssjapp_cat4',
+          align: 'center',
+          render: (ssjapp_cat4) =>
+            <>
+              {
+                ssjapp_cat4 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
+        },
+        {
+          title: <p className='text-center' style={{ fontSize: '12px' }}>เขตฯ<br />อนุมัติ</p>,
+          dataIndex: 'zoneapp_cat4',
+          align: 'center',
+          render: (zoneapp_cat4) =>
+            <>
+              {
+                zoneapp_cat4 === '1'
+                  ?
+                  <div className='text-green-600 flex justify-center'>
+                    <CircleCheck size={12} />
+                  </div>
+                  :
+                  <div className='text-red-500 flex justify-center'>
+                    <CircleX size={12} />
+                  </div>
+              }
+            </>
         }
       ]
     },
@@ -320,7 +472,7 @@ const HomeAdmin = () => {
     },
   ]
 
-  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item,k) => ({
+  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k) => ({
     key: k,
     zone: Number(item.zone),
     provcode: item.provcode,
@@ -554,7 +706,7 @@ const HomeAdmin = () => {
           }}
           bordered
           size='small'
-        // pagination={{pageSize:12}}
+        pagination={{pageSize:12}}
         />
 
 

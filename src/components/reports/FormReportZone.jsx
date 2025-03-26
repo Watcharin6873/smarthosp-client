@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { getListHospitalOnZone } from '../../api/Hospital'
 import { getSumEvaluateByZone, selectApproveEvaluate } from '../../api/Evaluate'
 import { CheckCircleOutlined } from '@mui/icons-material'
-import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { CircleCheck, CircleX } from 'lucide-react'
-import { Input, Table } from 'antd'
+import { CloseCircleOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
+import { CircleCheck, CircleX, Dot } from 'lucide-react'
+import { Input, Table, Modal, Button } from 'antd'
 import ExportExcel_zone from '../user/approver/zone/ExportExcel_zone'
+
+const { confirm } = Modal
 
 const FormReportZone = () => {
 
@@ -54,10 +56,10 @@ const FormReportZone = () => {
 
   const handleFilter = (e) => {
     setSearchQuery(listEvaluateByZone.filter(f =>
-        f.hcode.toLowerCase().includes(e.target.value) || f.hname_th.toLowerCase().includes(e.target.value) ||
-        f.provname.toLowerCase().includes(e.target.value)
+      f.hcode.toLowerCase().includes(e.target.value) || f.hname_th.toLowerCase().includes(e.target.value) ||
+      f.provname.toLowerCase().includes(e.target.value)
     ))
-}
+  }
 
 
   const data = searchQuery.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1).map((item, k) => ({
@@ -414,9 +416,9 @@ const FormReportZone = () => {
     total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
     cyber_level: item.cyber_level,
     cyber_levelname: item.cyber_levelname
-}))
+  }))
 
-const data3 = data2.map((item) => ({
+  const data3 = data2.map((item) => ({
     เขตสุขภาพ: Number(item.zone),
     รหัสจังหวัด: item.provcode,
     จังหวัด: item.provname,
@@ -432,30 +434,80 @@ const data3 = data2.map((item) => ({
     เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
     คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
-    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
     สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้รวม: item.total_cat,
     คะแนนจำเป็นรวม: item.total_require,
     ระดับที่ได้: item.total_cat < 600
-        ? 'ไม่ผ่าน'
-        : item.total_cat >= 600 && item.total_cat <= 700
+      ? 'ไม่ผ่าน'
+      : item.total_cat >= 600 && item.total_cat <= 700
+        ? 'เงิน'
+        : item.total_cat >= 700 && item.total_require < 510
+          ? 'เงิน'
+          : item.total_cat >= 800 && item.total_require < 510
             ? 'เงิน'
-            : item.total_cat >= 700 && item.total_require < 510
-                ? 'เงิน'
-                : item.total_cat >= 800 && item.total_require < 510
-                    ? 'เงิน'
-                    : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
-                        ? 'ทอง'
-                        : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
-                            ? 'ทอง'
-                            : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
-                                ? 'เพชร'
-                                : null,
+            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+              ? 'ทอง'
+              : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                ? 'ทอง'
+                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                  ? 'เพชร'
+                  : null,
     ระดับ_cyber_security: item.cyber_levelname
-}))
+  }))
+
+  const exportResultToExcel = (value) => {
+    console.log('Value: ', value)
+    if (value === '01') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone1.xlsx`)
+    } else if (value === '02') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone2.xlsx`)
+    } else if (value === '03') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone3.xlsx`)
+    } else if (value === '04') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone4.xlsx`)
+    } else if (value === '05') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone5.xlsx`)
+    } else if (value === '06') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone6.xlsx`)
+    } else if (value === '07') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone7.xlsx`)
+    } else if (value === '08') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone8.xlsx`)
+    } else if (value === '09') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone9.xlsx`)
+    } else if (value === '10') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone10.xlsx`)
+    } else if (value === '11') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone11.xlsx`)
+    } else if (value === '12') {
+      window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone12.xlsx`)
+    }
+  }
+
+  const confirmExport = () => {
+    confirm({
+      title: 'คำอธิบายค่าเบื้องต้นในคอลัมน์ของไฟล์ Excel',
+      icon: <ExclamationCircleFilled />,
+      content: <div className=''>
+        <p>ชื่อคอลัมน์จะแสดงตามเลขหัวข้อ เช่น 1.1.1 หรือ 2.1.3.1 </p>
+        <p className='pl-5 flex'><Dot /> true คือ มีการดำเนินการ</p>
+        <p className='pl-5 flex'><Dot /> false คือ ไม่มีการดำเนินการ</p>
+        <p className='pl-5 flex'><Dot /> undefined คือ ไม่ได้ประเมินในข้อนั้นๆ</p>
+        <p className='text-green-700'>ต้องการ Export excel คลิก OK</p>
+        <p className='text-red-500'>ต้องการ Export excel คลิก Cancel</p>
+      </div>,
+      onOk() {
+        exportResultToExcel(zone)
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
+  }
 
 
   return (
@@ -472,6 +524,7 @@ const data3 = data2.map((item) => ({
               จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
             </p>
             <ExportExcel_zone data={data3} fileName={"SmartHospReport-zone"} />
+            {/* <Button type='primary' onClick={confirmExport} icon={<DownloadOutlined />} size='small'>ดาวน์โหลดผลการประเมินรายข้อ</Button> */}
           </div>
           <div>
             <Input

@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import useGlobalStore from '../../../../store/global-store'
-import { Input, Table } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Button, Input, Table, Modal } from 'antd'
+import { DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getSumEvaluateByZone } from '../../../../api/Evaluate'
 import ExportExcel_zone from './ExportExcel_zone'
+import { Dot } from 'lucide-react'
+
+const { confirm } = Modal
 
 const TableZoneList = () => {
+
+    const MAX_CLICKS_PER_DAY = 5;
+    const STORAGE_KEY = "click_count";
+    const DATE_KEY = "click_date";
 
     const user = useGlobalStore((state) => state.user)
     const token = useGlobalStore((state) => state.token)
@@ -14,6 +21,8 @@ const TableZoneList = () => {
     const [listSumEvaluate, setListSumEvaluate] = useState([])
     const [searchQuery, setSearchQuery] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [clicks, setClicks] = useState(0);
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         loadListSumEvaluate(token)
@@ -23,7 +32,7 @@ const TableZoneList = () => {
         setIsLoading(true)
         await getSumEvaluateByZone(token, zone)
             .then(res => {
-                console.log('Data: ',res.data)
+                console.log('Data: ', res.data)
                 setListSumEvaluate(res.data)
                 setSearchQuery(res.data)
             })
@@ -262,11 +271,11 @@ const TableZoneList = () => {
         เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
         คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
         คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
-        สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
         เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
         คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
         สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-        เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1'? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+        เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
         คะแนนที่ได้รวม: item.total_cat,
         คะแนนจำเป็นรวม: item.total_require,
         ระดับที่ได้: item.total_cat < 600
@@ -288,6 +297,86 @@ const TableZoneList = () => {
     }))
 
 
+    const exportResultToExcel = (value) => {
+        console.log('Value: ', value)
+        if (value === '01') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone1.xlsx`)
+        } else if (value === '02') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone2.xlsx`)
+        } else if (value === '03') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone3.xlsx`)
+        } else if (value === '04') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone4.xlsx`)
+        } else if (value === '05') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone5.xlsx`)
+        } else if (value === '06') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone6.xlsx`)
+        } else if (value === '07') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone7.xlsx`)
+        } else if (value === '08') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone8.xlsx`)
+        } else if (value === '09') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone9.xlsx`)
+        } else if (value === '10') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone10.xlsx`)
+        } else if (value === '11') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone11.xlsx`)
+        } else if (value === '12') {
+            window.open(`https://bdh-service.moph.go.th/api/smarthosp/report_zone/Report_zone12.xlsx`)
+        }
+    }
+
+    useEffect(() => {
+        const storedClicks = localStorage.getItem(STORAGE_KEY);
+        const storedDate = localStorage.getItem(DATE_KEY);
+        const today = new Date().toISOString().split("T")[0];
+
+        if (storedDate !== today) {
+            localStorage.setItem(STORAGE_KEY, "0");
+            localStorage.setItem(DATE_KEY, today);
+            setClicks(0);
+            setDisabled(false);
+        } else if (storedClicks) {
+            const count = parseInt(storedClicks, 10);
+            setClicks(count);
+            if (count >= MAX_CLICKS_PER_DAY) {
+                setDisabled(true);
+            }
+        }
+    }, []);
+
+    const confirmExport = () => {
+        if (clicks < MAX_CLICKS_PER_DAY - 1) {
+            const newCount = clicks + 1;
+            setClicks(newCount);
+            localStorage.setItem(STORAGE_KEY, newCount.toString());
+        } else {
+            setClicks(MAX_CLICKS_PER_DAY);
+            localStorage.setItem(STORAGE_KEY, MAX_CLICKS_PER_DAY.toString());
+            setDisabled(true);
+        }
+
+        confirm({
+            title: 'คำอธิบายค่าเบื้องต้นในคอลัมน์ของไฟล์ Excel',
+            icon: <ExclamationCircleFilled />,
+            content: <div className=''>
+                <p>ชื่อคอลัมน์จะแสดงตามเลขหัวข้อ เช่น 1.1.1 หรือ 2.1.3.1 </p>
+                <p className='pl-5 flex'><Dot /> true คือ มีการดำเนินการ</p>
+                <p className='pl-5 flex'><Dot /> false คือ ไม่มีการดำเนินการ</p>
+                <p className='pl-5 flex'><Dot /> undefined คือ ไม่ได้ประเมินในข้อนั้นๆ</p>
+                <p className='text-green-700'>ต้องการ Export excel คลิก OK</p>
+                <p className='text-red-500'>ต้องการ Export excel คลิก Cancel</p>
+            </div>,
+            onOk() {
+                exportResultToExcel(zone)
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        })
+    }
+
+
     return (
         <>
             <div className='text-center p-2'>
@@ -298,7 +387,19 @@ const TableZoneList = () => {
                     <p style={{ fontSize: '14px' }} className='text-blue-500'>
                         จำนวนหน่วยบริการทีประเมินทั้งหมด {searchQuery.length} รายการ
                     </p>
-                    <ExportExcel_zone  data={data3} fileName={"SmartHospReport-zone"} />
+                    <ExportExcel_zone data={data3} fileName={"SmartHospReport-zone"} />
+                    <Button 
+                        type='primary' 
+                        onClick={confirmExport} 
+                        icon={<DownloadOutlined />} 
+                        size='small'
+                        className={`${
+                            disabled ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                          }`}
+                    >
+                    ดาวน์โหลดผลการประเมินรายข้อ คลิกได้อีก {MAX_CLICKS_PER_DAY - clicks} ครั้ง
+                    </Button>
+                    <p>{disabled && <p className="text-red-500 mt-2">คุณใช้โควต้าครบแล้ว</p>}</p>
                 </div>
                 <div>
                     <Input

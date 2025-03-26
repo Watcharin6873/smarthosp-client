@@ -29,6 +29,7 @@ const Login = () => {
   const [formLogin] = Form.useForm()
 
   const code = new URLSearchParams(myParam).get("code")
+  // console.log('Code: ', code)
 
   if (code) {
     const values = {
@@ -54,10 +55,11 @@ const Login = () => {
             const access_token = res.data.data.access_token;
             const client_id = '49fba4c4-2c60-4d3f-b8da-3925d1ad7e65';
             const secret_key = 'F83E767464E7334923C43D1C1443B';
+            // console.log('Access_token: ', access_token)
 
             getProviderProfile(access_token, client_id, secret_key)
               .then(res => {
-                console.log('ListHosp: ', res.data)
+                // console.log('ListHosp: ', res.data)
                 setProviderProfile(res.data.data)
                 const lenghtHosp = res.data.data.organization
                 if (lenghtHosp.length > 0) {
