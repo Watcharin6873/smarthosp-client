@@ -29,7 +29,7 @@ const FormReportProv = () => {
   const loadListHospitals = async () => {
     await getHospitalOnProv(token, province)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setListHospitals(res.data)
       })
       .catch(err => {
@@ -40,7 +40,7 @@ const FormReportProv = () => {
   const loadListSumEvaluateByZone = async () => {
     await getSumEvaluateByProv(token, province)
       .then(res => {
-        console.log('List: ', res.data)
+        // console.log('List: ', res.data)
         setListEvaluateByProv(res.data)
       })
       .catch(err => {

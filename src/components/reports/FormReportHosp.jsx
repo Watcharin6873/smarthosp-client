@@ -13,7 +13,7 @@ import {
     uploadFileById,
     removeFileById
 } from '../../api/Evaluate'
-import { CircleCheck, CircleX, FileCog, FilePenLine, LoaderCircle, MonitorCheck, RefreshCw, Trash } from 'lucide-react'
+import { BellRing, CircleCheck, CircleX, FileCog, FilePenLine, LoaderCircle, Megaphone, MonitorCheck, RefreshCw, Trash } from 'lucide-react'
 import { getListTopic } from '../../api/Topic'
 import { Button, Checkbox, Divider, Form, Image, Input, InputNumber, Modal, Radio, Select, Space, Upload } from 'antd'
 import { getListQuests } from '../../api/Quest'
@@ -31,21 +31,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const props = {
     onChange({ file, fileList }) {
-      if (file.status !== 'uploading') {
-        console.log(file, fileList);
-      }
+        if (file.status !== 'uploading') {
+            console.log(file, fileList);
+        }
     },
     showUploadList: {
-      extra: ({ size = 0 }) => (
-        <span
-          className='text-slate-400'
-        >
-          &nbsp;({(size / 1024 / 1024).toFixed(2)}MB)
-        </span>
-      ),
-      showRemoveIcon: true,
+        extra: ({ size = 0 }) => (
+            <span
+                className='text-slate-400'
+            >
+                &nbsp;({(size / 1024 / 1024).toFixed(2)}MB)
+            </span>
+        ),
+        showRemoveIcon: true,
     },
-  };
+};
 
 
 const FormReportHosp = () => {
@@ -71,12 +71,14 @@ const FormReportHosp = () => {
     const [pdfFile, setPdfFile] = useState(null)
     const [numPages, setNumPages] = useState();
     const [pageNumber, setPageNumber] = useState(1);
+    const [modalAlertNotiMessage, setModalAlertNotiMessage] = useState(false)
 
     useEffect(() => {
         loadListCategoryQuest(token)
         loadListQuest(token)
         loadSubQuestList(token)
         loadListEvaluate(token)
+        // setModalAlertNotiMessage(true)
     }, [])
 
     useEffect(() => {
@@ -262,6 +264,7 @@ const FormReportHosp = () => {
         setIsModalUpdateOpen(false)
         setIsModalUploadOpen(false)
         setIsShowEvidenceModal(false)
+        // setModalAlertNotiMessage(false)
     }
 
     const showDocument = (values) => {
@@ -386,6 +389,7 @@ const FormReportHosp = () => {
                         options={optionCategory}
                         placeholder='กรุณาเลือกด้านการประเมินที่ต้องการ...'
                         style={{ width: '20%' }}
+                        // disabled
                     />
                     {
                         searchCategory.length > 0
@@ -397,7 +401,12 @@ const FormReportHosp = () => {
                             </>
                             : null
                     }
-                    <Button onClick={refreshData}><RefreshCw size={13} /> รีเฟรช</Button>
+                    <Button
+                        onClick={refreshData}
+                        // disabled
+                    >
+                        <RefreshCw size={13} /> รีเฟรช
+                    </Button>
                 </div>
                 <Divider />
                 <div>
@@ -551,6 +560,7 @@ const FormReportHosp = () => {
                                                                         size='small'
                                                                         className='bg-yellow-400 text-white'
                                                                         onClick={() => showUpdateModal(item2.id)}
+                                                                    // disabled
                                                                     >
                                                                         <EditOutlined /> แก้ไข
                                                                     </Button>
@@ -719,7 +729,7 @@ const FormReportHosp = () => {
                                                                                 <Checkbox key={k1} value={it1.choice} /><p className='text-green-700'>{it1.sub_quest_listname}</p>
                                                                             </>
                                                                     }
-                                                                    
+
                                                                 </div>
                                                             ))
                                                         }
@@ -795,6 +805,28 @@ const FormReportHosp = () => {
                             <PdfComp pdfFile={pdfFile} />
                         </div>
                     </Modal>
+
+                    {/* <Modal
+                        // title="แจ้งปิดการแก้ไขการประเมินชั่วคราว"
+                        title={
+                            <div className='flex justify-center'>
+                                <BellRing className='text-yellow-500' /> &nbsp;
+                                <span className='text-xl font-bold'>แจ้งปิดการแก้ไขการประเมินชั่วคราว</span>
+                                &nbsp; <BellRing className='text-yellow-500' />
+                            </div>
+                        }
+                        open={modalAlertNotiMessage}
+                        // onOk={handleOk}
+                        onCancel={closeModal}
+                        width={900}
+                        footer={null}
+                    >
+                        <Divider />
+                        <p className='text-red-400 text-center'>***เรียน ทุกท่าน
+                            ทาง สสท. จะปิดระบบรายงานผลการประเมิน ในวันที่ 1 เมษายน 2568 ตั้งแต่เวลา 00.01 น. - 15.00 น. ระหว่างนี้หน่วยบริการจะไม่สามารถแก้ไขผลการการประเมินได้ในช่วงดังกล่าว 
+                            เพื่อให้ คกก.จังหวัด และ คกก.เขต ตรวจสอบการ Approve โดย สสท จะขอให้ทาง คกก.จังหวัด และ คกก.เขต ช่วย approved หน่วยบริการ 
+                            และระบบรายงานผลการประเมิน อีกครั้งในเวลา 15.00 น. และขออภัยในความไม่สะดวกครับ***</p>
+                    </Modal> */}
                 </div>
             </div>
         </div>

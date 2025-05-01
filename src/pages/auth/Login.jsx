@@ -19,6 +19,7 @@ const Login = () => {
   const user = useGlobalStore((state) => state.user)
   const [providerProfile, setProviderProfile] = useState([])
   const [modalListHosp, setModalListHosp] = useState(false)
+  const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
   const [value, setValue] = useState({
     hcode: "",
     hname_th: "",
@@ -28,8 +29,12 @@ const Login = () => {
   })
   const [formLogin] = Form.useForm()
 
+  useEffect(()=>{
+    setIsOpenModalNotify(true)
+  },[])
+
   const code = new URLSearchParams(myParam).get("code")
-  // console.log('Code: ', code)
+  console.log('Code: ', code)
 
   if (code) {
     const values = {
@@ -42,6 +47,7 @@ const Login = () => {
     }
     getTokenHealthID(values)
       .then(res => {
+        // console.log('Data: ', res.data.data.access_token)
         const h_token = res.data.data.access_token
         const values2 = {
           client_id: '49fba4c4-2c60-4d3f-b8da-3925d1ad7e65',
@@ -90,6 +96,7 @@ const Login = () => {
   const cancelModal = () => {
     setModalListHosp(false)
     setRegisterModal(false)
+    setIsOpenModalNotify(false)
   }
 
   const onRadioChange = (e) => {
@@ -158,7 +165,7 @@ const Login = () => {
                 block
                 // href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=https://bdh-service.moph.go.th/smarthosp-quest/login/&response_type=code'
                 href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=http://localhost:5173/smarthosp-quest/login/&response_type=code'
-                // disabled
+                disabled
               >
                 <img
                   className='w-32 p-2'
@@ -262,6 +269,33 @@ const Login = () => {
             </Button>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title={
+          <div
+            style={{
+              justifyContent: 'center',
+              display: 'flex',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            <ExclamationCircleFilled style={{ color: 'orange' }} /> &nbsp;
+            <span>แจ้งปิดปรับปรุงระบบ</span>
+          </div>
+        }
+        open={isOpenModalNotify}
+        onCancel={cancelModal}
+        footer={null}
+        width={700}
+        style={{ top: 20 }}
+      >
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เรียนหน่วยบริการผู้ประเมินโรงพยาบาลอ้จฉริยะ คณะกรรมการระดับจังหวัด คณะกรรมการระดับเขตสุขภาพ ทุกท่าน
+        สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดปรับปรุงระบบตั้งแต่วันที่ 1 พ.ค.68 ถึง 18 พ.ค.68</span> เพื่อให้สอดคล้องกับการเกณฑ์การประเมิน 
+        <span className='text-green-600 font-bold'> และจะเปิดระบบอีกครั้งในวันที่ 19 พ.ค.68</span> จึงขออภัยในความไม่สะดวกมา ณ ที่นี้ครับผม </p>
+        <div className="flex justify-end mt-4">
+            <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
+          </div>
       </Modal>
     </div>
   )
