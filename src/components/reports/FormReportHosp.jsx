@@ -389,7 +389,7 @@ const FormReportHosp = () => {
                         options={optionCategory}
                         placeholder='กรุณาเลือกด้านการประเมินที่ต้องการ...'
                         style={{ width: '20%' }}
-                        // disabled
+                    // disabled
                     />
                     {
                         searchCategory.length > 0
@@ -403,7 +403,7 @@ const FormReportHosp = () => {
                     }
                     <Button
                         onClick={refreshData}
-                        // disabled
+                    // disabled
                     >
                         <RefreshCw size={13} /> รีเฟรช
                     </Button>
@@ -547,7 +547,11 @@ const FormReportHosp = () => {
                                                                         :
                                                                         <>
                                                                             <div className=''>
-                                                                                <Button size='small' onClick={() => showUploadModal(item2)}>
+                                                                                <Button
+                                                                                    size='small'
+                                                                                    onClick={() => showUploadModal(item2)}
+                                                                                    disabled
+                                                                                >
                                                                                     <UploadOutlined /> เพิ่มไฟล์ pdf
                                                                                 </Button>
                                                                             </div>
@@ -560,7 +564,7 @@ const FormReportHosp = () => {
                                                                         size='small'
                                                                         className='bg-yellow-400 text-white'
                                                                         onClick={() => showUpdateModal(item2.id)}
-                                                                    // disabled
+                                                                        disabled
                                                                     >
                                                                         <EditOutlined /> แก้ไข
                                                                     </Button>

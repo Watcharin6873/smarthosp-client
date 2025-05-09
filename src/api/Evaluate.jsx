@@ -111,6 +111,17 @@ export const getEvaluateByHosp = async (token, questId, hcode) => {
     )
 }
 
+//Get Evaluate by hcode
+export const getEvaluateByHosp3 = async (token, category_questId, hcode) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/getEvaluateByHosp3?category_questId=${category_questId}&hcode=${hcode}`,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
 //Sum Evaluate by hcode
 export const sumEvaluateByHosp = async (token, hcode) => {
     return await axios.get(import.meta.env.VITE_APP_API + `/sumEvaluateByHosp?hcode=${hcode}`,
@@ -379,6 +390,15 @@ export const selectApproveEvaluate = async (token, zone) => {
 
 
 //ZONE APPROVE
+export const ssjApproveById = async (token, values) =>{
+    return await axios.put(import.meta.env.VITE_APP_API + `/ssjApproveById`, values,
+        {
+            headers:{
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
 
 
 //ZONE UNAPPROVE

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useGlobalStore from '../../../../store/global-store'
-import { checkSsjNotApprove, getListEvaluateByProv, getSubQuetList, ssjChangeStatusApprove, ssjUnApprove } from '../../../../api/Evaluate'
+import { checkSsjNotApprove, getListEvaluateByProv, getSubQuetList, ssjChangeStatusApprove, ssjApproveById, getEvaluateByHosp3 } from '../../../../api/Evaluate'
 import { Button, Checkbox, Divider, Form, Image, Input, Select, Switch, Modal } from 'antd'
 import { Ban, RefreshCcw, Save } from 'lucide-react'
 import { getDocumentsByEvaluateByHosp } from '../../../../api/Approve'
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { getListQuests } from '../../../../api/Quest'
 import { getHospitalOnProv } from '../../../../api/Hospital'
+import CommentEvaluate from './CommentEvaluate'
 
 
 const FormApproveInfrastructure_SSJ = () => {
@@ -19,7 +20,7 @@ const FormApproveInfrastructure_SSJ = () => {
   const token = useGlobalStore((state) => state.token)
   const [isLoading, setIsLoading] = useState(false)
   const [disabledButton, setDisabledButton] = useState(false)
-  const [unApproveModal, setUnApproveModal] = useState(false)
+  const [commentModal, setCommentModal] = useState(false)
   const [listQuests, setListQuests] = useState([])
   const [evaluateByProv, setEvaluateByProv] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
@@ -27,6 +28,7 @@ const FormApproveInfrastructure_SSJ = () => {
   const [hospcode, setHospcode] = useState('')
   const [subQuestList, setSubQuestList] = useState([])
   const [listHospitals, setListHospitals] = useState([])
+  const [evaId, setEvaId] = useState(null)
 
   const [formSsjApprove] = Form.useForm()
   const [formUnAprove] = Form.useForm()
@@ -232,41 +234,39 @@ const FormApproveInfrastructure_SSJ = () => {
   const hospitalData = listHospitals.filter(f => f.hcode === hospcode)
   console.log('Hosp: ', hospcode)
 
-  const showUnAproveModal = () => {
-    setUnApproveModal(true)
-  }
-
-  const cancelModal = () => {
-    setUnApproveModal(false)
-  }
-
-  const handleUnApprove = async (fieldValue) => {
-    const result2 = []
-    searchQuery.forEach((qItem) => {
-      result2.push({
-        evaluateId: fieldValue["evaluateId" + qItem.id],
-        ssj_approve: fieldValue["ssj_approve" + qItem.id],
-        usersId: fieldValue["usersId" + qItem.id],
-        hcode: fieldValue["hcode" + qItem.id],
-        province: fieldValue["province" + qItem.id],
-        zone: fieldValue["zone" + qItem.id],
-
-      })
-    })
-    console.log('Result2: ', result2)
-
-    await ssjUnApprove(token, result2)
+  const handleApproveById = (e, id) => {
+    const values = {
+      id: id,
+      ssj_approve: e
+    }
+    ssjApproveById(token, values)
       .then(res => {
-        toast.error(res.data.message)
-        setUnApproveModal(false)
-        loadListEvaluateByProve(token, province)
-        loadSubQuestList(token)
-        loadListHospitals(token)
-        setSearchQuery(category1.filter(f => f.hcode === hospcode))
+        if (res.data.message == 'approve') {
+          toast.success(`อนุมัติการประเมินในข้อนี้เรียบร้อยแล้ว!`)
+        } else {
+          toast.error(`ยกเลิกอนุมัติการประเมินในข้อนี้เรียบร้อยแล้ว!`)
+        }
+
+        getEvaluateByHosp3(token, uniqueCatId, hospcode)
+          .then(res => {
+            setSearchQuery(res.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
       .catch(err => {
         console.log(err)
       })
+  }
+
+  const handleComment = (id)=>{
+    setCommentModal(true)
+    setEvaId(id)
+  }
+
+  const cancelModal = () =>{
+    setCommentModal(false)
   }
 
 
@@ -327,6 +327,7 @@ const FormApproveInfrastructure_SSJ = () => {
                   <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
                   <th className='text-center p-4 border-r w-32'>ไฟล์หลักฐาน</th>
                   <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
+                  <th className='text-center p-4 border-r w-52'>ข้อคิดเห็น คกก.สสจ.</th>
                 </tr>
               </thead>
               <tbody>
@@ -469,11 +470,18 @@ const FormApproveInfrastructure_SSJ = () => {
                                   </div>
                                 </td>
                                 <td className='text-center border-l px-1'>
-                                  {
-                                    item1.ssj_approve === true
-                                      ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
-                                      : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
-                                  }
+                                  <Switch
+                                    size='small'
+                                    checked={
+                                      item1.ssj_approve === true ? true : false
+                                    }
+                                    onChange={(e) => handleApproveById(e, item1.id)}
+                                  />
+                                </td>
+                                <td className='text-center border-l px-1'>
+                                  {/* ความเห็นเพิ่มเติม */}
+                                  {/* <Button onClick={() => handleComment(item1.id)}>ความเห็นเพิ่มเติม</Button> */}
+                                  <CommentEvaluate id={item1.id} />
                                 </td>
                               </tr>
                             </>
@@ -488,59 +496,6 @@ const FormApproveInfrastructure_SSJ = () => {
                 }
               </tbody>
             </table>
-            {
-              subQuestLength.length === 67
-                ?
-                <div className='flex justify-center space-x-1 mt-3 gap-3'>
-                  <div className='mt-3'>
-                    <Form.Item>
-                      <Button
-                        type='primary'
-                        htmlType='submit'
-                        style={{ width: 180 }}
-                        disabled={
-                          subQuestLength.length === 67
-                            ? false
-                            : true
-
-                        }
-                      >
-                        <Save /> Approve (อนุมัติ!)
-                      </Button>
-                    </Form.Item>
-                  </div>
-
-                  <div className='flex justify-center space-x-1 mt-3'>
-                    <div>
-                      <Button
-                        color='danger'
-                        style={{ width: 180 }}
-                        variant='solid'
-                        onClick={showUnAproveModal}
-                      >
-                        <Ban /> Cancel (ยกเลิก!)
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className='flex justify-center space-x-1 mt-3'>
-                    <div>
-                      <Button
-                        style={{ width: 180 }}
-                        variant='solid'
-                        onClick={() => refreshData(hospcode)}
-                      >
-                        <RefreshCcw /> Refresh (รีเฟรช!)
-                      </Button>
-                    </div>
-                  </div>
-
-                </div>
-                : null
-                // <div className='flex justify-center items-center h-4'>
-                //     <p className='font-bold text-red-400'>โรงพยาบาล{hospitalData[0]?.hname_th} ยังประเมินไม่ครบทุกหัวข้อ</p>
-                // </div>
-            }
           </Form>
         </div>
       </div>
@@ -549,78 +504,13 @@ const FormApproveInfrastructure_SSJ = () => {
         title={
           <div className='flex items-center gap-2'>
             <ExclamationCircleFilled className='text-yellow-500' />
-            <span className='font-bold'>คุณต้องการยกเลิกการอนุมัติด้านโครงสร้าง ของ{hospitalData[0]?.hname_th} หรือไม่?</span>
+            <span className='font-bold'>เพิ่มความเห็นเพิ่มเติม</span>
           </div>
         }
-        open={unApproveModal}
-        onOk={formUnAprove.submit}
+        open={commentModal}
         onCancel={cancelModal}
-        width={500}
-        style={{ top: 20 }}
-
       >
-        <div className='h-4'>
-          <Form
-            name='formUnApprove'
-            form={formUnAprove}
-            onFinish={handleUnApprove}
-            onFinishFailed={onFinishFailed}
-          >
-            {
-              searchQuests.map((it1) =>
-                searchQuery.map((it2) => (
-                  it2.quests.quest_name === it1.quest_name
-                    ?
-                    <>
-                      <Form.Item
-                        name={'evaluateId' + it2.id}
-                        hidden={true}
-                        initialValue={it2.id}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'hcode' + it2.id}
-                        hidden={true}
-                        initialValue={hospcode}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'usersId' + it2.id}
-                        hidden={true}
-                        initialValue={user.id}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'province' + it2.id}
-                        hidden={true}
-                        initialValue={user.province}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'zone' + it2.id}
-                        hidden={true}
-                        initialValue={user.zone}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'ssj_approve' + it2.id}
-                        hidden={true}
-                        initialValue={false}
-                      >
-                        <Input />
-                      </Form.Item>
-                    </>
-                    : null
-                ))
-              )
-            }
-          </Form>
-        </div>
+        <p>{evaId}</p>
       </Modal>
 
     </div>

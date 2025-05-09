@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LogoMOPH from '../../../../assets/Logo_MOPH.png'
 import LogoSmartHosp from '../../../../assets/SmartHospital-Logo2.png'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Modal } from 'antd'
+import { Button, Modal } from 'antd'
 import {
     LayoutDashboard,
     Send,
@@ -21,6 +21,9 @@ const SidebarZoneApprover = () => {
 
     const logout = useGlobalStore((state) => state.logout)
     const navigate = useNavigate()
+    const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
+
+    const isDisabled = true;
 
     const handleLogout = () => {
         //Code
@@ -38,9 +41,18 @@ const SidebarZoneApprover = () => {
         })
     }
 
+    const handleClick = (e) => {
+        e.preventDefault()
+        setIsOpenModalNotify(true)
+    }
 
-  return (
-     <div className='bg-green-800 w-64 text-gray-100 flex flex-col h-screen'>
+    const cancelModal = () => {
+        setIsOpenModalNotify(false)
+    }
+
+
+    return (
+        <div className='bg-green-800 w-64 text-gray-100 flex flex-col h-screen'>
             <div className='h-24 bg-green-900 flex items-center justify-center gap-1'>
                 <div>
                     <img src={LogoSmartHosp} />
@@ -60,61 +72,109 @@ const SidebarZoneApprover = () => {
                     <LayoutDashboard className='mr-2' />
                     Dashboard
                 </NavLink>
-                <NavLink
-                    to={'zone-usermanagement'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <UserCog className='mr-2' />
-                    จัดการผู้ใช้งาน (จังหวัด)
-                </NavLink>
-                <NavLink
-                    to={'zone-approve-infrastructure'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListTodo className='mr-2' />
-                    Approve ด้านโครงสร้าง
-                </NavLink>
-                <NavLink
-                    to={'zone-approve-management'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListTodo className='mr-2' />
-                    Approve ด้านบริหารจัดการ
-                </NavLink>
-                <NavLink
-                    to={'zone-approve-service'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListTodo className='mr-2' />
-                    Approve ด้านการบริการ
-                </NavLink>
-                <NavLink
-                    to={'zone-approve-people'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListTodo className='mr-2' />
-                    Approve ด้านบุคลากร
-                </NavLink>
+                {isDisabled ? (
+                    <>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <UserCog className='mr-2' />
+                            จัดการผู้ใช้งาน (จังหวัด)
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <UserCog className='mr-2' />
+                            Approve ด้านโครงสร้าง
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <UserCog className='mr-2' />
+                            Approve ด้านบริหารจัดการ
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <UserCog className='mr-2' />
+                            Approve ด้านการบริการ
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <UserCog className='mr-2' />
+                            Approve ด้านบุคลากร
+                        </NavLink>
+                    </>
+                ) : (
+                    <>
+                        <NavLink
+                            to={'zone-usermanagement'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <UserCog className='mr-2' />
+                            จัดการผู้ใช้งาน (จังหวัด)
+                        </NavLink>
+                        <NavLink
+                            to={'zone-approve-infrastructure'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListTodo className='mr-2' />
+                            Approve ด้านโครงสร้าง
+                        </NavLink>
+                        <NavLink
+                            to={'zone-approve-management'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListTodo className='mr-2' />
+                            Approve ด้านบริหารจัดการ
+                        </NavLink>
+                        <NavLink
+                            to={'zone-approve-service'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListTodo className='mr-2' />
+                            Approve ด้านการบริการ
+                        </NavLink>
+                        <NavLink
+                            to={'zone-approve-people'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListTodo className='mr-2' />
+                            Approve ด้านบุคลากร
+                        </NavLink>
+                    </>
+                )}
+
                 <NavLink
                     to={'report-zone'}
                     className={({ isActive }) =>
@@ -149,8 +209,38 @@ const SidebarZoneApprover = () => {
                     Logout
                 </NavLink>
             </footer>
+
+            <Modal
+                title={
+                    <div
+                        style={{
+                            justifyContent: 'center',
+                            display: 'flex',
+                            marginLeft: 'auto',
+                            marginRight: 'auto'
+                        }}
+                    >
+                        <ExclamationCircleFilled style={{ color: 'orange' }} /> &nbsp;
+                        <span>แจ้งปิดปรับปรุงระบบ</span>
+                    </div>
+                }
+                open={isOpenModalNotify}
+                onCancel={cancelModal}
+                footer={null}
+                width={700}
+                style={{ top: 20 }}
+            >
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เรียนหน่วยบริการผู้ประเมินโรงพยาบาลอ้จฉริยะ คณะกรรมการระดับจังหวัด คณะกรรมการระดับเขตสุขภาพ ทุกท่าน
+                    สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดปรับปรุงระบบตั้งแต่วันที่ 1 พ.ค.68 ถึง 18 พ.ค.68</span> เพื่อให้สอดคล้องกับการเกณฑ์การประเมิน
+                    <span className='text-green-600 font-bold'> และจะเปิดระบบอีกครั้งในวันที่ 19 พ.ค.68</span> จึงขออภัยในความไม่สะดวกมา ณ ที่นี้ครับผม </p>
+                <div className="flex justify-end mt-4">
+                    <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
+                </div>
+            </Modal>
+
+
         </div>
-  )
+    )
 }
 
 export default SidebarZoneApprover

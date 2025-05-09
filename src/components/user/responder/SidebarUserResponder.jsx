@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LogoMOPH from '../../../assets/Logo_MOPH.png'
 import LogoSmartHosp from '../../../assets/SmartHospital-Logo2.png'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Modal } from 'antd'
+import { Button, Modal } from 'antd'
 import {
     LayoutDashboard,
     ListChecks,
@@ -27,6 +27,9 @@ const SidebarUserResponder = () => {
 
     const logout = useGlobalStore((state) => state.logout)
     const navigate = useNavigate()
+    const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
+
+    const isDisabled = true;
 
     const handleLogout = () => {
         //Code
@@ -44,6 +47,14 @@ const SidebarUserResponder = () => {
         })
     }
 
+    const handleClick = (e) => {
+        e.preventDefault()
+        setIsOpenModalNotify(true)
+    }
+
+    const cancelModal = () => {
+        setIsOpenModalNotify(false)
+    }
 
     return (
         <div className='bg-green-800 w-64 text-gray-100 flex flex-col h-screen'>
@@ -66,61 +77,91 @@ const SidebarUserResponder = () => {
                     <LayoutDashboard className='mr-2' />
                     Dashboard
                 </NavLink>
-                <NavLink
-                    to={'evaluate-infrastructure'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListChecks className='mr-2' />
-                    ประเมินด้านโครงสร้าง
-                </NavLink>
-                <NavLink
-                    to={'evaluate-management'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListChecks className='mr-2' />
-                    ประเมินด้านบริหารจัดการ
-                </NavLink>
-                <NavLink
-                    to={'evaluate-service'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListChecks className='mr-2' />
-                    ประเมินด้านการบริการ
-                </NavLink>
-                <NavLink
-                    to={'evaluate-people'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ListChecks className='mr-2' />
-                    ประเมินด้านบุคลากร
-                </NavLink>
-                {/* <NavLink
-                    to={'cyber-check'}
-                    className={({ isActive }) =>
-                        isActive
-                            ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
-                            : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                    }
-                >
-                    <ShieldCheck className='mr-2' />
-                    ระดับ Cyber Security ศทส.
-                </NavLink> */}
+                {isDisabled ? (
+                    <>
+                        <NavLink
+                            to={'/smarthosp-quest/user/responder'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านโครงสร้าง
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/responder'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านบริหารจัดการ
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/responder'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านการบริการ
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/responder'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านบุคลากร
+                        </NavLink>
+                    </>
+                ) : (
+                    <>
+                        <NavLink
+                            to={'evaluate-infrastructure'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านโครงสร้าง
+                        </NavLink>
+                        <NavLink
+                            to={'evaluate-management'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านบริหารจัดการ
+                        </NavLink>
+                        <NavLink
+                            to={'evaluate-service'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านการบริการ
+                        </NavLink>
+                        <NavLink
+                            to={'evaluate-people'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <ListChecks className='mr-2' />
+                            ประเมินด้านบุคลากร
+                        </NavLink>
+                    </>
+                )}
+
+
                 <NavLink
                     to={'report-hosp'}
                     className={({ isActive }) =>
@@ -155,6 +196,35 @@ const SidebarUserResponder = () => {
                     Logout
                 </NavLink>
             </footer>
+
+            <Modal
+                title={
+                    <div
+                        style={{
+                            justifyContent: 'center',
+                            display: 'flex',
+                            marginLeft: 'auto',
+                            marginRight: 'auto'
+                        }}
+                    >
+                        <ExclamationCircleFilled style={{ color: 'orange' }} /> &nbsp;
+                        <span>แจ้งปิดปรับปรุงระบบ</span>
+                    </div>
+                }
+                open={isOpenModalNotify}
+                onCancel={cancelModal}
+                footer={null}
+                width={700}
+                style={{ top: 20 }}
+            >
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เรียนหน่วยบริการผู้ประเมินโรงพยาบาลอ้จฉริยะ คณะกรรมการระดับจังหวัด คณะกรรมการระดับเขตสุขภาพ ทุกท่าน
+                    สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดปรับปรุงระบบตั้งแต่วันที่ 1 พ.ค.68 ถึง 18 พ.ค.68</span> เพื่อให้สอดคล้องกับการเกณฑ์การประเมิน
+                    <span className='text-green-600 font-bold'> และจะเปิดระบบอีกครั้งในวันที่ 19 พ.ค.68</span> จึงขออภัยในความไม่สะดวกมา ณ ที่นี้ครับผม </p>
+                <div className="flex justify-end mt-4">
+                    <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
+                </div>
+            </Modal>
+
         </div>
     )
 }

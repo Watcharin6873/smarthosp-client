@@ -19,7 +19,7 @@ const Login = () => {
   const user = useGlobalStore((state) => state.user)
   const [providerProfile, setProviderProfile] = useState([])
   const [modalListHosp, setModalListHosp] = useState(false)
-  const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
+  // const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
   const [value, setValue] = useState({
     hcode: "",
     hname_th: "",
@@ -29,9 +29,9 @@ const Login = () => {
   })
   const [formLogin] = Form.useForm()
 
-  useEffect(()=>{
-    setIsOpenModalNotify(true)
-  },[])
+  // useEffect(()=>{
+  //   setIsOpenModalNotify(true)
+  // },[])
 
   const code = new URLSearchParams(myParam).get("code")
   console.log('Code: ', code)
@@ -96,7 +96,7 @@ const Login = () => {
   const cancelModal = () => {
     setModalListHosp(false)
     setRegisterModal(false)
-    setIsOpenModalNotify(false)
+    // setIsOpenModalNotify(false)
   }
 
   const onRadioChange = (e) => {
@@ -165,7 +165,7 @@ const Login = () => {
                 block
                 // href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=https://bdh-service.moph.go.th/smarthosp-quest/login/&response_type=code'
                 href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=http://localhost:5173/smarthosp-quest/login/&response_type=code'
-                disabled
+                // disabled
               >
                 <img
                   className='w-32 p-2'
@@ -270,7 +270,7 @@ const Login = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal
+      {/* <Modal
         title={
           <div
             style={{
@@ -296,7 +296,7 @@ const Login = () => {
         <div className="flex justify-end mt-4">
             <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
           </div>
-      </Modal>
+      </Modal> */}
     </div>
   )
 }
