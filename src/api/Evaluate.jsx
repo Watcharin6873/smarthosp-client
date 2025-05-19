@@ -401,4 +401,75 @@ export const ssjApproveById = async (token, values) =>{
 }
 
 
-//ZONE UNAPPROVE
+//Comment Evaluate
+export const commentEvaluate = async (token, values) =>{
+    return await axios.post(import.meta.env.VITE_APP_API + `/commentEvaluate`, values,
+        {
+            headers: {
+                Authorization: `Bearer ` + token,
+            }
+        }
+    )
+}
+
+//Update comment Evaluate
+export const updateCommentEvaluate = async (token, values) =>{
+    return await axios.put(import.meta.env.VITE_APP_API + `/updateCommentEvaluate`, values,
+        {
+            headers: {
+                Authorization: `Bearer ` + token,
+            }
+        }
+    )
+}
+
+//Get comment evaluate
+export const getCommentEvaluate = async (token) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/getCommentEvaluate`,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
+//Get comment by id
+export const getCommentEvaluateById = async (token, id) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/getCommentEvaluateById/`+ id,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
+//Get approve all
+export const getCheckApproveAll = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/checkApproveAll`)
+}
+
+
+//Get approve all
+export const getCheckApproveZone = async (zone) =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/checkApproveZone?zone=${zone}`)
+}
+
+
+//Split comma for check approve all
+export const splitCommaForCheckApprove = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/splitCommaForCheckApprove`)
+}
+
+
+//Update comment Evaluate
+export const changeStatusZoneApprove = async (token, values) =>{
+    return await axios.put(import.meta.env.VITE_APP_API + `/changeStatusZoneApprove`, values,
+        {
+            headers: {
+                Authorization: `Bearer ` + token,
+            }
+        }
+    )
+}

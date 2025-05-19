@@ -24,7 +24,7 @@ const SidebarProvApprover = () => {
     const navigate = useNavigate()
     const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
 
-    const isDisabled = true;
+    const isDisabled = false;
 
     const handleLogout = () => {
         //Code

@@ -9,7 +9,8 @@ import {
     LogOut,
     ListTodo,
     MonitorCheck,
-    UserCog
+    UserCog,
+    BookCheck
 } from 'lucide-react'
 import useGlobalStore from '../../../../store/global-store'
 import { ExclamationCircleFilled } from '@ant-design/icons'
@@ -23,7 +24,7 @@ const SidebarZoneApprover = () => {
     const navigate = useNavigate()
     const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
 
-    const isDisabled = true;
+    const isDisabled = false;
 
     const handleLogout = () => {
         //Code
@@ -52,7 +53,7 @@ const SidebarZoneApprover = () => {
 
 
     return (
-        <div className='bg-green-800 w-64 text-gray-100 flex flex-col h-screen'>
+        <div className='bg-green-800 w-72 text-gray-100 flex flex-col h-screen'>
             <div className='h-24 bg-green-900 flex items-center justify-center gap-1'>
                 <div>
                     <img src={LogoSmartHosp} />
@@ -88,7 +89,7 @@ const SidebarZoneApprover = () => {
                             onClick={handleClick}
                         >
                             <UserCog className='mr-2' />
-                            Approve ด้านโครงสร้าง
+                            ข้อมูลประเมินด้านโครงสร้าง
                         </NavLink>
                         <NavLink
                             to={'/smarthosp-quest/user/zone-approve'}
@@ -96,7 +97,7 @@ const SidebarZoneApprover = () => {
                             onClick={handleClick}
                         >
                             <UserCog className='mr-2' />
-                            Approve ด้านบริหารจัดการ
+                            ข้อมูลประเมินด้านบริหารจัดการ
                         </NavLink>
                         <NavLink
                             to={'/smarthosp-quest/user/zone-approve'}
@@ -104,7 +105,7 @@ const SidebarZoneApprover = () => {
                             onClick={handleClick}
                         >
                             <UserCog className='mr-2' />
-                            Approve ด้านการบริการ
+                            ข้อมูลประเมินด้านการบริการ
                         </NavLink>
                         <NavLink
                             to={'/smarthosp-quest/user/zone-approve'}
@@ -112,7 +113,15 @@ const SidebarZoneApprover = () => {
                             onClick={handleClick}
                         >
                             <UserCog className='mr-2' />
-                            Approve ด้านบุคลากร
+                            ข้อมูลประเมินด้านบุคลากร
+                        </NavLink>
+                        <NavLink
+                            to={'/smarthosp-quest/user/zone-approve'}
+                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            onClick={handleClick}
+                        >
+                            <BookCheck className='mr-2' />
+                            <span>คกก.เขตฯ อนุมัติการประเมิน</span> <span className='text-red-400'>*</span>
                         </NavLink>
                     </>
                 ) : (
@@ -137,7 +146,7 @@ const SidebarZoneApprover = () => {
                             }
                         >
                             <ListTodo className='mr-2' />
-                            Approve ด้านโครงสร้าง
+                            ข้อมูลประเมินด้านโครงสร้าง
                         </NavLink>
                         <NavLink
                             to={'zone-approve-management'}
@@ -148,7 +157,7 @@ const SidebarZoneApprover = () => {
                             }
                         >
                             <ListTodo className='mr-2' />
-                            Approve ด้านบริหารจัดการ
+                            ข้อมูลประเมินด้านบริหารจัดการ
                         </NavLink>
                         <NavLink
                             to={'zone-approve-service'}
@@ -159,7 +168,7 @@ const SidebarZoneApprover = () => {
                             }
                         >
                             <ListTodo className='mr-2' />
-                            Approve ด้านการบริการ
+                            ข้อมูลประเมินด้านการบริการ
                         </NavLink>
                         <NavLink
                             to={'zone-approve-people'}
@@ -170,11 +179,21 @@ const SidebarZoneApprover = () => {
                             }
                         >
                             <ListTodo className='mr-2' />
-                            Approve ด้านบุคลากร
+                            ข้อมูลประเมินด้านบุคลากร
+                        </NavLink>
+                        <NavLink
+                            to={'approve-all'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
+                        >
+                            <BookCheck className='mr-2' />
+                            <span>คกก.เขตฯ อนุมัติการประเมิน</span> <span className='text-red-400'>*</span>
                         </NavLink>
                     </>
                 )}
-
                 <NavLink
                     to={'report-zone'}
                     className={({ isActive }) =>

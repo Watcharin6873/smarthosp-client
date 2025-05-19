@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useGlobalStore from '../../../../store/global-store'
 import { useNavigate } from 'react-router-dom'
-import { getDocumentByEvaluateByHosp, getListEvaluateByProv, getSubQuetList, ssjChangeStatusApprove, ssjUnApprove } from '../../../../api/Evaluate'
+import { commentEvaluate, getCommentEvaluate, getCommentEvaluateById, getDocumentByEvaluateByHosp, getEvaluateByHosp3, getListEvaluateByProv, getSubQuetList, ssjApproveById, ssjChangeStatusApprove, ssjUnApprove, updateCommentEvaluate } from '../../../../api/Evaluate'
 import { Button, Checkbox, Divider, Image, Select, Form, Input, Switch, Modal } from 'antd'
 import { ExclamationCircleFilled, EyeTwoTone, SnippetsOutlined } from '@ant-design/icons'
 import { toast } from 'react-toastify'
@@ -9,6 +9,7 @@ import { getListQuests } from '../../../../api/Quest'
 import { Ban, RefreshCcw, Save } from 'lucide-react'
 import { getSubQuestByCatId } from '../../../../api/SubQuest'
 import { getHospitalOnProv } from '../../../../api/Hospital'
+import CommentForm from './CommentForm'
 
 const FormApprovePeople_SSJ = () => {
 
@@ -16,19 +17,21 @@ const FormApprovePeople_SSJ = () => {
   const user = useGlobalStore((state) => state.user)
   const token = useGlobalStore((state) => state.token)
   const [disabledButton, setDisabledButton] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [unApproveModal, setUnApproveModal] = useState(false)
+  const [updateCommentModal, setUpdateCommentModal] = useState(false)
   const [evaluateByProv, setEvaluateByProv] = useState([])
   const [listQuests, setListQuests] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
   const [documentFile, setDocumentFile] = useState()
   const [hospcode, setHospcode] = useState(null)
-  const [subQuests, setSubQuests] = useState([])
   const [subQuestList, setSubQuestList] = useState([])
   const [listHospitals, setListHospitals] = useState([])
+  const [comment, setComment] = useState([]);
+  const [commentById, setCommentById] = useState({})
+
 
   const [formSsjApprove] = Form.useForm()
   const [formUnAprove] = Form.useForm()
+  const [formUpdateComment] = Form.useForm()
   const province = user.province
 
 
@@ -37,6 +40,7 @@ const FormApprovePeople_SSJ = () => {
     loadSubQuests(token)
     loadSubQuestList(token)
     loadListHospitals(token)
+    loadCommentData(token)
   }, [])
 
   const loadListHospitals = async () => {
@@ -68,6 +72,18 @@ const FormApprovePeople_SSJ = () => {
     await getSubQuetList(token)
       .then(res => {
         setSubQuestList(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+
+  const loadCommentData = async () => {
+    await getCommentEvaluate(token)
+      .then(res => {
+        // console.log('Comment: ', res.data)
+        setComment(res.data)
       })
       .catch(err => {
         console.log(err)
@@ -141,25 +157,6 @@ const FormApprovePeople_SSJ = () => {
 
   const searchQuests = listQuests.filter(f => f.category_questId === 4)
 
-
-  const changeStatusApprove = async (e, id) => {
-    console.log(e, id)
-    const values = {
-      id: id,
-      ssj_approve: e
-    }
-
-    await ssjChangeStatusApprove(token, values)
-      .then(res => {
-        toast.success(res.data.message)
-        loadListEvaluateByProve(token, province)
-        setSearchQuery(category4.filter(f => f.hcode == hospcode))
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
   const refreshData = (value) => {
     loadListEvaluateByProve(token, province)
     loadSubQuestList(token)
@@ -176,54 +173,11 @@ const FormApprovePeople_SSJ = () => {
     })
   })
 
-  const handleSubmit = async (fieldValue) => {
-    setDisabledButton(true)
-    const result = []
-    searchQuery.forEach((qItem) => {
-      result.push({
-        evaluateId: fieldValue["evaluateId" + qItem.id],
-        ssj_approve: fieldValue["ssj_approve" + qItem.id],
-        usersId: fieldValue["usersId" + qItem.id],
-        hcode: fieldValue["hcode" + qItem.id],
-        province: fieldValue["province" + qItem.id],
-        zone: fieldValue["zone" + qItem.id],
-      })
-    })
-    console.log('Result: ', result)
 
-    await ssjChangeStatusApprove(token, result)
-      .then(res => {
-        toast.success(res.data.message)
-        loadListEvaluateByProve(token, province)
-        loadSubQuestList(token)
-        loadListHospitals(token)
-        setSearchQuery(category4.filter(f => f.hcode === hospcode))
-      })
-      .catch(err => {
-        console.log(err)
-      })
-
-  }
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed: ', errorInfo)
-  }
 
   const showPDF = (pdf) => {
     window.open(`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${pdf}`, "_blank", "noreferer")
   }
-
-
-  const subQuestLength = searchQuery.map((item1) =>
-    searchQuests.map((item2) =>
-      item1.quests.quest_name === item2.quest_name
-        ? {
-          quest_name: item1.quest_name,
-          sub_quest_name: item2.sub_quest_name
-        }
-        : null
-    )
-  )
 
 
   const displayPDF = (fileName) => {
@@ -240,45 +194,118 @@ const FormApprovePeople_SSJ = () => {
   })
 
   const hospitalData = listHospitals.filter(f => f.hcode === hospcode)
-  console.log('Hosp: ', hospcode)
-
-  const showUnAproveModal = () => {
-    setUnApproveModal(true)
-  }
-
-  const cancelModal = () => {
-    setUnApproveModal(false)
-  }
-
-  const handleUnApprove = async (fieldValue) => {
-    const result2 = []
-    searchQuery.forEach((qItem) => {
-      result2.push({
-        evaluateId: fieldValue["evaluateId" + qItem.id],
-        ssj_approve: fieldValue["ssj_approve" + qItem.id],
-        usersId: fieldValue["usersId" + qItem.id],
-        hcode: fieldValue["hcode" + qItem.id],
-        province: fieldValue["province" + qItem.id],
-        zone: fieldValue["zone" + qItem.id],
-
-      })
-    })
-    console.log('Result2: ', result2)
-
-    await ssjUnApprove(token, result2)
+  const handleApproveById = (e, id) => {
+    const values = {
+      id: id,
+      ssj_approve: e
+    }
+    ssjApproveById(token, values)
       .then(res => {
-        toast.error(res.data.message)
-        setUnApproveModal(false)
-        loadListEvaluateByProve(token, province)
-        loadSubQuestList(token)
-        loadListHospitals(token)
-        setSearchQuery(category4.filter(f => f.hcode === hospcode))
+        if (res.data.message == 'approve') {
+          toast.success(`อนุมัติการประเมินในข้อนี้เรียบร้อยแล้ว!`)
+        } else {
+          toast.error(`ยกเลิกอนุมัติการประเมินในข้อนี้เรียบร้อยแล้ว!`)
+        }
+
+        getEvaluateByHosp3(token, uniqueCatId, hospcode)
+          .then(res => {
+            setSearchQuery(res.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
       .catch(err => {
         console.log(err)
       })
   }
 
+  const handleSubmitComment = async (e) => {
+    const valuesComment = {
+      userId: user.id,
+      evaluateId: e.evaluateId,
+      comment_text: e.comment_text
+    }
+    await commentEvaluate(token, valuesComment)
+      .then(res => {
+        toast.success(res.data.message)
+        loadCommentData(token)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const editText = async (e, id) => {
+    setUpdateCommentModal(true)
+
+    await getCommentEvaluateById(token, id)
+      .then(res => {
+        setCommentById(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+
+  useEffect(() => {
+    formUpdateComment?.setFieldsValue({
+      id: commentById.id,
+      comment_text: commentById.comment_text
+    })
+  })
+
+  const handleUpdateComment = async (e) => {
+    const values = {
+      id: e.id,
+      comment_text: e.comment_text,
+      userId: user.id
+    }
+    await updateCommentEvaluate(token, values)
+      .then(res => {
+        toast.warning(res.data.message)
+        setUpdateCommentModal(false)
+        loadCommentData(token)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const cancelModal = () => {
+    setUpdateCommentModal(false)
+  }
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('ErrorInfo: ', errorInfo)
+  }
+
+
+  const dataSearch = searchQuery.map((item1) => ({
+    hcode: item1.hcode,
+    sub_questId: item1.sub_questId,
+    ssj_approve: item1.ssj_approve,
+    zone_approve: item1.zone_approve,
+    check: item1.check,
+    category_questId: item1.category_questId
+  })
+  )
+
+  const dataSearch2 = dataSearch.flatMap((dc) =>
+    dc.check.split(",").flatMap((ch) =>
+      dataSubQuestLists.filter((sb) => sb.sub_questId === dc.sub_questId && sb.choice === ch).map((matched) => ({
+        category_questId: dc.category_questId,
+        hcode: dc.hcode,
+        sub_questId: dc.sub_questId,
+        ssj_approve: dc.ssj_approve,
+        zone_approve: dc.zone_approve,
+        choice: matched.choice,
+        sub_quest_total_point: matched.sub_quest_total_point,
+        sub_quest_require_point: matched.sub_quest_require_point
+      }))
+    )
+  )
 
   return (
     <div>
@@ -322,220 +349,213 @@ const FormApprovePeople_SSJ = () => {
             <RefreshCcw /> Refresh (รีเฟรช!)
           </Button>
         </div>
-        <p className='text-sm text-orange-400 p-4'>หมายเหตุ: หากโรงพยาบาลประเมินมาไม่ครบทุกหัวข้อ หรือ มีข้อมูลซ้ำ ระบบจะไม่แสดงปุ่ม "Approve (อนุมัติ)"</p>
+        <p className='text-sm text-orange-400 p-4'>หมายเหตุ: เมื่อคณะกรรมการระดับจังหวัด กดปุ่มอนุมัติคณะแนนจะเพิ่มขึ้น และหากยกเลิการอนุมัติคะแนนจะลดลงตามข้อที่มีการยกเลิก</p>
         <div>
-          <Form
-            name='formSsjApprove'
-            form={formSsjApprove}
-            onFinish={handleSubmit}
-            onFinishFailed={onFinishFailed}
-          >
-            <table className='w-full text-left table-fixed text-slate-800'>
-              <thead>
-                <tr className='text-md text-slate-500 border border-l border-r border-slate-300 bg-slate-50'>
-                  <th className='text-center p-4 border-r'>เกณฑ์การประเมินและคำตอบ</th>
-                  <th className='text-center p-4 border-r w-32'>คะแนนที่ได้</th>
-                  <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
-                  <th className='text-center p-4 border-r w-32'>ไฟล์หลักฐาน</th>
-                  <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  searchQuests.map((item2, k2) =>
-                    <>
-                      <tr key={k2} className='border-b border-l border-r'>
-                        <td colSpan={5}>
-                          <p
-                            className='ml-1 p-1 font-bold'
-                            style={{ fontSize: '18px' }}
-                          >
-                            <u>{item2.quest_name}</u>
-                          </p>
-                        </td>
-                      </tr>
-                      {
-                        searchQuery.map((item1, k1) => (
-                          item1.quests.quest_name === item2.quest_name
-                            ?
-                            <>
-                              <tr key={k1} className='border-neutral-200 dark:border-white/10 border-b border-l border-r'>
-                                <td className='p-4'>
-                                  <Form.Item
-                                    name={'evaluateId' + item1.id}
-                                    hidden={true}
-                                    initialValue={item1.id}
-                                  >
-                                    <Input />
-                                  </Form.Item>
+          <table className='w-full text-left table-fixed text-slate-800'>
+            <thead>
+              <tr className='text-md text-slate-500 border border-l border-r border-slate-300 bg-slate-50'>
+                <th className='text-center p-4 border-r'>เกณฑ์การประเมินและคำตอบ</th>
+                <th className='text-center p-4 border-r w-32'>คะแนนที่ได้</th>
+                <th className='text-center p-4 border-r w-32'>คะแนนจำเป็น</th>
+                <th className='text-center p-4 border-r w-32'>ไฟล์หลักฐาน</th>
+                <th className='text-center p-4 border-r w-32'>การอนุมัติ</th>
+                <th className='text-center p-4 border-r w-52'>Comment จาก คกก.สสจ.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                searchQuests.map((item2, k2) =>
+                  <>
+                    <tr key={k2} className='border-b border-l border-r'>
+                      <td colSpan={5}>
+                        <p
+                          className='ml-1 p-1 font-bold'
+                          style={{ fontSize: '18px' }}
+                        >
+                          <u>{item2.quest_name}</u>
+                        </p>
+                      </td>
+                    </tr>
+                    {
+                      searchQuery.map((item1, k1) => (
+                        item1.quests.quest_name === item2.quest_name
+                          ?
+                          <>
+                            <tr key={k1} className='border-neutral-200 dark:border-white/10 border-b border-l border-r'>
+                              <td className='p-4'>
+                                <Form.Item
+                                  name={'evaluateId' + item1.id}
+                                  hidden={true}
+                                  initialValue={item1.id}
+                                >
+                                  <Input />
+                                </Form.Item>
 
-                                  <Form.Item
-                                    name={'usersId' + item1.id}
-                                    hidden={true}
-                                    initialValue={user.id}
-                                  >
-                                    <Input />
-                                  </Form.Item>
-                                  <Form.Item
-                                    name={'province' + item1.id}
-                                    hidden={true}
-                                    initialValue={user.province}
-                                  >
-                                    <Input />
-                                  </Form.Item>
-                                  <Form.Item
-                                    name={'zone' + item1.id}
-                                    hidden={true}
-                                    initialValue={user.zone}
-                                  >
-                                    <Input />
-                                  </Form.Item>
-                                  <div className='ml-7'>
-                                    <p className='font-bold text-slate-600'>{item1.sub_quests.sub_quest_name}</p>
-                                    <div className='pl-10 flex gap-2'>
-                                      {
-                                        item1.check.split(",").map((ch) =>
-                                          dataSubQuestLists.map((sb) =>
-                                            sb.sub_questId === item1.sub_quests.id && sb.choice === ch
-                                              ?
-                                              <div className='flex items-baseline gap-2 mt-3 ml-7'>
-                                                <Checkbox checked />
-                                                <p
-                                                  className={
-                                                    sb.sub_quest_listname === 'ไม่มีการดำเนินการ'
-                                                      ? 'text-red-700'
-                                                      : 'text-green-700'
-                                                  }
-                                                >
-                                                  {sb.sub_quest_listname}
-                                                </p>
-                                              </div>
-                                              : null
-                                          )
-                                        )
-                                      }
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className='text-center border-l'>
-                                  {
-                                    item1.check.split(",").map((ch) =>
-                                      dataSubQuestLists.map((sb) =>
-                                        sb.sub_questId === item1.sub_quests.id && sb.choice === ch
-                                          ?
-                                          <div className='flex justify-center items-baseline gap-2 mt-3'>
-                                            <p className='font-bold'>{sb.sub_quest_total_point}</p>
-                                          </div>
-                                          : null
-                                      )
-                                    )
-                                  }
-                                </td>
-                                <td className='text-center border-l'>
-                                  {
-                                    item1.check.split(",").map((ch) =>
-                                      dataSubQuestLists.map((sb) =>
-                                        sb.sub_questId === item1.sub_quests.id && sb.choice === ch
-                                          ?
-                                          <div className='flex justify-center items-baseline gap-2 mt-3'>
-                                            <p className='font-bold'>{sb.sub_quest_require_point}</p>
-                                          </div>
-                                          : null
-                                      )
-                                    )
-                                  }
-                                </td>
-                                <td className='text-center border-l'>
-                                  <div className='flex justify-center items-center'>
+                                <Form.Item
+                                  name={'usersId' + item1.id}
+                                  hidden={true}
+                                  initialValue={user.id}
+                                >
+                                  <Input />
+                                </Form.Item>
+                                <Form.Item
+                                  name={'province' + item1.id}
+                                  hidden={true}
+                                  initialValue={user.province}
+                                >
+                                  <Input />
+                                </Form.Item>
+                                <Form.Item
+                                  name={'zone' + item1.id}
+                                  hidden={true}
+                                  initialValue={user.zone}
+                                >
+                                  <Input />
+                                </Form.Item>
+                                <div className='ml-7'>
+                                  <p className='font-bold text-slate-600'>{item1.sub_quests.sub_quest_name}</p>
+                                  <div className='pl-10 flex gap-2'>
                                     {
-                                      item1.file_name
-                                        ?
-                                        <>
-                                          <div className='flex justify-center items-center'>
-                                            <Button onClick={() => displayPDF(item1.file_name)}>
-                                              <EyeTwoTone /> ดูไฟล์
-                                            </Button>
-                                          </div>
-                                          {/* <Image
-                                            className='px-1 py-1'
-                                            width={100}
-                                            src={`https://bdh-service.moph.go.th/api/smarthosp/file-uploads/${item1.file_name}`}
-                                          /> */}
-                                        </>
-                                        :
-                                        <>
-                                          -
-                                        </>
+                                      item1.check.split(",").map((ch) =>
+                                        dataSubQuestLists.map((sb) =>
+                                          sb.sub_questId === item1.sub_quests.id && sb.choice === ch
+                                            ?
+                                            <div className='flex items-baseline gap-2 mt-3 ml-7'>
+                                              <Checkbox checked />
+                                              <p
+                                                className={
+                                                  sb.sub_quest_listname === 'ไม่มีการดำเนินการ'
+                                                    ? 'text-red-700'
+                                                    : 'text-green-700'
+                                                }
+                                              >
+                                                {sb.sub_quest_listname}
+                                              </p>
+                                            </div>
+                                            : null
+                                        )
+                                      )
                                     }
-
                                   </div>
-                                </td>
-                                <td className='text-center border-l px-1'>
+                                </div>
+                              </td>
+                              <td className='text-center border-l'>
+                                {
+                                  item1.check.split(",").map((ch) =>
+                                    dataSubQuestLists.map((sb) =>
+                                      sb.sub_questId === item1.sub_quests.id && sb.choice === ch
+                                        ?
+                                        <div className='flex justify-center items-baseline gap-2 mt-3'>
+                                          <p className='font-bold'>{sb.sub_quest_total_point}</p>
+                                        </div>
+                                        : null
+                                    )
+                                  )
+                                }
+                              </td>
+                              <td className='text-center border-l'>
+                                {
+                                  item1.check.split(",").map((ch) =>
+                                    dataSubQuestLists.map((sb) =>
+                                      sb.sub_questId === item1.sub_quests.id && sb.choice === ch
+                                        ?
+                                        <div className='flex justify-center items-baseline gap-2 mt-3'>
+                                          <p className='font-bold'>{sb.sub_quest_require_point}</p>
+                                        </div>
+                                        : null
+                                    )
+                                  )
+                                }
+                              </td>
+                              <td className='text-center border-l'>
+                                <div className='flex justify-center items-center'>
                                   {
-                                    item1.ssj_approve === true
-                                      ? <p className='font-bold text-green-700'>อนุมัติแล้ว!</p>
-                                      : <p className='font-bold text-red-500'>ยังไม่อนุมัติ!</p>
+                                    item1.file_name
+                                      ?
+                                      <>
+                                        <div className='flex justify-center items-center'>
+                                          <Button onClick={() => displayPDF(item1.file_name)}>
+                                            <EyeTwoTone /> ดูไฟล์
+                                          </Button>
+                                        </div>
+                                      </>
+                                      :
+                                      <>
+                                        -
+                                      </>
                                   }
-                                </td>
-                              </tr>
-                            </>
-                            : null
-                        ))
+
+                                </div>
+                              </td>
+                              <td className='text-center border-l px-1'>
+                                <Switch
+                                  size='small'
+                                  checked={
+                                    item1.ssj_approve === true ? true : false
+                                  }
+                                  onChange={(e) => handleApproveById(e, item1.id)}
+                                />
+                              </td>
+                              <td className='text-center border-l px-1'>
+                                {/* ความเห็นเพิ่มเติม */}
+
+                                {comment.some(cm => cm.evaluateId === item1.id) ? (
+                                  <>
+                                    <div>
+                                      <div className='text-left border rounded-md mb-1 p-1 bg-slate-50'>
+                                        <p className='text-xs'>{comment.filter(f => f.evaluateId === item1.id).map(ite => ite.comment_text)}</p>
+                                      </div>
+                                      <Button
+                                        size='small'
+                                        color="danger"
+                                        variant="dashed"
+                                        onClick={(e) => {
+                                          const target = comment.find(f => f.evaluateId === item1.id);
+                                          if (target) editText(e, target.id);
+                                        }
+                                        }
+                                        block
+                                      >
+                                        แก้ไข Comment
+                                      </Button>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <CommentForm evaluateId={item1.id} onSubmit={handleSubmitComment} />
+                                )}
+                              </td>
+                            </tr>
+                          </>
+                          : null
+                      ))
+                    }
+                  </>
+
+                )
+              }
+
+              {
+                hospcode
+                  ?
+                  <tr className='border-neutral-200 dark:border-white/10 border-b border-l border-r'>
+                    <td className='text-center border-l px-1 font-bold text-blue-700'>คะแนนรวม</td>
+                    <td className='text-center border-l px-1 font-bold text-blue-700'>
+                      {
+                        dataSearch2.filter((dc2) => dc2.ssj_approve === true).reduce((sum, it2) => sum + it2.sub_quest_total_point, 0)
                       }
-                    </>
+                    </td>
+                    <td className='text-center border-l px-1 font-bold text-blue-700'>
+                      {
+                        dataSearch2.filter((dc2) => dc2.ssj_approve === true).reduce((sum, it2) => sum + it2.sub_quest_require_point, 0)
+                      }
+                    </td>
+                    <td className='text-center border-l px-1' colSpan={3}></td>
+                  </tr>
+                  : null
+              }
 
-                  )
-                }
-              </tbody>
-            </table>
-            {
-              subQuestLength.length === 14
-                ?
-                <>
-                  <div className='flex justify-center space-x-1 mt-3'>
-                    <div className='m-3'>
-                      <Form.Item>
-                        <Button
-                          type='primary'
-                          htmlType='submit'
-                          style={{ width: 180 }}
-                        >
-                          <Save /> Approve (อนุมัติ!)
-                        </Button>
-                      </Form.Item>
-                    </div>
-
-                    <div className='flex justify-center space-x-1 mt-3'>
-                      <div>
-                        <Button
-                          color='danger'
-                          style={{ width: 180 }}
-                          variant='solid'
-                          onClick={showUnAproveModal}
-                        >
-                          <Ban /> Cancel (ยกเลิก!)
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className='flex justify-center space-x-1 mt-3'>
-                      <div>
-                        <Button
-                          style={{ width: 180 }}
-                          variant='solid'
-                          onClick={() => refreshData(hospcode)}
-                        >
-                          <RefreshCcw /> Refresh (รีเฟรช!)
-                        </Button>
-                      </div>
-                    </div>
-
-
-                  </div>
-                </>
-                : null
-            }
-          </Form>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -543,79 +563,34 @@ const FormApprovePeople_SSJ = () => {
         title={
           <div className='flex items-center gap-2'>
             <ExclamationCircleFilled className='text-yellow-500' />
-            <span className='font-bold'>คุณต้องการยกเลิกการอนุมัติด้านบุคลากร ของ{hospitalData[0]?.hname_th} หรือไม่?</span>
+            <span className='font-bold'>แก้ไข Comment ของ คกก.จังหวัด</span>
           </div>
         }
-        open={unApproveModal}
-        onOk={formUnAprove.submit}
+        open={updateCommentModal}
         onCancel={cancelModal}
-        width={500}
-        style={{ top: 20 }}
-
+        onOk={formUpdateComment.submit}
+        width={350}
       >
-        <div className='h-4'>
-          <Form
-            name='formUnApprove'
-            form={formUnAprove}
-            onFinish={handleUnApprove}
-            onFinishFailed={onFinishFailed}
+        <Form
+          form={formUpdateComment}
+          onFinish={handleUpdateComment}
+          onFinishFailed={onFinishFailed}
+          layout='vertical'
+        >
+          <Form.Item
+            name='id'
+            hidden={true}
           >
-            {
-              searchQuests.map((it1) =>
-                searchQuery.map((it2) => (
-                  it2.quests.quest_name === it1.quest_name
-                    ?
-                    <>
-                      <Form.Item
-                        name={'evaluateId' + it2.id}
-                        hidden={true}
-                        initialValue={it2.id}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'hcode' + it2.id}
-                        hidden={true}
-                        initialValue={hospcode}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'usersId' + it2.id}
-                        hidden={true}
-                        initialValue={user.id}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'province' + it2.id}
-                        hidden={true}
-                        initialValue={user.province}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'zone' + it2.id}
-                        hidden={true}
-                        initialValue={user.zone}
-                      >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        name={'ssj_approve' + it2.id}
-                        hidden={true}
-                        initialValue={false}
-                      >
-                        <Input />
-                      </Form.Item>
-                    </>
-                    : null
-                ))
-              )
-            }
-          </Form>
-        </div>
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name='comment_text'
+          >
+            <Input.TextArea rows={3} />
+          </Form.Item>
+        </Form>
       </Modal>
+
 
     </div>
   )

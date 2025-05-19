@@ -245,24 +245,6 @@ const Login = () => {
               </Space>
             </Radio.Group>
           </Form.Item>
-          {/* <Form.Item
-            name='objective'
-            label={<b>ประเภทผู้ใช้ :</b>}
-            rules={[
-              {
-                required: true,
-                message: 'กรุณาเลือกระดับหน่วยงาน'
-              }
-            ]}
-          >
-            <Radio.Group onChange={(e) => e.target.value}>
-              <Space direction='vertical'>
-                <Radio value='zone_approve'>คกก.รพ.อัจฉริยะเขตฯ Approve</Radio>
-                <Radio value='prov_approve'>คกก.รพ.อัจฉริยะ สสจ. Approve</Radio>
-                <Radio value='responder'>โรงพยาบาลประเมินตนเอง</Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item> */}
           <Form.Item>
             <Button block type="primary" htmlType="submit" size=''>
               ล็อกอินเข้าใช้งาน

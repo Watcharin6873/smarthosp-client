@@ -186,15 +186,15 @@ const TableProvinceList = () => {
                             ? <span className='text-red-500 font-bold' style={{ fontSize: '13px' }}>ไม่ผ่าน</span>
                             : total_cat >= 600 && total_cat <= 700
                                 ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                                : total_cat >= 700 && total_require < 510
+                                : total_cat >= 700 && total_require < 500
                                     ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                                    : total_cat >= 800 && total_require < 510
+                                    : total_cat >= 800 && total_require < 500
                                         ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                                        : total_cat >= 700 && total_cat < 800 && total_require == 510
+                                        : total_cat >= 700 && total_cat < 800 && total_require == 500
                                             ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
-                                            : total_cat >= 800 && total_require == 510 && cyber_level != 'GREEN'
+                                            : total_cat >= 800 && total_require == 500 && cyber_level != 'GREEN'
                                                 ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
-                                                : total_cat >= 800 && total_require == 510 && cyber_level == 'GREEN'
+                                                : total_cat >= 800 && total_require == 500 && cyber_level == 'GREEN'
                                                     ? <span className='text-blue-500 font-bold' style={{ fontSize: '13px' }}>เพชร</span>
                                                     : null
                     }
@@ -274,15 +274,15 @@ const TableProvinceList = () => {
             ? 'ไม่ผ่าน'
             : item.total_cat >= 600 && item.total_cat <= 700
                 ? 'เงิน'
-                : item.total_cat >= 700 && item.total_require < 510
+                : item.total_cat >= 700 && item.total_require < 500
                     ? 'เงิน'
-                    : item.total_cat >= 800 && item.total_require < 510
+                    : item.total_cat >= 800 && item.total_require < 500
                         ? 'เงิน'
-                        : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+                        : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 500
                             ? 'ทอง'
-                            : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+                            : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level != 'GREEN'
                                 ? 'ทอง'
-                                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                                : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level == 'GREEN'
                                     ? 'เพชร'
                                     : null,
         ระดับ_cyber_security: item.cyber_levelname

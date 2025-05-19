@@ -41,6 +41,7 @@ import ReportZone from '../pages/report/ReportZone'
 import HomeSSJ from '../pages/user/approver/prov/HomeSSJ'
 import HomeZone from '../pages/user/approver/zone/HomeZone'
 import Cybersecuritycheck from '../pages/user/responder/Cybersecuritycheck'
+import ApproveAll from '../components/user/approver/zone/ApproveAll'
 
 
 
@@ -103,6 +104,7 @@ const router = createBrowserRouter([
       {path:'zone-approve-management', element: <Zone_ApproveManagement />},
       {path:'zone-approve-service', element: <Zone_ApproveService />},
       {path:'zone-approve-people', element: <Zone_ApprovePeople />},
+      {path:'approve-all', element: <ApproveAll />},
       {path:'report-zone', element: <ReportZone />},
       { path: 'contact-us', element: <ContactUs /> },
     ]

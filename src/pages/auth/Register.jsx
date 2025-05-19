@@ -30,9 +30,9 @@ const Register = () => {
   const [registerModal, setRegisterModal] = useState(false)
   const [formCreateUser] = Form.useForm()
 
-  useEffect(() => {
-    setIsOpenModalNotify(true)
-  }, [])
+  // useEffect(() => {
+  //   setIsOpenModalNotify(true)
+  // }, [])
 
 
   const code = new URLSearchParams(myParam).get("code")
@@ -198,7 +198,7 @@ const Register = () => {
                 block
                 // href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=https://bdh-service.moph.go.th/smarthosp-quest/register/&response_type=code'
                 href='https://moph.id.th/oauth/redirect?client_id=019274d1-ac2a-7352-b73a-ca66a5b135fb&redirect_uri=http://localhost:5173/smarthosp-quest/register/&response_type=code'
-              disabled
+              // disabled
               >
                 <img
                   className='w-32 p-2'
@@ -271,18 +271,6 @@ const Register = () => {
                   <div className='flex justify-center'>
                     <p className='text-lg font-bold m-2'><u>ข้อมูลบุคคล</u></p>
                   </div>
-                  {/* <Form.Item
-                    name='title_th'
-                    label={<b>คำนำหน้าชื่อ :</b>}
-                    rules={[
-                      {
-                        required: true
-                      }
-                    ]}
-                    style={{ marginBottom: '10px' }}
-                  >
-                    <Input readOnly />
-                  </Form.Item> */}
                   <Form.Item
                     name='firstname_th'
                     label={<b>ชื่อ :</b>}
@@ -374,18 +362,6 @@ const Register = () => {
                   >
                     <Input readOnly />
                   </Form.Item>
-                  {/* <Form.Item
-                    name='sub_district'
-                    label={<b>ตำบล :</b>}
-                    rules={[
-                      {
-                        required: true
-                      }
-                    ]}
-                    style={{ marginBottom: '10px' }}
-                  >
-                    <Input readOnly />
-                  </Form.Item> */}
                   <Form.Item
                     name='district'
                     label={<b>อำเภอ :</b>}
@@ -477,7 +453,7 @@ const Register = () => {
         </Modal>
 
 
-        <Modal
+        {/*<Modal
           title={
             <div
               style={{
@@ -503,7 +479,7 @@ const Register = () => {
           <div className="flex justify-end mt-4">
             <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
           </div>
-        </Modal>
+        </Modal>*/}
 
 
 

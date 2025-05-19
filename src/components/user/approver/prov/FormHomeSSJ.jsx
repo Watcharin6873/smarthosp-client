@@ -141,15 +141,15 @@ const FormHomeSSJ = () => {
 
   console.log('Hosp: ', totalSumEvaluateData)
 
-  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
+  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN')
   )
   const silverLevel = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500)
   )
   const notPassLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600)
   const hospNotEvaluate = listHospital.length - totalSumEvaluateData.length
@@ -162,7 +162,7 @@ const FormHomeSSJ = () => {
 
   return (
     <div>
-      <p className='text-xs text-orange-500 m-3'>***ข้อมูลที่แสดงเป็นผลคะแนนจาก รพ. ประเมินตนเอง***</p>
+      <p className='text-sm text-orange-500 m-3'>***ข้อมูลที่แสดงเป็นผลคะแนนจาก รพ.ที่ประเมินตนเองและได้รับการอนุมัติ "รายข้อ" จากคณะกรรมการจังหวัดแล้ว***</p>
       <div className='grid grid-cols-5 gap-2'>
 
         <div className='bg-white rounded-md shadow-md p-3'>

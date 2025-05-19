@@ -8,7 +8,7 @@ import The_Best from '../assets/The_Best.png'
 import { ArrowUpOutlined, ClearOutlined, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../api/Hospital'
 import { Ban, Hospital } from 'lucide-react'
-import { getHospitalInListEvaluate, sumEvaluateAll } from '../api/Evaluate'
+import { getCheckApproveAll, getHospitalInListEvaluate, splitCommaForCheckApprove, sumEvaluateAll } from '../api/Evaluate'
 import { Alert, Button, Form, Select } from 'antd'
 // import Chart from "react-apexcharts";
 import { BarChart, PieChart, pieArcLabelClasses } from '@mui/x-charts';
@@ -27,6 +27,7 @@ const Home = () => {
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
   const [searchQueryHosp, setSearchQueryHosp] = useState([])
+  const [approveData, setApproveData] = useState([])
   const [expandedRows, setExpandedRows] = useState(null)
   const [clientReady, setClientReady] = useState(false);
   const [formSearch] = Form.useForm()
@@ -39,8 +40,46 @@ const Home = () => {
     loadListHospitalAll()
     loadHospitalInListEvaluate()
     loadTotalSumEvaluate()
+    loadCheckApproveAll()
   }, [])
 
+  const loadCheckApproveAll = async () => {
+    await getCheckApproveAll()
+      .then(res => {
+        setApproveData(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const apData = approveData.map((item) => ({
+    zone: item.zone,
+    provcode: item.provcode,
+    provname: item.provname,
+    hcode: item.hcode,
+    hname_th: item.hname_th,
+    c_cat1: Number(item.c_cat1),
+    ssj_approve_cat1: Number(item.ssj_approve_cat1),
+    ssj_unapprove_cat1: Number(item.ssj_unapprove_cat1),
+    zone_approve_cat1: Number(item.zone_approve_cat1),
+    zone_unapprove_cat1: Number(item.zone_unapprove_cat1),
+    c_cat2: Number(item.c_cat2),
+    ssj_approve_cat2: Number(item.ssj_approve_cat2),
+    ssj_unapprove_cat2: Number(item.ssj_unapprove_cat2),
+    zone_approve_cat2: Number(item.zone_approve_cat2),
+    zone_unapprove_cat2: Number(item.zone_unapprove_cat2),
+    c_cat3: Number(item.c_cat3),
+    ssj_approve_cat3: Number(item.ssj_approve_cat3),
+    ssj_unapprove_cat3: Number(item.ssj_unapprove_cat3),
+    zone_approve_cat3: Number(item.zone_approve_cat3),
+    zone_unapprove_cat3: Number(item.zone_unapprove_cat3),
+    c_cat4: Number(item.c_cat4),
+    ssj_approve_cat4: Number(item.ssj_approve_cat4),
+    ssj_unapprove_cat4: Number(item.ssj_unapprove_cat4),
+    zone_approve_cat4: Number(item.zone_approve_cat4),
+    zone_unapprove_cat4: Number(item.zone_unapprove_cat4)
+  }))
 
 
   const loadListHospitalAll = async () => {
@@ -115,9 +154,6 @@ const Home = () => {
     setZoneSearch('')
   }
 
-
-
-
   const totalSumEvaluateData = searchQuery.map((item) => ({
     zone: item.zone,
     provcode: item.provcode,
@@ -129,6 +165,37 @@ const Home = () => {
     cyber_level: item.cyber_level,
     cyber_levelname: item.cyber_levelname
   }))
+
+  const totalSumEvaluateData2 = searchQuery.map(sq1 => {
+    const ap1 = apData.find(a => a.hcode === sq1.hcode)
+    return {
+      ...sq1,
+      c_cat1: ap1 ? Number(ap1.c_cat1) : null,
+      ssj_approve_cat1:ap1 ? Number(ap1.ssj_approve_cat1) : null,
+      ssj_unapprove_cat1:ap1 ? Number(ap1.ssj_unapprove_cat1) : null,
+      zone_approve_cat1:ap1 ? Number(ap1.zone_approve_cat1) : null,
+      zone_unapprove_cat1:ap1 ? Number(ap1.zone_unapprove_cat1) : null,
+      c_cat2:ap1 ? Number(ap1.c_cat2) : null,
+      ssj_approve_cat2:ap1 ? Number(ap1.ssj_approve_cat2) : null,
+      ssj_unapprove_cat2:ap1 ? Number(ap1.ssj_unapprove_cat2) : null,
+      zone_approve_cat2:ap1 ? Number(ap1.zone_approve_cat2) : null,
+      zone_unapprove_cat2:ap1 ? Number(ap1.zone_unapprove_cat2) : null,
+      c_cat3:ap1 ? Number(ap1.c_cat3) : null,
+      ssj_approve_cat3:ap1 ? Number(ap1.ssj_approve_cat3) : null,
+      ssj_unapprove_cat3:ap1 ? Number(ap1.ssj_unapprove_cat3) : null,
+      zone_approve_cat3:ap1 ? Number(ap1.zone_approve_cat3) : null,
+      zone_unapprove_cat3:ap1 ? Number(ap1.zone_unapprove_cat3) : null,
+      c_cat4:ap1 ? Number(ap1.c_cat4) : null,
+      ssj_approve_cat4:ap1 ? Number(ap1.ssj_approve_cat4) : null,
+      ssj_unapprove_cat4:ap1 ? Number(ap1.ssj_unapprove_cat4) : null,
+      zone_approve_cat4:ap1 ? Number(ap1.zone_approve_cat4) : null,
+      zone_unapprove_cat4:ap1 ? Number(ap1.zone_unapprove_cat4) : null,
+      cyber_level: sq1.cyber_level,
+      cyber_levelname: sq1.cyber_levelname
+    }
+  });
+
+  console.log('ApproveData: ', totalSumEvaluateData2)
 
   const uniqueZone = [...new Set(totalSumEvaluateData.map((zon) => zon.zone))]
 
@@ -153,15 +220,15 @@ const Home = () => {
 
   // console.log('Prov: ', provData)
 
-  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
+  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN')
   )
   const silverLevel = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500)
   )
 
   const hospNotEvaluate = (listHospitalAll.length - hospitalInList.length)
@@ -195,127 +262,127 @@ const Home = () => {
     return `${(percent * 100).toFixed(1)}%`;
   };
 
-  const gemLevel01 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '01')
-  const gemLevel02 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '02')
-  const gemLevel03 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '03')
-  const gemLevel04 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '04')
-  const gemLevel05 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '05')
-  const gemLevel06 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '06')
-  const gemLevel07 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '07')
-  const gemLevel08 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '08')
-  const gemLevel09 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '09')
-  const gemLevel10 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '10')
-  const gemLevel11 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '11')
-  const gemLevel12 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN' && f.zone === '12')
+  const gemLevel01 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '01')
+  const gemLevel02 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '02')
+  const gemLevel03 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '03')
+  const gemLevel04 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '04')
+  const gemLevel05 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '05')
+  const gemLevel06 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '06')
+  const gemLevel07 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '07')
+  const gemLevel08 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '08')
+  const gemLevel09 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '09')
+  const gemLevel10 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '10')
+  const gemLevel11 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '11')
+  const gemLevel12 = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN' && f.zone === '12')
 
   const goldLevel01 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '01') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '01')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '01') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '01')
   )
   const goldLevel02 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '02') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '02')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '02') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '02')
   )
   const goldLevel03 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '03') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '03')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '03') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '03')
   )
   const goldLevel04 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '04') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '04')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '04') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '04')
   )
   const goldLevel05 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '05') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '05')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '05') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '05')
   )
   const goldLevel06 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '06') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '06')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '06') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '06')
   )
   const goldLevel07 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '07') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '07')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '07') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '07')
   )
   const goldLevel08 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '08') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '08')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '08') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '08')
   )
   const goldLevel09 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '09') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '09')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '09') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '09')
   )
   const goldLevel10 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '10') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '10')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '10') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '10')
   )
   const goldLevel11 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '11') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '11')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '11') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '11')
   )
   const goldLevel12 = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510 && f.zone === '12') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN' && f.zone === '12')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500 && f.zone === '12') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN' && f.zone === '12')
   )
 
   const silverLevel01 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '01') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '01') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '01')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '01') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '01')
   )
   const silverLevel02 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '02') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '02') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '02')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '02') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '02')
   )
   const silverLevel03 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '03') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '03') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '03')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '03') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '03')
   )
   const silverLevel04 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '04') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '04') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '04')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '04') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '04')
   )
   const silverLevel05 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '05') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '05') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '05')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '05') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '05')
   )
   const silverLevel06 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '06') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '06') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '06')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '06') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '06')
   )
   const silverLevel07 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '07') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '07') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '07')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '07') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '07')
   )
   const silverLevel08 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '08') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '08') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '08')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '08') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '08')
   )
   const silverLevel09 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '09') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '09') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '09')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '09') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '09')
   )
   const silverLevel10 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '10') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '10') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '10')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '10') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '10')
   )
   const silverLevel11 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '11') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '11') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '11')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '11') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '11')
   )
   const silverLevel12 = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint <= 700 && f.zone === '12') ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510 && f.zone === '12') ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510 && f.zone === '12')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500 && f.zone === '12') ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500 && f.zone === '12')
   )
 
   const notPassLevel01 = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600 && f.zone === '01')
@@ -484,43 +551,7 @@ const Home = () => {
                 ))}
               </Select>
             </Form.Item>
-            {/* {
-              zoneSearch
-                ?
-                <>
-                  <Form.Item
-                    name={`provcode`}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'กรุณาเลือกเขตสุขภาพ!'
-                      }
-                    ]}
-                  >
-                    <Select
-                      style={{ width: 180 }}
-                      placeholder='เลือกจังหวัด...'
-                      onChange={handleChangeProv}
-                    >
-                      {provData.map((val2, k2) => (
-                        zoneSearch === val2.zone
-                          ? <Select.Option key={k2} value={val2.provcode}>{val2.provname}</Select.Option>
-                          : null
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </>
-                : null
-            } */}
-
-            {/* <Form.Item>
-              <Button
-                type='primary'
-                htmlType='submit'
-              >
-                <SearchOutlined /> ค้นหา
-              </Button>
-            </Form.Item> */}
+            
             <Form.Item>
               <Button
                 danger
@@ -552,10 +583,10 @@ const Home = () => {
           }
 
         </div>
-        
+
       </div>
 
-      <p className='text-xs text-orange-500 m-3'>***ข้อมูลที่แสดงเป็นผลคะแนนจาก รพ. ประเมินตนเอง***</p>
+      <p className='text-center text-orange-500 m-3 text-lg'>***ข้อมูลที่แสดงเป็นผลคะแนนที่ผ่านการอนุมัติจากคณะกรรมการระดับจังหวัดเรียบร้อยแล้ว***</p>
 
       <div className='grid grid-cols-5 gap-2'>
 
@@ -570,7 +601,7 @@ const Home = () => {
           </div>
 
           <div className='flex justify-between items-baseline text-green-700 p-2'>
-            <p>ประเมินแล้ว</p>
+            <p>จังหวัด อนุมัติแล้ว</p>
             <div className='flex justify-center items-baseline gap-2'>
               <p className='text-xl'>{searchQueryHosp.length}</p>
               <p>แห่ง</p>
@@ -581,7 +612,7 @@ const Home = () => {
               ?
               <>
                 <div className='flex justify-between items-baseline text-orange-400 px-2'>
-                  <p>ยังไม่ประเมิน</p>
+                  <p>จังหวัด ยังไม่อนุมัติ</p>
                   <div className='flex justify-center items-baseline gap-2'>
                     <p className='text-xl'>{listHospitalZone.length - searchQueryHosp.length}</p>
                     <p>แห่ง</p>
@@ -595,7 +626,7 @@ const Home = () => {
               :
               <>
                 <div className='flex justify-between items-baseline text-orange-400 px-2'>
-                  <p>ยังไม่ประเมิน</p>
+                  <p>จังหวัด ยังไม่อนุมัติ</p>
                   <div className='flex justify-center items-baseline gap-2'>
                     <p className='text-xl'>{listHospitalAll.length - searchQueryHosp.length}</p>
                     <p>แห่ง</p>
@@ -614,24 +645,7 @@ const Home = () => {
 
         </div>
 
-        {/* <div className='bg-white rounded-md shadow-md p-3'>
-          <div className='flex items-center gap-2'>
-            <img
-              className='bg-amber-50 w-12 rounded-full shadow-md'
-              src={HospitalIcon}
-              alt='HospitalIcon'
-            />
-            <p className='text-xl text-orange-400 font-bold'>ยังไม่ประเมิน</p>
-          </div>
-          <div className='flex justify-center items-baseline gap-2 my-3 text-orange-400'>
-            <p className='text-4xl'>{listHospitalAll.length - searchQueryHosp.length}</p>
-            <p>แห่ง</p>
-          </div>
-          <div className='p-2 flex justify-between text-orange-400'>
-            <div><p>คิดเป็น</p></div>
-            <div className='flex'><p>{hospNotPer.toFixed(1)} % </p></div>
-          </div>
-        </div> */}
+
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex items-center gap-2'>
@@ -757,7 +771,7 @@ const Home = () => {
               :
               <>
                 <div className='flex justify-center items-center'>
-                  <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้จากคะแนนในการประเมิน รายเขตสุขภาพ</p>
+                  <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้เป็นคะแนนที่ผ่านการอนุมัติจากคณะกรรมการระดับจังหวัดแล้ว รายเขตสุขภาพ</p>
                 </div>
                 <BarChart
                   height={350}
@@ -788,7 +802,7 @@ const Home = () => {
 
         <div className='bg-white rounded-md shadow-md p-3'>
           <div className='flex justify-center items-center'>
-            <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้จากคะแนนในการประเมิน รวมทั้งหมด</p>
+            <p>จำนวนร้อยละ (%) ของแต่ละระดับที่ได้เป็นคะแนนที่ผ่านการอนุมัติจากคณะกรรมการระดับจังหวัดแล้ว รวมทั้งหมด</p>
           </div>
           <div className='flex justify-center items-center mt-5'>
             <PieChart

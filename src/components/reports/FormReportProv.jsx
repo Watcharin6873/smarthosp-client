@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useGlobalStore from '../../store/global-store'
 import { getHospitalOnProv } from '../../api/Hospital'
-import { getSumEvaluateByProv, getSumEvaluateByZone } from '../../api/Evaluate'
+import { getCheckApproveAll, getSumEvaluateByProv, getSumEvaluateByZone } from '../../api/Evaluate'
 import { Table } from 'antd'
 import { CircleCheck, CircleX } from 'lucide-react'
 import ExportExcel_prov from '../user/approver/prov/ExportExcel_prov'
@@ -15,6 +15,7 @@ const FormReportProv = () => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [listHospitals, setListHospitals] = useState([])
+  const [approveData, setApproveData] = useState([])
   const [listEvaluateByProv, setListEvaluateByProv] = useState([])
   const [expandedRows, setExpandedRows] = useState(null)
 
@@ -24,6 +25,7 @@ const FormReportProv = () => {
   useEffect(() => {
     loadListHospitals(token)
     loadListSumEvaluateByZone(token)
+    loadCheckApproveAll()
   }, [])
 
   const loadListHospitals = async () => {
@@ -48,6 +50,16 @@ const FormReportProv = () => {
       })
   }
 
+  const loadCheckApproveAll = async () => {
+    await getCheckApproveAll()
+      .then(res => {
+        setApproveData(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   const handleExpandedRow = (e) => {
     console.log('Value: ', e)
     var currentExpandedRows = null;
@@ -61,6 +73,66 @@ const FormReportProv = () => {
       setExpandedRows(null);
     }
   }
+
+  const apData = approveData?.map((item) => ({
+    zone: item.zone,
+    provcode: item.provcode,
+    provname: item.provname,
+    hcode: item.hcode,
+    hname_th: item.hname_th,
+    c_cat1: Number(item.c_cat1),
+    ssj_approve_cat1: Number(item.ssj_approve_cat1),
+    ssj_unapprove_cat1: Number(item.ssj_unapprove_cat1),
+    zone_approve_cat1: Number(item.zone_approve_cat1),
+    zone_unapprove_cat1: Number(item.zone_unapprove_cat1),
+    c_cat2: Number(item.c_cat2),
+    ssj_approve_cat2: Number(item.ssj_approve_cat2),
+    ssj_unapprove_cat2: Number(item.ssj_unapprove_cat2),
+    zone_approve_cat2: Number(item.zone_approve_cat2),
+    zone_unapprove_cat2: Number(item.zone_unapprove_cat2),
+    c_cat3: Number(item.c_cat3),
+    ssj_approve_cat3: Number(item.ssj_approve_cat3),
+    ssj_unapprove_cat3: Number(item.ssj_unapprove_cat3),
+    zone_approve_cat3: Number(item.zone_approve_cat3),
+    zone_unapprove_cat3: Number(item.zone_unapprove_cat3),
+    c_cat4: Number(item.c_cat4),
+    ssj_approve_cat4: Number(item.ssj_approve_cat4),
+    ssj_unapprove_cat4: Number(item.ssj_unapprove_cat4),
+    zone_approve_cat4: Number(item.zone_approve_cat4),
+    zone_unapprove_cat4: Number(item.zone_unapprove_cat4)
+  }))
+
+  
+
+  const listEvaluateByProv2 = listEvaluateByProv.map((item1) => {
+    const item2 = apData?.filter(f => f.provname === province && f.hcode === item1.hcode);
+    return {
+      zone: Number(item1.zone),
+    provcode: item1.provcode,
+    provname: item1.provname,
+    hcode: item1.hcode,
+    hname_th: item1.hname_th,
+    point_total_cat1: item1.point_total_cat1,
+    point_require_cat1: item1.point_require_cat1,
+    ssjapp_cat1: item2[0]?.ssj_approve_cat1,
+    zoneapp_cat1: item2[0]?.zone_approve_cat1,
+    point_total_cat2: item1.point_total_cat2,
+    point_require_cat2: item1.point_require_cat2,
+    ssjapp_cat2: item2[0]?.ssj_approve_cat2,
+    zoneapp_cat2: item2[0]?.zone_approve_cat2,
+    point_total_cat3: item1.point_total_cat3,
+    point_require_cat3: item1.point_require_cat3,
+    ssjapp_cat3: item2[0]?.ssj_approve_cat3,
+    zoneapp_cat3: item2[0]?.zone_approve_cat3,
+    point_total_cat4: item1.point_total_cat4,
+    ssjapp_cat4: item2[0]?.ssj_approve_cat4,
+    zoneapp_cat4: item2[0]?.zone_approve_cat4,
+    cyber_level: item1.cyber_level,
+    cyber_levelname: item1.cyber_levelname
+    }
+  })
+
+  console.log('D: ', listEvaluateByProv2)
 
   const data2 = listEvaluateByProv.map((item, k) => ({
     key: k,
@@ -117,15 +189,15 @@ const FormReportProv = () => {
       ? 'ไม่ผ่าน'
       : item.total_cat >= 600 && item.total_cat <= 700
         ? 'เงิน'
-        : item.total_cat >= 700 && item.total_require < 510
+        : item.total_cat >= 700 && item.total_require < 500
           ? 'เงิน'
-          : item.total_cat >= 800 && item.total_require < 510
+          : item.total_cat >= 800 && item.total_require < 500
             ? 'เงิน'
-            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 500
               ? 'ทอง'
-              : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+              : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level != 'GREEN'
                 ? 'ทอง'
-                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level == 'GREEN'
                   ? 'เพชร'
                   : null,
     ระดับ_cyber_security: item.cyber_levelname
@@ -180,7 +252,7 @@ const FormReportProv = () => {
           </thead>
           <tbody className=''>
             {
-              listEvaluateByProv.map((item2) =>
+              listEvaluateByProv2.map((item2) =>
                 <tr className='text-xs font-bold'>
                   <td className='border text-center'>
                     <p>{Number(item2.zone)}</p>
@@ -207,7 +279,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.ssjapp_cat1 === '1'
+                      item2.ssjapp_cat1 === 67
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -220,7 +292,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.zoneapp_cat1 === '1'
+                      item2.zoneapp_cat1 === 67
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -248,7 +320,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.ssjapp_cat2 === '1'
+                      item2.ssjapp_cat2 === 42
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -261,7 +333,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.zoneapp_cat2 === '1'
+                      item2.zoneapp_cat2 === 42
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -289,7 +361,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.ssjapp_cat3 === '1'
+                      item2.ssjapp_cat3 === 45
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -301,7 +373,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.zoneapp_cat3 === '1'
+                      item2.zoneapp_cat3 === 45
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -322,7 +394,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.ssjapp_cat4 === '1'
+                      item2.ssjapp_cat4 === 14
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />
@@ -335,7 +407,7 @@ const FormReportProv = () => {
                   </td>
                   <td className='border text-center'>
                     {
-                      item2.zoneapp_cat4 === '1'
+                      item2.zoneapp_cat4 === 14
                         ?
                         <div className='text-green-600 flex justify-center'>
                           <CircleCheck size={12} />

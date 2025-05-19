@@ -11,9 +11,10 @@ import {
     saveDocuments,
     updateChoiceEvaluate,
     uploadFileById,
-    removeFileById
+    removeFileById,
+    getCommentEvaluate
 } from '../../api/Evaluate'
-import { BellRing, CircleCheck, CircleX, FileCog, FilePenLine, LoaderCircle, Megaphone, MonitorCheck, RefreshCw, Trash } from 'lucide-react'
+import { BellRing, CircleCheck, CircleX, FileCog, FilePenLine, LoaderCircle, Megaphone, MonitorCheck, RefreshCw, SquareCheckBig, SquareX, Trash } from 'lucide-react'
 import { getListTopic } from '../../api/Topic'
 import { Button, Checkbox, Divider, Form, Image, Input, InputNumber, Modal, Radio, Select, Space, Upload } from 'antd'
 import { getListQuests } from '../../api/Quest'
@@ -72,12 +73,14 @@ const FormReportHosp = () => {
     const [numPages, setNumPages] = useState();
     const [pageNumber, setPageNumber] = useState(1);
     const [modalAlertNotiMessage, setModalAlertNotiMessage] = useState(false)
+    const [comment, setComment] = useState([]);
 
     useEffect(() => {
         loadListCategoryQuest(token)
         loadListQuest(token)
         loadSubQuestList(token)
         loadListEvaluate(token)
+        loadCommentData(token)
         // setModalAlertNotiMessage(true)
     }, [])
 
@@ -104,6 +107,17 @@ const FormReportHosp = () => {
         await getListTopic(token)
             .then(res => {
                 setListCategoryQuest(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const loadCommentData = async () => {
+        await getCommentEvaluate(token)
+            .then(res => {
+                // console.log('Comment: ', res.data)
+                setComment(res.data)
             })
             .catch(err => {
                 console.log(err)
@@ -232,6 +246,7 @@ const FormReportHosp = () => {
                 toast.success(res.data.message)
                 setIsModalUpdateOpen(false)
                 loadListEvaluate(token)
+                setSearchCategory(listEvaluate.filter(f => f.category_questId === category_questId))
             })
             .catch(err => {
                 console.log(err.response.data.message)
@@ -430,7 +445,10 @@ const FormReportHosp = () => {
                                             {/* <th className='text-center p-4 border-r'>จำเป็นดำเนินการ</th> */}
                                             <th className='text-center p-4 border-r'>คะแนนที่ได้</th>
                                             <th className='text-center p-4 border-r'>คะแนนจำเป็น</th>
-                                            <th className='text-center p-4 border-r'>ภาพหลักฐาน</th>
+                                            <th className='text-center p-4 border-r w-24'>ภาพหลักฐาน</th>
+                                            <th className='text-center p-4 border-r w-44'>Comment</th>
+                                            <th className='text-center p-4 border-r'>สสจ.<br />อนุมัติ</th>
+                                            <th className='text-center p-4 border-r'>เขตฯ<br />อนุมัติ</th>
                                             <th className='text-center p-4 border-r'>แก้ไข</th>
                                         </tr>
                                     </thead>
@@ -462,6 +480,7 @@ const FormReportHosp = () => {
                                                                                     >
                                                                                         {sb.sub_quest_listname}
                                                                                     </p>
+                                                                                    <p className='text-red-600'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p>
                                                                                 </div>
                                                                                 : null
                                                                         )
@@ -528,7 +547,7 @@ const FormReportHosp = () => {
                                                                     )
                                                                 }
                                                             </td>
-                                                            <td className='text-center border-r' style={{ fontSize: '15px' }}>
+                                                            <td className='text-center border-r p-1' style={{ fontSize: '15px' }}>
                                                                 {
                                                                     item2.file_name
                                                                         ?
@@ -550,21 +569,61 @@ const FormReportHosp = () => {
                                                                                 <Button
                                                                                     size='small'
                                                                                     onClick={() => showUploadModal(item2)}
-                                                                                    disabled
+                                                                                // disabled
                                                                                 >
-                                                                                    <UploadOutlined /> เพิ่มไฟล์ pdf
+                                                                                    <UploadOutlined /> เพิ่มไฟล์
                                                                                 </Button>
                                                                             </div>
                                                                         </>
                                                                 }
                                                             </td>
-                                                            <td className='text-center'>
+                                                            <td className='text-center border-r p-1'>
+                                                                {
+                                                                    comment.some(cm => cm.evaluateId === item2.id) ? (
+                                                                        <>
+                                                                            <div className='text-left border rounded-md mb-1 p-1 bg-slate-50'>
+                                                                                <p className='text-xs'>{comment.filter(f => f.evaluateId === item2.id).map(ite => ite.comment_text)}</p>
+                                                                            </div>
+                                                                        </>
+                                                                    ) : (
+                                                                        <></>
+                                                                    )
+                                                                }
+                                                            </td>
+                                                            <td className='text-center border-r'>
+                                                                {
+                                                                    item2.ssj_approve
+                                                                        ?
+                                                                        <div className='flex justify-center'>
+                                                                            <SquareCheckBig className='text-green-500' size={16} />
+                                                                        </div>
+                                                                        :
+                                                                        <div className='flex justify-center'>
+                                                                            <SquareX className='text-red-500' size={16} />
+                                                                        </div>
+
+                                                                }
+                                                            </td>
+                                                            <td className='text-center border-r'>
+                                                                {
+                                                                    item2.zone_approve
+                                                                        ?
+                                                                        <div className='flex justify-center'>
+                                                                            <SquareCheckBig className='text-green-500' size={16} />
+                                                                        </div>
+                                                                        :
+                                                                        <div className='flex justify-center'>
+                                                                            <SquareX className='text-red-500' size={16} />
+                                                                        </div>
+                                                                }
+                                                            </td>
+                                                            <td className='text-center border-r'>
                                                                 <div className=''>
                                                                     <Button
                                                                         size='small'
                                                                         className='bg-yellow-400 text-white'
                                                                         onClick={() => showUpdateModal(item2.id)}
-                                                                        disabled
+                                                                    // disabled
                                                                     >
                                                                         <EditOutlined /> แก้ไข
                                                                     </Button>

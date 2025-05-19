@@ -155,7 +155,7 @@ const HomeUsers = () => {
   const sumRequirePoint = listPoint2.reduce((a, v) => a + Number(v.sub_quest_require_point), 0)
 
   const initialPoint = 800
-  const initialRequirePoint = 510
+  const initialRequirePoint = 500
   const initialCyber = 'Green'
 
   return (
@@ -182,7 +182,7 @@ const HomeUsers = () => {
                       <img className='w-32' src={Silver} alt='Gem' />
                     </div>
                   </div>
-                  : sumTotalPoint >= 700 && sumRequirePoint < 510
+                  : sumTotalPoint >= 700 && sumRequirePoint < 500
                     ?
                     <div style={{ textAlign: 'center' }}>
                       <p className='text-4xl font-bold text-slate-400'>เงิน</p>
@@ -190,7 +190,7 @@ const HomeUsers = () => {
                         <img className='w-32' src={Silver} alt='Gem' />
                       </div>
                     </div>
-                    : sumTotalPoint >= 700 && sumTotalPoint < 800 && sumRequirePoint == 510
+                    : sumTotalPoint >= 700 && sumTotalPoint < 800 && sumRequirePoint == 500
                       ?
                       <div style={{ textAlign: 'center' }}>
                         <p className='text-4xl font-bold text-yellow-600'>ทอง</p>
@@ -198,7 +198,7 @@ const HomeUsers = () => {
                           <img className='w-32' src={Gold} alt='Gem' />
                         </div>
                       </div>
-                      : sumTotalPoint >= 800 && sumRequirePoint < 510
+                      : sumTotalPoint >= 800 && sumRequirePoint < 500
                         ?
                         <div style={{ textAlign: 'center' }}>
                           <p className='text-4xl font-bold text-slate-400'>เงิน</p>
@@ -206,7 +206,7 @@ const HomeUsers = () => {
                             <img className='w-32' src={Silver} alt='Gem' />
                           </div>
                         </div>
-                        : sumTotalPoint >= 800 && sumRequirePoint == 510 && cyberData?.cyber_level != 'GREEN'
+                        : sumTotalPoint >= 800 && sumRequirePoint == 500 && cyberData?.cyber_level != 'GREEN'
                           ?
                           <div style={{ textAlign: 'center' }}>
                             <p className='text-4xl font-bold text-yellow-600'>ทอง</p>
@@ -214,7 +214,7 @@ const HomeUsers = () => {
                               <img className='w-32' src={Gold} alt='Gem' />
                             </div>
                           </div>
-                          : sumTotalPoint >= 800 && sumRequirePoint == 510 && cyberData?.cyber_level == 'GREEN'
+                          : sumTotalPoint >= 800 && sumRequirePoint == 500 && cyberData?.cyber_level == 'GREEN'
                             ?
                             <div style={{ textAlign: 'center' }}>
                               <p className='text-4xl font-bold text-orange-400'>เพชร</p>
@@ -319,13 +319,13 @@ const HomeUsers = () => {
               {
                 manageScore.map((item) => (
                   item.require_point === null
-                    ? <p className='text-2xl text-green-700'>0/170</p>
-                    : <p className='text-2xl text-green-700'>{item.sub_quest_require_point}/170</p>
+                    ? <p className='text-2xl text-green-700'>0/160</p>
+                    : <p className='text-2xl text-green-700'>{item.sub_quest_require_point}/160</p>
                 ))
               }
               {
                 manageScore.map((item4) => (
-                  <p className='text-sm mt-2'>คิดเป็น {(item4.sub_quest_require_point / 170 * 100).toFixed(1)} %</p>
+                  <p className='text-sm mt-2'>คิดเป็น {(item4.sub_quest_require_point / 160 * 100).toFixed(1)} %</p>
                 ))
               }
             </div>
@@ -379,7 +379,7 @@ const HomeUsers = () => {
             <div className='text-slate-400'><p>คะแนนจำเป็นรวม</p></div>
             <div className='flex text-green-700'>
               {
-                sumRequirePoint < 510
+                sumRequirePoint < 500
                   ? <p className='text-red-500'>{sumRequirePoint}</p>
                   : <p className='text-green-700'>{sumRequirePoint}</p>
               }

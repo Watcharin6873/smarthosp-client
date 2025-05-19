@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import useGlobalStore from '../../store/global-store'
 import { useNavigate } from 'react-router-dom'
 import { getListHospitalOnZone } from '../../api/Hospital'
-import { getSumEvaluateByZone, selectApproveEvaluate } from '../../api/Evaluate'
+import { getCheckApproveAll, getSumEvaluateByZone, selectApproveEvaluate } from '../../api/Evaluate'
 import { CheckCircleOutlined } from '@mui/icons-material'
 import { CloseCircleOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { CircleCheck, CircleX, Dot } from 'lucide-react'
@@ -19,6 +19,7 @@ const FormReportZone = () => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [listHospitals, setListHospitals] = useState([])
+  const [approveData, setApproveData] = useState([])
   const [listEvaluateByZone, setListEvaluateByZone] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
 
@@ -27,6 +28,7 @@ const FormReportZone = () => {
   useEffect(() => {
     loadListHospitalByZone(token)
     loadListSumEvaluateByZone(token)
+    loadCheckApproveAll()
   }, [])
 
 
@@ -54,6 +56,16 @@ const FormReportZone = () => {
       .finally(() => setIsLoading(false))
   }
 
+  const loadCheckApproveAll = async () => {
+    await getCheckApproveAll()
+      .then(res => {
+        setApproveData(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   const handleFilter = (e) => {
     setSearchQuery(listEvaluateByZone.filter(f =>
       f.hcode.toLowerCase().includes(e.target.value) || f.hname_th.toLowerCase().includes(e.target.value) ||
@@ -61,34 +73,65 @@ const FormReportZone = () => {
     ))
   }
 
-
-  const data = searchQuery.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1).map((item, k) => ({
-    key: k,
-    zone: Number(item.zone),
+  const apData = approveData?.map((item) => ({
+    zone: item.zone,
     provcode: item.provcode,
     provname: item.provname,
     hcode: item.hcode,
     hname_th: item.hname_th,
-    point_total_cat1: item.point_total_cat1,
-    point_require_cat1: item.point_require_cat1,
-    ssjapp_cat1: item.ssjapp_cat1,
-    zoneapp_cat1: item.zoneapp_cat1,
-    point_total_cat2: item.point_total_cat2,
-    point_require_cat2: item.point_require_cat2,
-    ssjapp_cat2: item.ssjapp_cat2,
-    zoneapp_cat2: item.zoneapp_cat2,
-    point_total_cat3: item.point_total_cat3,
-    point_require_cat3: item.point_require_cat3,
-    ssjapp_cat3: item.ssjapp_cat3,
-    zoneapp_cat3: item.zoneapp_cat3,
-    point_total_cat4: item.point_total_cat4,
-    ssjapp_cat4: item.ssjapp_cat4,
-    zoneapp_cat4: item.zoneapp_cat4,
-    total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
-    total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
-    cyber_level: item.cyber_level,
-    cyber_levelname: item.cyber_levelname
+    c_cat1: Number(item.c_cat1),
+    ssj_approve_cat1: Number(item.ssj_approve_cat1),
+    ssj_unapprove_cat1: Number(item.ssj_unapprove_cat1),
+    zone_approve_cat1: Number(item.zone_approve_cat1),
+    zone_unapprove_cat1: Number(item.zone_unapprove_cat1),
+    c_cat2: Number(item.c_cat2),
+    ssj_approve_cat2: Number(item.ssj_approve_cat2),
+    ssj_unapprove_cat2: Number(item.ssj_unapprove_cat2),
+    zone_approve_cat2: Number(item.zone_approve_cat2),
+    zone_unapprove_cat2: Number(item.zone_unapprove_cat2),
+    c_cat3: Number(item.c_cat3),
+    ssj_approve_cat3: Number(item.ssj_approve_cat3),
+    ssj_unapprove_cat3: Number(item.ssj_unapprove_cat3),
+    zone_approve_cat3: Number(item.zone_approve_cat3),
+    zone_unapprove_cat3: Number(item.zone_unapprove_cat3),
+    c_cat4: Number(item.c_cat4),
+    ssj_approve_cat4: Number(item.ssj_approve_cat4),
+    ssj_unapprove_cat4: Number(item.ssj_unapprove_cat4),
+    zone_approve_cat4: Number(item.zone_approve_cat4),
+    zone_unapprove_cat4: Number(item.zone_unapprove_cat4)
   }))
+
+
+  const data = searchQuery.sort((a, b) => (a.provcode > b.provcode) ? 1 : -1).map((item, k) => {
+    const item2 = apData?.filter(f => f.zone === zone && f.hcode === item.hcode);
+    return {
+      key: k,
+      zone: Number(item.zone),
+      provcode: item.provcode,
+      provname: item.provname,
+      hcode: item.hcode,
+      hname_th: item.hname_th,
+      point_total_cat1: item.point_total_cat1,
+      point_require_cat1: item.point_require_cat1,
+      ssjapp_cat1: item2[0]?.ssj_approve_cat1,
+      zoneapp_cat1: item2[0]?.zone_approve_cat1,
+      point_total_cat2: item.point_total_cat2,
+      point_require_cat2: item.point_require_cat2,
+      ssjapp_cat2: item2[0]?.ssj_approve_cat2,
+      zoneapp_cat2: item2[0]?.zone_approve_cat2,
+      point_total_cat3: item.point_total_cat3,
+      point_require_cat3: item.point_require_cat3,
+      ssjapp_cat3: item2[0]?.ssj_approve_cat3,
+      zoneapp_cat3: item2[0]?.zone_approve_cat3,
+      point_total_cat4: item.point_total_cat4,
+      ssjapp_cat4: item2[0]?.ssj_approve_cat4,
+      zoneapp_cat4: item2[0]?.zone_approve_cat4,
+      total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+      total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+      cyber_level: item.cyber_level,
+      cyber_levelname: item.cyber_levelname
+    }
+  })
 
 
   const columns = [
@@ -136,7 +179,7 @@ const FormReportZone = () => {
           render: (ssjapp_cat1) =>
             <>
               {
-                ssjapp_cat1 === '1'
+                ssjapp_cat1 === 67
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -155,7 +198,7 @@ const FormReportZone = () => {
           render: (zoneapp_cat1) =>
             <>
               {
-                zoneapp_cat1 === '1'
+                zoneapp_cat1 === 67
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -193,7 +236,7 @@ const FormReportZone = () => {
           render: (ssjapp_cat2) =>
             <>
               {
-                ssjapp_cat2 === '1'
+                ssjapp_cat2 === 42
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -212,7 +255,7 @@ const FormReportZone = () => {
           render: (zoneapp_cat2) =>
             <>
               {
-                zoneapp_cat2 === '1'
+                zoneapp_cat2 === 42
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -250,7 +293,7 @@ const FormReportZone = () => {
           render: (ssjapp_cat3) =>
             <>
               {
-                ssjapp_cat3 === '1'
+                ssjapp_cat3 === 45
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -269,7 +312,7 @@ const FormReportZone = () => {
           render: (zoneapp_cat3) =>
             <>
               {
-                zoneapp_cat3 === '1'
+                zoneapp_cat3 === 45
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -300,7 +343,7 @@ const FormReportZone = () => {
           render: (ssjapp_cat4) =>
             <>
               {
-                ssjapp_cat4 === '1'
+                ssjapp_cat4 === 14
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -319,7 +362,7 @@ const FormReportZone = () => {
           render: (zoneapp_cat4) =>
             <>
               {
-                zoneapp_cat4 === '1'
+                zoneapp_cat4 === 14
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
