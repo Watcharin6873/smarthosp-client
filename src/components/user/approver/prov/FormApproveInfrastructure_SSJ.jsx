@@ -469,7 +469,15 @@ const FormApproveInfrastructure_SSJ = () => {
                                 </Form.Item>
                                 <div className='ml-7'>
                                   <div className='flex gap-1'>
-                                    <p className='font-bold text-slate-600'>{item1.sub_quests.sub_quest_name}</p>
+                                    <p className='font-bold text-slate-600'>
+                                      {item1.sub_quests.sub_quest_name}
+                                      {
+                                        item1.sub_quests.necessary
+                                          ?
+                                          <span className='text-red-600'> (*จำเป็น)</span>
+                                          : ''
+                                      }
+                                    </p>
                                   </div>
 
                                   <div className='pl-10 flex gap-2'>
@@ -489,7 +497,7 @@ const FormApproveInfrastructure_SSJ = () => {
                                               >
                                                 {sb.sub_quest_listname}
                                               </p>
-                                              <p className='text-red-500'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p>
+                                              {/* <p className='text-red-500'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p> */}
                                             </div>
                                             : null
                                         )

@@ -108,6 +108,7 @@ const FormApproveService_Zone = () => {
     sub_questId: item.sub_questId,
     quest_name: item.quests.quest_name,
     sub_quest_name: item.sub_quests.sub_quest_name,
+    necessary: item.sub_quests.necessary,
     sub_quest_list: item.sub_quests.sub_quest_lists,
     check: item.check,
     file_name: item.file_name,
@@ -389,7 +390,15 @@ const FormApproveService_Zone = () => {
                                   <Input />
                                 </Form.Item>
                                 <div className='ml-7'>
-                                  <p className='text-slate-600'>{item2.sub_quest_name}</p>
+                                  <p className='text-slate-600'>
+                                    {item2.sub_quest_name}
+                                    {
+                                      item2.necessary
+                                        ?
+                                        <span className='text-red-600'> (*จำเป็น)</span>
+                                        : ''
+                                    }
+                                  </p>
                                   <div className='pl-10 gap-2'>
                                     {
                                       item2.check.split(",").map((ch) =>
@@ -407,7 +416,7 @@ const FormApproveService_Zone = () => {
                                               >
                                                 {sb.sub_quest_listname}
                                               </p>
-                                              <p className='text-red-500'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p>
+                                              {/* <p className='text-red-500'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p> */}
                                             </div>
                                             : null
                                         )

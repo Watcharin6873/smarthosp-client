@@ -23,6 +23,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { pdfjs } from 'react-pdf';
 import PdfComp from './PdfComp'
+import { getListSubQuests } from '../../api/SubQuest'
 
 const { confirm } = Modal
 
@@ -69,6 +70,8 @@ const FormReportHosp = () => {
     const [document, setDocument] = useState()
     const [evidence, setEvidence] = useState()
     const [subQuestList, setSubQuestList] = useState([])
+    const [listSubQuest, setListSubQuest] = useState([])
+    const [subQuest, setSubQuest] = useState([])
     const [pdfFile, setPdfFile] = useState(null)
     const [numPages, setNumPages] = useState();
     const [pageNumber, setPageNumber] = useState(1);
@@ -81,6 +84,7 @@ const FormReportHosp = () => {
         loadSubQuestList(token)
         loadListEvaluate(token)
         loadCommentData(token)
+        loadSubQuest(token)
         // setModalAlertNotiMessage(true)
     }, [])
 
@@ -124,6 +128,24 @@ const FormReportHosp = () => {
             })
     }
 
+    const loadSubQuest = async () =>{
+        await getListSubQuests(token)
+            .then(res=>{
+                setListSubQuest(res.data)
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+    }
+
+    const listSubQuest2 = listSubQuest.map((item)=>({
+        id: item.id,
+        category_questId: parseInt(item.category_questId),
+        questId: item.questId,
+        sub_quest_name: item.sub_quest_name,
+        necessary: item.necessary
+    }))
+
     const optionCategory = listCategoryQuest.map((item) => ({
         value: item.id,
         label: item.category_name_th,
@@ -158,10 +180,11 @@ const FormReportHosp = () => {
         setCategory_questtId(e)
         setSearchCategory(listEvaluate.filter(f => f.category_questId === e))
         setSearchQuest(listQuest.filter(f => f.category_questId === e))
+        setSubQuest(listSubQuest2.filter(f=> f.category_questId === e))
         // loadSubQuestList76(token)
     }
 
-    // console.log('Data: ', listEvaluate)
+    console.log('subQuest: ', subQuest)
 
 
     const showUploadModal = async (value) => {
@@ -333,6 +356,7 @@ const FormReportHosp = () => {
         questId: item.questId,
         sub_questId: item.sub_questId,
         sub_quest_name: item.sub_quests.sub_quest_name,
+        necessary: item.sub_quests.necessary,
         check: item.check.split(","),
         hcode: item.hcode,
         userId: item.userId,
@@ -463,7 +487,18 @@ const FormReportHosp = () => {
                                                         ?
                                                         <tr key={k2} className='border'>
                                                             <td className='pl-5 pr-1 py-1 border-r w-screen' style={{ fontSize: '15px' }}>
-                                                                <p className='font-bold'>{item2.sub_quest_name}</p>
+                                                                <div className='flex gap-1'>
+                                                                    <p className='font-bold'>
+                                                                        {item2.sub_quest_name}
+                                                                        {
+                                                                            item2.necessary
+                                                                                ?
+                                                                                <span className='text-red-600'> (*จำเป็น)</span>
+                                                                                : ''
+                                                                        }
+                                                                    </p>
+
+                                                                </div>
                                                                 {
                                                                     item2.check?.map((ch) =>
                                                                         dataSubQuestLists.map((sb) =>
@@ -480,7 +515,7 @@ const FormReportHosp = () => {
                                                                                     >
                                                                                         {sb.sub_quest_listname}
                                                                                     </p>
-                                                                                    <p className='text-red-600'>{sb.necessary === true ? '(*จำเป็น)' : ''}</p>
+                                                                                    {/* <p className='text-red-600'>{sb.necessary === true ? '(*)' : ''}</p> */}
                                                                                 </div>
                                                                                 : null
                                                                         )

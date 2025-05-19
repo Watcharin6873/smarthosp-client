@@ -416,7 +416,15 @@ const FormApproveManagement_SSJ = () => {
                                   <Input />
                                 </Form.Item>
                                 <div className='ml-7'>
-                                  <p className='font-bold text-slate-600'>{item1.sub_quests.sub_quest_name}</p>
+                                  <p className='font-bold text-slate-600'>
+                                    {item1.sub_quests.sub_quest_name}
+                                    {
+                                      item1.sub_quests.necessary
+                                        ?
+                                        <span className='text-red-600'> (*จำเป็น)</span>
+                                        : ''
+                                    }
+                                  </p>
                                   <div className='pl-10 gap-2'>
                                     {
                                       item1.check.split(",").map((ch) =>
@@ -463,7 +471,9 @@ const FormApproveManagement_SSJ = () => {
                                       sb.sub_questId === item1.sub_quests.id && sb.choice === ch
                                         ?
                                         <div className='flex justify-center items-baseline gap-2 mt-3'>
-                                          <p className='font-bold'>{sb.sub_quest_require_point}</p>
+                                          <p className='font-bold'>
+                                            {sb.sub_quest_require_point}
+                                          </p>
                                         </div>
                                         : null
                                     )

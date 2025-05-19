@@ -423,7 +423,15 @@ const FormApproveService_SSJ = () => {
                                   <Input />
                                 </Form.Item>
                                 <div className='ml-7'>
-                                  <p className='font-bold text-slate-600'>{item1.sub_quests.sub_quest_name}</p>
+                                  <p className='font-bold text-slate-600'>
+                                    {item1.sub_quests.sub_quest_name}
+                                    {
+                                      item1.sub_quests.necessary
+                                        ?
+                                        <span className='text-red-600'> (*จำเป็น)</span>
+                                        : ''
+                                    }
+                                  </p>
                                   <div className='pl-10 flex gap-2'>
                                     {
                                       item1.check.split(",").map((ch) =>
