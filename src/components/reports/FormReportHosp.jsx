@@ -589,7 +589,7 @@ const FormReportHosp = () => {
                                                                         <>
                                                                             <div className='flex justify-center items-center'>
                                                                                 <Button size='small' onClick={() => showEvidenceModal(item2.id)}>
-                                                                                    <EyeTwoTone /> ดูไฟล์หลักฐาน
+                                                                                    <EyeTwoTone /> ดูหลักฐาน
                                                                                 </Button>
                                                                             </div>
                                                                             {/* <div>
@@ -846,7 +846,7 @@ const FormReportHosp = () => {
                                                                                 : `text-green-700 pl-7`
                                                                         }
                                                                     >
-                                                                        {ch.sub_quest_listname}
+                                                                        {ch.sub_quest_listname} {ch.necessary ?<p className='text-red-500'>(*จำเป็น)</p> : null}
                                                                     </Radio>
                                                                 ))
                                                             }
