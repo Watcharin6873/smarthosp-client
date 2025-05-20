@@ -12,7 +12,8 @@ import {
     updateChoiceEvaluate,
     uploadFileById,
     removeFileById,
-    getCommentEvaluate
+    getCommentEvaluate,
+    getListEvaluateByHosp3
 } from '../../api/Evaluate'
 import { BellRing, CircleCheck, CircleX, FileCog, FilePenLine, LoaderCircle, Megaphone, MonitorCheck, RefreshCw, SquareCheckBig, SquareX, Trash } from 'lucide-react'
 import { getListTopic } from '../../api/Topic'
@@ -77,6 +78,8 @@ const FormReportHosp = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [modalAlertNotiMessage, setModalAlertNotiMessage] = useState(false)
     const [comment, setComment] = useState([]);
+    const [listPoint, setListPoint] = useState([])
+    const [searchListPoint, setSearchListPoint] = useState([])
 
     useEffect(() => {
         loadListCategoryQuest(token)
@@ -85,6 +88,7 @@ const FormReportHosp = () => {
         loadListEvaluate(token)
         loadCommentData(token)
         loadSubQuest(token)
+        loadListPoint(token)
         // setModalAlertNotiMessage(true)
     }, [])
 
@@ -176,11 +180,24 @@ const FormReportHosp = () => {
     }
 
 
+    const loadListPoint = async () => {
+        await getListEvaluateByHosp3(token, hcode)
+          .then(res => {
+            // console.log('Data3: ', res.data)
+            setListPoint(res.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+
+
     const selectCategoryQuest = (e) => {
         setCategory_questtId(e)
         setSearchCategory(listEvaluate.filter(f => f.category_questId === e))
         setSearchQuest(listQuest.filter(f => f.category_questId === e))
         setSubQuest(listSubQuest2.filter(f=> f.category_questId === e))
+        setSearchListPoint(listPoint.filter(f=> f.category_questId === e))
         // loadSubQuestList76(token)
     }
 
@@ -213,23 +230,11 @@ const FormReportHosp = () => {
         })
     })
 
-    // const dataEvaluateById = evaluateById.map((data)=>({
-    //     id: data.id,
-    //     category_questId: data.category_questId,
-    //     questId: data.questId,
-    //     sub_questId: data.sub_questId,
-    //     check: data.check.split(","),
-    //     hcode: data.hcode,
-    //     userId: data.userId,
-    //     file_name: data.file_name,
-    //     ssj_approve: data.ssj_approve,
-    //     zone_approve: data.zone_approve,
-    //     createdAt: data.createdAt,
-    //     updatedAt: data.updatedAt
-    // }))
-
-
-    // console.log("dataById: ", dataEvaluateById)
+    const dataScore = searchListPoint.map((item) => ({
+    category_questId: Number(item.category_questId),
+    sub_quest_require_point: Number(item.sub_quest_require_point),
+    sub_quest_total_point: Number(item.sub_quest_total_point)
+  }))
 
 
 
@@ -669,6 +674,31 @@ const FormReportHosp = () => {
                                                 ))}
                                             </>
                                         ))}
+                                        {
+                                            category_questId && category_questId
+                                                ?
+                                                <tr className='border font-bold text-blue-500 bg-slate-50'>
+                                                    <td className='text-center border-r p-1'>
+                                                        คะแนนรวมทั้งหมด(จากการอนุมัติของ คกก.จังหวัด)
+                                                    </td>
+                                                    <td className='text-center border-r p-1'>
+                                                        {
+                                                            dataScore.map((score)=>(
+                                                                <p>{score.sub_quest_total_point}</p>
+                                                            ))
+                                                        }
+                                                    </td>
+                                                    <td className='text-center border-r p-1'>
+                                                        {
+                                                            dataScore.map((score)=>(
+                                                                <p>{score.sub_quest_require_point}</p>
+                                                            ))
+                                                        }
+                                                    </td>
+                                                    <td className='text-center border-r p-1' colSpan={5}></td>
+                                                </tr>
+                                                : null
+                                        }
                                     </tbody>
                                 </table>
                             </>

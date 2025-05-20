@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import Gem from '../../assets/Blue-gem.png'
 import Gold from '../../assets/Gold2.png'
 import Silver from '../../assets/Silver2.png'
-import { Blocks, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
+import { Ban, Blocks, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
 import {
   getCyberSecurityLevelData,
   getListEvaluateByHosp2,
   getSubQuetList,
   sumEvaluateByHosp,
-  getListEvaluateByHosp3
+  getListEvaluateByHosp3,
+  getCheckApproveZone
 } from '../../api/Evaluate'
 import { ArrowUpOutlined } from '@ant-design/icons'
 
@@ -22,6 +23,7 @@ const HomeUsers = () => {
   const [cyberData, setCyberData] = useState()
   const [listEvaluate, setListEvaluate] = useState([])
   const [subQuestList, setSubQuestList] = useState([])
+  const [checkApproveZone, setCheckApproveZone] = useState([])
 
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const HomeUsers = () => {
     loadSubQuestList(token)
     loadListEvaluate(token)
     loadListEvaluateByHosp3(token)
+    loadCheckApprove()
   }, [])
 
   const hcode = user.hcode
@@ -158,9 +161,22 @@ const HomeUsers = () => {
   const initialRequirePoint = 500
   const initialCyber = 'Green'
 
+
+  const loadCheckApprove = async () =>{
+    await getCheckApproveZone(user.zone)
+      .then(res=>{
+        setCheckApproveZone(res.data)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+  }
+
+  const checkApproveHosp = checkApproveZone?.filter(f=> f.hcode === hcode)
+
   return (
     <div>
-
+      <p className='text-center text-orange-500 m-2 text-lg'>***ข้อมูลที่แสดงเป็นผลคะแนนที่ผ่านการอนุมัติจากคณะกรรมการระดับจังหวัดเรียบร้อยแล้ว***</p>
       <div className='grid grid-cols-3 gap-2'>
 
         <div className='bg-white rounded-md shadow-md p-3'>
@@ -173,6 +189,9 @@ const HomeUsers = () => {
                 ?
                 <div style={{ textAlign: 'center' }}>
                   <p className='text-4xl font-bold text-red-500'>ไม่ผ่าน!</p>
+                  <div className='flex justify-center mt-2'>
+                    <Ban size={120} className='text-red-500' />
+                  </div>
                 </div>
                 : sumTotalPoint >= 600 && sumTotalPoint < 700
                   ?
@@ -271,20 +290,21 @@ const HomeUsers = () => {
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.สสจ.) : </p>
             {
-              uniqueInfraData?.map(f =>
-                f.ssj_approve == true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
-                  : <p className='text-red-500'>ยังไม่อนุมัติ</p>
+              checkApproveHosp.map(f =>
+                f.ssj_approve_cat1 === 67
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
+                  : f.ssj_approve_cat1 === 0
+                    ? <p className='text-red-500'>ยังไม่อนุมัติ</p>
+                    : <p className='text-orange-400'>อนุมัติแล้ว {f.ssj_approve_cat1} ข้อ จากทั้งหมด 67 ข้อ</p>
               )
             }
-
           </div>
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.เขตฯ.) : </p>
             {
-              uniqueInfraData?.map(f =>
-                f.zone_approve === true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
+              checkApproveHosp.map(f =>
+                f.zone_approve_cat1 === 67
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
                   : <p className='text-red-500'>ยังไม่อนุมัติ</p>
               )
             }
@@ -334,10 +354,12 @@ const HomeUsers = () => {
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.สสจ.) : </p>
             {
-              uniqueManageData?.map(f =>
-                f.ssj_approve == true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
-                  : <p className='text-red-500'>ยังไม่อนุมัติ</p>
+              checkApproveHosp.map(f =>
+                f.ssj_approve_cat2 === 42
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
+                  : f.ssj_approve_cat2 === 0
+                    ? <p className='text-red-500'>ยังไม่อนุมัติ</p>
+                    : <p className='text-orange-400'>อนุมัติแล้ว {f.ssj_approve_cat2} ข้อ จากทั้งหมด 42 ข้อ</p>
               )
             }
 
@@ -345,9 +367,9 @@ const HomeUsers = () => {
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.เขตฯ.) : </p>
             {
-              uniqueManageData?.map(f =>
-                f.zone_approve === true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
+              checkApproveHosp.map(f =>
+                f.zone_approve_cat2 === 42
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
                   : <p className='text-red-500'>ยังไม่อนุมัติ</p>
               )
             }
@@ -444,19 +466,21 @@ const HomeUsers = () => {
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.สสจ.) : </p>
             {
-              uniqueServiceData?.map(f =>
-                f.ssj_approve == true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
-                  : <p className='text-red-500'>ยังไม่อนุมัติ</p>)
+              checkApproveHosp.map(f =>
+                f.ssj_approve_cat3 === 45
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
+                  : f.ssj_approve_cat3 === 0
+                    ? <p className='text-red-500'>ยังไม่อนุมัติ</p>
+                    : <p className='text-orange-400'>อนุมัติแล้ว {f.ssj_approve_cat3} ข้อ จากทั้งหมด 45 ข้อ</p>
+              )
             }
-
           </div>
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.เขตฯ.) : </p>
             {
-              uniqueServiceData?.map(f =>
-                f.zone_approve === true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
+              checkApproveHosp.map(f =>
+                f.zone_approve_cat3 === 45
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
                   : <p className='text-red-500'>ยังไม่อนุมัติ</p>
               )
             }
@@ -491,20 +515,21 @@ const HomeUsers = () => {
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.สสจ.) : </p>
             {
-              uniquePeopleData?.map(f =>
-                f.ssj_approve == true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
-                  : <p className='text-red-500'>ยังไม่อนุมัติ</p>
+              checkApproveHosp.map(f =>
+                f.ssj_approve_cat4 === 14
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
+                  : f.ssj_approve_cat4 === 0
+                    ? <p className='text-red-500'>ยังไม่อนุมัติ</p>
+                    : <p className='text-orange-400'>อนุมัติแล้ว {f.ssj_approve_cat4} ข้อ จากทั้งหมด 14 ข้อ</p>
               )
             }
-
           </div>
           <div className='flex justify-between text-sm'>
             <p className='text-slate-400'>การอนุมัติ(คกก.เขตฯ.) : </p>
             {
-              uniquePeopleData?.map(f =>
-                f.zone_approve === true
-                  ? <p className='text-green-500'>อนุมัติแล้ว</p>
+              checkApproveHosp.map(f =>
+                f.zone_approve_cat4 === 14
+                  ? <p className='text-green-500'>อนุมัติทั้งหมดแล้ว</p>
                   : <p className='text-red-500'>ยังไม่อนุมัติ</p>
               )
             }
