@@ -33,9 +33,9 @@ const FormHome = () => {
     }
 
 
-    const loadEvaluateReportAll = async () =>{
+    const loadEvaluateReportAll = async () => {
         await getEvaluateReportAll()
-            .then(res=>{
+            .then(res => {
                 // console.log('Data: ',res.data)
                 setEvaluateReportAll(res.data)
             })
@@ -77,7 +77,11 @@ const FormHome = () => {
 
     }))
 
-    const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+    // const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
+
+    const dataSource = data.sort((a, b) =>
+        a.zone === b.zone ? (a.provcode > b.provcode ? 1 : -1) : (a.zone > b.zone ? 1 : -1)
+    );
 
     const columns = [
         {
@@ -104,14 +108,14 @@ const FormHome = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านโครงสร้าง</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat1',
                     align: 'center',
                     render: (point_total_cat1) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat1 === null ? 0 : point_total_cat1}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat1',
                     align: 'center',
                     render: (point_require_cat1) =>
@@ -123,14 +127,14 @@ const FormHome = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบริหารจัดการ</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat2',
                     align: 'center',
                     render: (point_total_cat2) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat2 === null ? 0 : point_total_cat2}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat2',
                     align: 'center',
                     render: (point_require_cat2) =>
@@ -142,14 +146,14 @@ const FormHome = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านการบริการ</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat3',
                     align: 'center',
                     render: (point_total_cat3) =>
                         <span className='text-center' style={{ fontSize: '13px' }}>{point_total_cat3 === null ? 0 : point_total_cat3}</span>
                 },
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>จำเป็น</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />จำเป็น</p>,
                     dataIndex: 'point_require_cat3',
                     align: 'center',
                     render: (point_require_cat3) =>
@@ -161,7 +165,7 @@ const FormHome = () => {
             title: <p className='text-center' style={{ fontSize: '13px' }}>ด้านบุคลากร</p>,
             children: [
                 {
-                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br/>ที่ได้</p>,
+                    title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนน<br />ที่ได้</p>,
                     dataIndex: 'point_total_cat4',
                     align: 'center',
                     render: (point_total_cat4) =>
@@ -170,14 +174,14 @@ const FormHome = () => {
             ]
         },
         {
-            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนที่ได้<br/>(รวม)</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนที่ได้<br />(รวม)</p>,
             dataIndex: 'total_cat',
             align: 'center',
             render: (total_cat) =>
                 <span className='text-center font-bold' style={{ fontSize: '13px' }}>{total_cat === null ? 0 : total_cat}</span>
         },
         {
-            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนจำเป็น<br/>(รวม)</p>,
+            title: <p className='text-center' style={{ fontSize: '13px' }}>คะแนนจำเป็น<br />(รวม)</p>,
             dataIndex: 'total_require',
             align: 'center',
             render: (total_require) =>
@@ -264,20 +268,20 @@ const FormHome = () => {
         คะแนนที่ได้รวม: item.total_cat,
         คะแนนจำเป็นรวม: item.total_require,
         ระดับที่ได้: item.total_cat < 600
-                    ? 'ไม่ผ่าน'
-                    : item.total_cat >= 600 && item.total_cat <= 700
+            ? 'ไม่ผ่าน'
+            : item.total_cat >= 600 && item.total_cat <= 700
+                ? 'เงิน'
+                : item.total_cat >= 700 && item.total_require < 500
+                    ? 'เงิน'
+                    : item.total_cat >= 800 && item.total_require < 500
                         ? 'เงิน'
-                        : item.total_cat >= 700 && item.total_require < 500
-                            ? 'เงิน'
-                            : item.total_cat >= 800 && item.total_require < 500
-                                ? 'เงิน'
-                                : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 500
-                                    ? 'ทอง'
-                                    : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level != 'GREEN'
-                                        ? 'ทอง'                                                
-                                        : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level == 'GREEN'
-                                            ? 'เพชร'
-                                            : null,
+                        : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 500
+                            ? 'ทอง'
+                            : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level != 'GREEN'
+                                ? 'ทอง'
+                                : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level == 'GREEN'
+                                    ? 'เพชร'
+                                    : null,
         ระดับ_cyber_security: item.cyber_levelname
 
     }))
@@ -324,7 +328,7 @@ const FormHome = () => {
                 }}
                 bordered
                 size='small'
-                // pagination={{pageSize:12}}
+            // pagination={{pageSize:12}}
             />
         </>
     )

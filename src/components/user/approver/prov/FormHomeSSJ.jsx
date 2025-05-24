@@ -21,7 +21,7 @@ const FormHomeSSJ = () => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [listHospital, setListHospital] = useState([])
-  const [listEvaluateByProv, setListEvaluateByHosp] = useState([])
+  const [listEvaluateByProv, setListEvaluateByProv] = useState([])
   const [isApproveUser, setIsApproveUser] = useState([])
   const [isNotApproveUser, setIsNotApproveUser] = useState([])
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
@@ -50,7 +50,7 @@ const FormHomeSSJ = () => {
   const loadListEvaluateByProv = async () => {
     await getListEvaluateByProv(token, province)
       .then(res => {
-        setListEvaluateByHosp(res.data)
+        setListEvaluateByProv(res.data)
       })
       .catch(err => {
         console.log(err)
@@ -76,22 +76,26 @@ const FormHomeSSJ = () => {
     zone: item.hospitals.zone
   }))
 
-  // console.log("List: ", listEvaluateProvData)
 
   const evaluateCat1 = listEvaluateProvData.filter((item) => item.category_questId === 1)
   const evaluateCat2 = listEvaluateProvData.filter((item) => item.category_questId === 2)
   const evaluateCat3 = listEvaluateProvData.filter((item) => item.category_questId === 3)
   const evaluateCat4 = listEvaluateProvData.filter((item) => item.category_questId === 4)
 
+
   const listEvaluateHospCat1 = [...new Map(evaluateCat1.map(item => [item['hcode'], item])).values()]
   const listEvaluateHospCat2 = [...new Map(evaluateCat2.map(item => [item['hcode'], item])).values()]
   const listEvaluateHospCat3 = [...new Map(evaluateCat3.map(item => [item['hcode'], item])).values()]
   const listEvaluateHospCat4 = [...new Map(evaluateCat4.map(item => [item['hcode'], item])).values()]
+  
+ 
 
   const cat1Approve = listEvaluateHospCat1.filter((item) => item.ssj_approve === true)
   const cat2Approve = listEvaluateHospCat2.filter((item) => item.ssj_approve === true)
   const cat3Approve = listEvaluateHospCat3.filter((item) => item.ssj_approve === true)
   const cat4Approve = listEvaluateHospCat4.filter((item) => item.ssj_approve === true)
+
+   console.log("ListCat1: ", cat1Approve)
 
   // console.log("AP: ", listEvaluateHospCat1)
 
@@ -139,7 +143,7 @@ const FormHomeSSJ = () => {
     cyber_levelname: item.cyber_levelname
   }))
 
-  console.log('Hosp: ', totalSumEvaluateData)
+  // console.log('Hosp: ', totalSumEvaluateData)
 
   const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>

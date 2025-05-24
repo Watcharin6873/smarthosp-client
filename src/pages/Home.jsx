@@ -245,7 +245,7 @@ const Home = () => {
   const notPassPer = (notPassLevel.length / hospitalInList.length) * 100
   const notPassPerZone = (notPassLevel.length / searchQueryHosp.length) * 100
 
-  // console.log('Level: ', gemLevel.length)
+  console.log('Level: ', gemLevel.length)
 
   const data2 = [
     { label: 'ระดับเพชร', value: gemLevel.length, color: '#0088FE' },
