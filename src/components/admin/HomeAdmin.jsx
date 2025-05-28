@@ -5,7 +5,7 @@ import Silver from '../../assets/Silver2.png'
 import HospitalIcon from '../../assets/Hospital.png'
 import { Ban, Blocks, CircleCheck, CircleX, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
-import { getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
+import { getCheckApproveAll, getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
 import { ArrowUpOutlined, ClearOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../../api/Hospital'
 import { Button, Checkbox, Form, Input, Modal, Select, Table } from 'antd'
@@ -22,6 +22,7 @@ const HomeAdmin = () => {
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
   const [listSumEvaluateForAll, setListSumEvaluateForAll] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
+  const [approveDataAll, setApproveDataAll] = useState([])
   const [searchHospitalAll, setSearchHospitalAll] = useState([])
   const [searchQueryHosp, setSearchQueryHosp] = useState([])
 
@@ -32,6 +33,7 @@ const HomeAdmin = () => {
     loadListHospitalEvaluate()
     loadTotalSumEvaluate()
     loadListSumEvaluate()
+    loadCheckApproveAll()
   }, [])
 
 
@@ -74,11 +76,24 @@ const HomeAdmin = () => {
   const loadListSumEvaluate = async () => {
     await getSumEvaluateForAll()
       .then(res => {
-        console.log('ListEvaluate: ', res.data)
+        // console.log('ListEvaluate: ', res.data)
         setListSumEvaluateForAll(res.data)
         setSearchQuery(res.data)
       })
       .catch(err => {
+        console.log(err)
+      })
+  }
+
+
+  //Check Approve All
+  const loadCheckApproveAll = async() =>{
+    await getCheckApproveAll()
+      .then(res=>{
+        // console.log('AP: ', res.data)
+        setApproveDataAll(res.data)
+      })
+      .catch(err=>{
         console.log(err)
       })
   }
@@ -108,15 +123,15 @@ const HomeAdmin = () => {
   }))
 
 
-  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level == 'GREEN')
+  const gemLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level == 'GREEN')
   const goldLevel = totalSumEvaluateData.filter(f =>
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 510 && f.cyber_level != 'GREEN')
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint == 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint == 500 && f.cyber_level != 'GREEN')
   )
   const silverLevel = totalSumEvaluateData.filter(f =>
     (f.sumTotalPoint >= 600 && f.sumTotalPoint < 700) ||
-    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 510) ||
-    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 510)
+    (f.sumTotalPoint >= 700 && f.sumTotalPoint < 800 && f.sumRequirePoint < 500) ||
+    (f.sumTotalPoint >= 800 && f.sumRequirePoint < 500)
   )
   const notPassLevel = totalSumEvaluateData.filter(f => f.sumTotalPoint < 600)
 
@@ -126,33 +141,64 @@ const HomeAdmin = () => {
   const hospPerAll = (listHospitalEvaluate.length / listHospitalAll.length) * 100
   const notPassPer = (notPassLevel.length / listHospitalEvaluate.length) * 100
 
-  const data = searchQuery.map((item, k) => ({
-    key: k,
-    zone: Number(item.zone),
+   const apData = approveDataAll?.map((item) => ({
+    zone: item.zone,
     provcode: item.provcode,
     provname: item.provname,
     hcode: item.hcode,
     hname_th: item.hname_th,
-    point_total_cat1: item.point_total_cat1,
-    point_require_cat1: item.point_require_cat1,
-    ssjapp_cat1: item.ssjapp_cat1,
-    zoneapp_cat1: item.zoneapp_cat1,
-    point_total_cat2: item.point_total_cat2,
-    point_require_cat2: item.point_require_cat2,
-    ssjapp_cat2: item.ssjapp_cat2,
-    zoneapp_cat2: item.zoneapp_cat2,
-    point_total_cat3: item.point_total_cat3,
-    point_require_cat3: item.point_require_cat3,
-    ssjapp_cat3: item.ssjapp_cat3,
-    zoneapp_cat3: item.zoneapp_cat3,
-    point_total_cat4: item.point_total_cat4,
-    ssjapp_cat4: item.ssjapp_cat4,
-    zoneapp_cat4: item.zoneapp_cat4,
-    total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
-    total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
-    cyber_level: item.cyber_level,
-    cyber_levelname: item.cyber_levelname
+    c_cat1: Number(item.c_cat1),
+    ssj_approve_cat1: Number(item.ssj_approve_cat1),
+    ssj_unapprove_cat1: Number(item.ssj_unapprove_cat1),
+    zone_approve_cat1: Number(item.zone_approve_cat1),
+    zone_unapprove_cat1: Number(item.zone_unapprove_cat1),
+    c_cat2: Number(item.c_cat2),
+    ssj_approve_cat2: Number(item.ssj_approve_cat2),
+    ssj_unapprove_cat2: Number(item.ssj_unapprove_cat2),
+    zone_approve_cat2: Number(item.zone_approve_cat2),
+    zone_unapprove_cat2: Number(item.zone_unapprove_cat2),
+    c_cat3: Number(item.c_cat3),
+    ssj_approve_cat3: Number(item.ssj_approve_cat3),
+    ssj_unapprove_cat3: Number(item.ssj_unapprove_cat3),
+    zone_approve_cat3: Number(item.zone_approve_cat3),
+    zone_unapprove_cat3: Number(item.zone_unapprove_cat3),
+    c_cat4: Number(item.c_cat4),
+    ssj_approve_cat4: Number(item.ssj_approve_cat4),
+    ssj_unapprove_cat4: Number(item.ssj_unapprove_cat4),
+    zone_approve_cat4: Number(item.zone_approve_cat4),
+    zone_unapprove_cat4: Number(item.zone_unapprove_cat4)
   }))
+
+  const data = searchQuery.map((item, k) => {
+    const item2 = apData?.filter(f => f.zone === item.zone && f.hcode === item.hcode);
+    return {
+      key: k,
+      zone: Number(item.zone),
+      provcode: item.provcode,
+      provname: item.provname,
+      hcode: item.hcode,
+      hname_th: item.hname_th,
+      point_total_cat1: item.point_total_cat1,
+      point_require_cat1: item.point_require_cat1,
+      ssjapp_cat1: item2[0]?.ssj_approve_cat1,
+      zoneapp_cat1: item2[0]?.zone_approve_cat1,
+      point_total_cat2: item.point_total_cat2,
+      point_require_cat2: item.point_require_cat2,
+      ssjapp_cat2: item2[0]?.ssj_approve_cat2,
+      zoneapp_cat2: item2[0]?.zone_approve_cat2,
+      point_total_cat3: item.point_total_cat3,
+      point_require_cat3: item.point_require_cat3,
+      ssjapp_cat3: item2[0]?.ssj_approve_cat3,
+      zoneapp_cat3: item2[0]?.zone_approve_cat3,
+      point_total_cat4: item.point_total_cat4,
+      ssjapp_cat4: item2[0]?.ssj_approve_cat4,
+      zoneapp_cat4: item2[0]?.zone_approve_cat4,
+      total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+      total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+      cyber_level: item.cyber_level,
+      cyber_levelname: item.cyber_levelname
+    }
+  })
 
   // const dataSource = data.sort((a, b) => (a.zone > b.zone) ? 1 : -1)
 
@@ -218,7 +264,7 @@ const HomeAdmin = () => {
           render: (ssjapp_cat1) =>
             <>
               {
-                ssjapp_cat1 === '1'
+                ssjapp_cat1 === 67
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -237,7 +283,7 @@ const HomeAdmin = () => {
           render: (zoneapp_cat1) =>
             <>
               {
-                zoneapp_cat1 === '1'
+                zoneapp_cat1 === 67
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -275,7 +321,7 @@ const HomeAdmin = () => {
           render: (ssjapp_cat2) =>
             <>
               {
-                ssjapp_cat2 === '1'
+                ssjapp_cat2 === 42
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -294,7 +340,7 @@ const HomeAdmin = () => {
           render: (zoneapp_cat2) =>
             <>
               {
-                zoneapp_cat2 === '1'
+                zoneapp_cat2 === 42
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -332,7 +378,7 @@ const HomeAdmin = () => {
           render: (ssjapp_cat3) =>
             <>
               {
-                ssjapp_cat3 === '1'
+                ssjapp_cat3 === 45
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -351,7 +397,7 @@ const HomeAdmin = () => {
           render: (zoneapp_cat3) =>
             <>
               {
-                zoneapp_cat3 === '1'
+                zoneapp_cat3 === 45
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -382,7 +428,7 @@ const HomeAdmin = () => {
           render: (ssjapp_cat4) =>
             <>
               {
-                ssjapp_cat4 === '1'
+                ssjapp_cat4 === 14
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -401,7 +447,7 @@ const HomeAdmin = () => {
           render: (zoneapp_cat4) =>
             <>
               {
-                zoneapp_cat4 === '1'
+                zoneapp_cat4 === 14
                   ?
                   <div className='text-green-600 flex justify-center'>
                     <CircleCheck size={12} />
@@ -439,15 +485,15 @@ const HomeAdmin = () => {
               ? <span className='text-red-500 font-bold' style={{ fontSize: '13px' }}>ไม่ผ่าน</span>
               : total_cat >= 600 && total_cat <= 700
                 ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                : total_cat >= 700 && total_require < 510
+                : total_cat >= 700 && total_require < 500
                   ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                  : total_cat >= 800 && total_require < 510
+                  : total_cat >= 800 && total_require < 500
                     ? <span className='text-slate-400 font-bold' style={{ fontSize: '13px' }}>เงิน</span>
-                    : total_cat >= 700 && total_cat < 800 && total_require == 510
+                    : total_cat >= 700 && total_cat < 800 && total_require == 500
                       ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
-                      : total_cat >= 800 && total_require == 510 && cyber_level != 'GREEN'
+                      : total_cat >= 800 && total_require == 500 && cyber_level != 'GREEN'
                         ? <span className='text-yellow-500 font-bold' style={{ fontSize: '13px' }}>ทอง</span>
-                        : total_cat >= 800 && total_require == 510 && cyber_level == 'GREEN'
+                        : total_cat >= 800 && total_require == 500 && cyber_level == 'GREEN'
                           ? <span className='text-blue-500 font-bold' style={{ fontSize: '13px' }}>เพชร</span>
                           : null
           }
@@ -472,33 +518,36 @@ const HomeAdmin = () => {
     },
   ]
 
-  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k) => ({
-    key: k,
-    zone: Number(item.zone),
-    provcode: item.provcode,
-    provname: item.provname,
-    hcode: item.hcode,
-    hname_th: item.hname_th,
-    point_total_cat1: item.point_total_cat1,
-    point_require_cat1: item.point_require_cat1,
-    ssjapp_cat1: item.ssjapp_cat1,
-    zoneapp_cat1: item.zoneapp_cat1,
-    point_total_cat2: item.point_total_cat2,
-    point_require_cat2: item.point_require_cat2,
-    ssjapp_cat2: item.ssjapp_cat2,
-    zoneapp_cat2: item.zoneapp_cat2,
-    point_total_cat3: item.point_total_cat3,
-    point_require_cat3: item.point_require_cat3,
-    ssjapp_cat3: item.ssjapp_cat3,
-    zoneapp_cat3: item.zoneapp_cat3,
-    point_total_cat4: item.point_total_cat4,
-    ssjapp_cat4: item.ssjapp_cat4,
-    zoneapp_cat4: item.zoneapp_cat4,
-    total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
-    total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
-    cyber_level: item.cyber_level,
-    cyber_levelname: item.cyber_levelname
-  }))
+  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k)=> {
+    const item2 = apData?.filter(f => f.zone === item.zone && f.hcode === item.hcode);
+    return {
+      key: k,
+      zone: Number(item.zone),
+      provcode: item.provcode,
+      provname: item.provname,
+      hcode: item.hcode,
+      hname_th: item.hname_th,
+      point_total_cat1: item.point_total_cat1,
+      point_require_cat1: item.point_require_cat1,
+      ssjapp_cat1: item2[0]?.ssj_approve_cat1,
+      zoneapp_cat1: item2[0]?.zone_approve_cat1,
+      point_total_cat2: item.point_total_cat2,
+      point_require_cat2: item.point_require_cat2,
+      ssjapp_cat2: item2[0]?.ssj_approve_cat2,
+      zoneapp_cat2: item2[0]?.zone_approve_cat2,
+      point_total_cat3: item.point_total_cat3,
+      point_require_cat3: item.point_require_cat3,
+      ssjapp_cat3: item2[0]?.ssj_approve_cat3,
+      zoneapp_cat3: item2[0]?.zone_approve_cat3,
+      point_total_cat4: item.point_total_cat4,
+      ssjapp_cat4: item2[0]?.ssj_approve_cat4,
+      zoneapp_cat4: item2[0]?.zone_approve_cat4,
+      total_cat: item.point_total_cat1 + item.point_total_cat2 + item.point_total_cat3 + item.point_total_cat4,
+      total_require: item.point_require_cat1 + item.point_require_cat2 + item.point_require_cat3,
+      cyber_level: item.cyber_level,
+      cyber_levelname: item.cyber_levelname
+    }
+  })
 
   const data3 = data2.map((item) => ({
     เขตสุขภาพ: Number(item.zone),
@@ -508,34 +557,34 @@ const HomeAdmin = () => {
     ชื่อหน่วยบริการ: item.hname_th,
     คะแนนที่ได้ด้านโครงสร้าง: item.point_total_cat1,
     คะแนนจำเป็นด้านโครงสร้าง: item.point_require_cat1,
-    สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-    เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    สสจ_อนุมัติด้านโครงสร้าง: item.ssjapp_cat1 === 67 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านโครงสร้าง: item.zoneapp_cat1 === 67 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านบริหารจัดการ: item.point_total_cat2,
     คะแนนจำเป็นด้านบริหารจัดการ: item.point_require_cat2,
-    สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-    เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    สสจ_อนุมัติด้านบริหารจัดการ: item.ssjapp_cat2 === 42 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบริหารจัดการ: item.zoneapp_cat2 === 42 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านการบริการ: item.point_total_cat3,
     คะแนนจำเป็นด้านการบริการ: item.point_require_cat3,
-    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-    เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    สสจ_อนุมัติด้านการบริการ: item.ssjapp_cat3 === 45 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านการบริการ: item.zoneapp_cat3 === 45 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้ด้านบุคลากร: item.point_total_cat4,
-    สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
-    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === '1' ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    สสจ_อนุมัติด้านบุคลากร: item.ssjapp_cat4 === 14 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
+    เขต_อนุมัติด้านบุคลากร: item.zoneapp_cat4 === 14 ? 'อนุมัติแล้ว' : 'ยังไม่อนุมัติ',
     คะแนนที่ได้รวม: item.total_cat,
     คะแนนจำเป็นรวม: item.total_require,
     ระดับที่ได้: item.total_cat < 600
       ? 'ไม่ผ่าน'
       : item.total_cat >= 600 && item.total_cat <= 700
         ? 'เงิน'
-        : item.total_cat >= 700 && item.total_require < 510
+        : item.total_cat >= 700 && item.total_require < 500
           ? 'เงิน'
-          : item.total_cat >= 800 && item.total_require < 510
+          : item.total_cat >= 800 && item.total_require < 500
             ? 'เงิน'
-            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 510
+            : item.total_cat >= 700 && item.total_cat < 800 && item.total_require == 500
               ? 'ทอง'
-              : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level != 'GREEN'
+              : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level != 'GREEN'
                 ? 'ทอง'
-                : item.total_cat >= 800 && item.total_require == 510 && item.cyber_level == 'GREEN'
+                : item.total_cat >= 800 && item.total_require == 500 && item.cyber_level == 'GREEN'
                   ? 'เพชร'
                   : null,
     ระดับ_cyber_security: item.cyber_levelname
