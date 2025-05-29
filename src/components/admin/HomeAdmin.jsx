@@ -5,7 +5,7 @@ import Silver from '../../assets/Silver2.png'
 import HospitalIcon from '../../assets/Hospital.png'
 import { Ban, Blocks, CircleCheck, CircleX, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
-import { getCheckApproveAll, getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
+import { getCheckApproveAll, getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, getSumEvaluateForAll2, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
 import { ArrowUpOutlined, ClearOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../../api/Hospital'
 import { Button, Checkbox, Form, Input, Modal, Select, Table } from 'antd'
@@ -21,6 +21,7 @@ const HomeAdmin = () => {
   const [listHospitalEvaluate, setListHospitalEvaluate] = useState([])
   const [totalSumEvaluate, setTotalSumEvaluate] = useState([])
   const [listSumEvaluateForAll, setListSumEvaluateForAll] = useState([])
+  const [listSumEvaluateForAll2, setListSumEvaluateForAll2] = useState([])
   const [searchQuery, setSearchQuery] = useState([])
   const [approveDataAll, setApproveDataAll] = useState([])
   const [searchHospitalAll, setSearchHospitalAll] = useState([])
@@ -34,6 +35,7 @@ const HomeAdmin = () => {
     loadTotalSumEvaluate()
     loadListSumEvaluate()
     loadCheckApproveAll()
+    loadListSumEvaluate2()
   }, [])
 
 
@@ -79,6 +81,18 @@ const HomeAdmin = () => {
         // console.log('ListEvaluate: ', res.data)
         setListSumEvaluateForAll(res.data)
         setSearchQuery(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+
+  const loadListSumEvaluate2 = async () => {
+    await getSumEvaluateForAll2()
+      .then(res => {
+        // console.log('ListEvaluate: ', res.data)
+        setListSumEvaluateForAll2(res.data)
       })
       .catch(err => {
         console.log(err)
@@ -518,7 +532,7 @@ const HomeAdmin = () => {
     },
   ]
 
-  const data2 = listSumEvaluateForAll.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k)=> {
+  const data2 = listSumEvaluateForAll2.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k)=> {
     const item2 = apData?.filter(f => f.zone === item.zone && f.hcode === item.hcode);
     return {
       key: k,
