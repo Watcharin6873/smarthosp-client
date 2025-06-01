@@ -450,6 +450,17 @@ export const getCommentEvaluateById = async (token, id) => {
     )
 }
 
+//Remove comment
+export const removeComment = async (token, id) => {
+    return await axios.get(import.meta.env.VITE_APP_API + `/removeComment/`+ id,
+        {
+            headers: {
+                Authorization: `Bearer ` + token
+            }
+        }
+    )
+}
+
 //Get approve all
 export const getCheckApproveAll = async () =>{
     return await axios.get(import.meta.env.VITE_APP_API + `/checkApproveAll`)

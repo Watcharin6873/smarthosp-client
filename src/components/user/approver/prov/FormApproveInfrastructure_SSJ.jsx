@@ -10,7 +10,8 @@ import {
   getCommentEvaluate,
   commentEvaluate,
   getCommentEvaluateById,
-  updateCommentEvaluate
+  updateCommentEvaluate,
+  removeComment
 } from '../../../../api/Evaluate'
 import { Button, Checkbox, Divider, Form, Image, Input, Select, Switch, Modal } from 'antd'
 import { Ban, RefreshCcw, Save } from 'lucide-react'
@@ -23,6 +24,9 @@ import { getListQuests } from '../../../../api/Quest'
 import { getHospitalOnProv } from '../../../../api/Hospital'
 import CommentForm from './CommentForm'
 import CommentDisplay from './CommentDisplay'
+
+
+const { confirm } = Modal
 
 
 const FormApproveInfrastructure_SSJ = () => {
@@ -258,13 +262,13 @@ const FormApproveInfrastructure_SSJ = () => {
       })
   }
 
-  const handleSubmitComment = async (e) => {
+  const handleSubmitComment = (e) => {
     const valuesComment = {
       userId: user.id,
       evaluateId: e.evaluateId,
       comment_text: e.comment_text
     }
-    await commentEvaluate(token, valuesComment)
+    commentEvaluate(token, valuesComment)
       .then(res => {
         toast.success(res.data.message)
         loadCommentData(token)
@@ -274,10 +278,10 @@ const FormApproveInfrastructure_SSJ = () => {
       })
   }
 
-  const editText = async (e, id) => {
+  const editText = (e, id) => {
     setUpdateCommentModal(true)
 
-    await getCommentEvaluateById(token, id)
+    getCommentEvaluateById(token, id)
       .then(res => {
         setCommentById(res.data)
       })
@@ -294,14 +298,14 @@ const FormApproveInfrastructure_SSJ = () => {
     })
   })
 
-
-  const handleUpdateComment = async (e) => {
+  //Update comment
+  const handleUpdateComment = (e) => {
     const values = {
       id: e.id,
       comment_text: e.comment_text,
       userId: user.id
     }
-    await updateCommentEvaluate(token, values)
+    updateCommentEvaluate(token, values)
       .then(res => {
         toast.warning(res.data.message)
         setUpdateCommentModal(false)
@@ -310,6 +314,31 @@ const FormApproveInfrastructure_SSJ = () => {
       .catch(err => {
         console.log(err)
       })
+  }
+
+  //Remove comment
+  const removeText = (e, id) => {
+    console.log(id)
+    confirm({
+      title: 'ต้องการลบ Comment นี้หรือไม่?',
+      icon: <ExclamationCircleFilled />,
+      okText: 'ใช่',
+      okType: 'danger',
+      cancelText: 'ไม่',
+      onOk() {
+        removeComment(token, id)
+          .then(res => {
+            toast.error(res.data.message)
+            loadCommentData(token)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
   }
 
   const cancelModal = () => {
@@ -570,19 +599,34 @@ const FormApproveInfrastructure_SSJ = () => {
                                       <div className='text-left border rounded-md mb-1 p-1 bg-slate-50'>
                                         <p className='text-xs'>{comment.filter(f => f.evaluateId === item1.id).map(ite => ite.comment_text)}</p>
                                       </div>
-                                      <Button
-                                        size='small'
-                                        color="danger"
-                                        variant="dashed"
-                                        onClick={(e) => {
-                                          const target = comment.find(f => f.evaluateId === item1.id);
-                                          if (target) editText(e, target.id);
-                                        }
-                                        }
-                                        block
-                                      >
-                                        แก้ไข Comment
-                                      </Button>
+                                      <div className='flex gap-1'>
+                                        <Button
+                                          size='small'
+                                          color="purple"
+                                          variant="dashed"
+                                          onClick={(e) => {
+                                            const target = comment.find(f => f.evaluateId === item1.id);
+                                            if (target) editText(e, target.id);
+                                          }
+                                          }
+                                          block
+                                        >
+                                          แก้ไข
+                                        </Button>
+                                        <Button
+                                          size='small'
+                                          color="danger"
+                                          variant="dashed"
+                                          onClick={(e) => {
+                                            const target = comment.find(f => f.evaluateId === item1.id);
+                                            if (target) removeText(e, target.id);
+                                          }
+                                          }
+                                          block
+                                        >
+                                          ลบ
+                                        </Button>
+                                      </div>
                                     </div>
                                   </>
                                 ) : (
