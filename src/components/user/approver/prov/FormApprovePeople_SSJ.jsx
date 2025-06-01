@@ -223,13 +223,13 @@ const FormApprovePeople_SSJ = () => {
   }
 
   //Create comment
-  const handleSubmitComment = async (e) => {
+  const handleSubmitComment = (e) => {
     const valuesComment = {
       userId: user.id,
       evaluateId: e.evaluateId,
       comment_text: e.comment_text
     }
-    await commentEvaluate(token, valuesComment)
+    commentEvaluate(token, valuesComment)
       .then(res => {
         toast.success(res.data.message)
         loadCommentData(token)
@@ -260,13 +260,13 @@ const FormApprovePeople_SSJ = () => {
   })
 
   //Update comment
-  const handleUpdateComment = async (e) => {
+  const handleUpdateComment = (e) => {
     const values = {
       id: e.id,
       comment_text: e.comment_text,
       userId: user.id
     }
-    await updateCommentEvaluate(token, values)
+    updateCommentEvaluate(token, values)
       .then(res => {
         toast.warning(res.data.message)
         setUpdateCommentModal(false)
@@ -559,7 +559,7 @@ const FormApprovePeople_SSJ = () => {
                                           }
                                           block
                                         >
-                                          แก้ไข
+                                          ลบ
                                         </Button>
                                       </div>
                                     </div>
