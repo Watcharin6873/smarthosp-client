@@ -3,13 +3,15 @@ import Gem from '../../assets/Blue-gem.png'
 import Gold from '../../assets/Gold2.png'
 import Silver from '../../assets/Silver2.png'
 import HospitalIcon from '../../assets/Hospital.png'
-import { Ban, Blocks, CircleCheck, CircleX, HandPlatter, MonitorCog, UserRound } from 'lucide-react'
+import { Ban, Blocks, CircleCheck, CircleX, HandPlatter, MonitorCog, RefreshCcw, UserRound } from 'lucide-react'
 import useGlobalStore from '../../store/global-store'
-import { getCheckApproveAll, getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, getSumEvaluateForAll2, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
+import { getCheckApproveAll, getCyberSecurityLevelData, getEvaluateForChart, getHospitalInListEvaluate, getSumEvaluateForAll, getSumEvaluateForAll2, runEvaluatePython, sumEvaluateAll, sumEvaluateByHosp } from '../../api/Evaluate'
 import { ArrowUpOutlined, ClearOutlined, DownloadOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../../api/Hospital'
 import { Button, Checkbox, Form, Input, Modal, Select, Table } from 'antd'
 import ExportExcel_admin from './ExportExcel_admin'
+import { toast } from 'react-toastify'
+import './LoadingModal.css'; // ไฟล์ CSS สำหรับ Modal
 
 
 const HomeAdmin = () => {
@@ -26,6 +28,7 @@ const HomeAdmin = () => {
   const [approveDataAll, setApproveDataAll] = useState([])
   const [searchHospitalAll, setSearchHospitalAll] = useState([])
   const [searchQueryHosp, setSearchQueryHosp] = useState([])
+  const [isLoadingStat, setIsLoadingStat] = useState(false)
 
 
 
@@ -101,13 +104,13 @@ const HomeAdmin = () => {
 
 
   //Check Approve All
-  const loadCheckApproveAll = async() =>{
+  const loadCheckApproveAll = async () => {
     await getCheckApproveAll()
-      .then(res=>{
+      .then(res => {
         // console.log('AP: ', res.data)
         setApproveDataAll(res.data)
       })
-      .catch(err=>{
+      .catch(err => {
         console.log(err)
       })
   }
@@ -155,7 +158,7 @@ const HomeAdmin = () => {
   const hospPerAll = (listHospitalEvaluate.length / listHospitalAll.length) * 100
   const notPassPer = (notPassLevel.length / listHospitalEvaluate.length) * 100
 
-   const apData = approveDataAll?.map((item) => ({
+  const apData = approveDataAll?.map((item) => ({
     zone: item.zone,
     provcode: item.provcode,
     provname: item.provname,
@@ -532,7 +535,7 @@ const HomeAdmin = () => {
     },
   ]
 
-  const data2 = listSumEvaluateForAll2.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k)=> {
+  const data2 = listSumEvaluateForAll2.sort((a, b) => (a.zone > b.zone) ? 1 : -1).map((item, k) => {
     const item2 = apData?.filter(f => f.zone === item.zone && f.hcode === item.hcode);
     return {
       key: k,
@@ -608,6 +611,19 @@ const HomeAdmin = () => {
     window.open(`https://bdh-service.moph.go.th/api/smarthosp/cyber-image/Report_all.xlsx`)
   }
 
+
+  const updateStat = () => {
+    setIsLoadingStat(true)
+    runEvaluatePython()
+      .then(res => {
+        toast.success(res.data.message)
+      })
+      .catch(err => {
+        console.log(err.response.data)
+      })
+      .finally(() => setIsLoadingStat(false))
+  }
+
   return (
     <div>
 
@@ -624,14 +640,14 @@ const HomeAdmin = () => {
           </div>
 
           <div className='flex justify-between items-baseline text-green-700 p-2'>
-            <p>ประเมินแล้ว</p>
+            <p>คกก.จังหวัด อนุมัติแล้ว</p>
             <div className='flex justify-center items-baseline gap-2'>
               <p className='text-xl'>{listHospitalEvaluate.length}</p>
               <p>แห่ง</p>
             </div>
           </div>
           <div className='flex justify-between items-baseline text-orange-400 px-2'>
-            <p>ยังไม่ประเมิน</p>
+            <p>ยังไม่อนุมัติ</p>
             <div className='flex justify-center items-baseline gap-2'>
               <p className='text-xl'>{listHospitalAll.length - listHospitalEvaluate.length}</p>
               <p>แห่ง</p>
@@ -741,7 +757,26 @@ const HomeAdmin = () => {
             >
               ดาวน์โหลดข้อมูลการประเมินรายข้อ
             </Button>
+            <Button
+              type='primary'
+              icon={<RefreshCcw size={14} />}
+              size='small'
+              onClick={updateStat}
+              disabled={isLoadingStat}
+            >
+              Update Stat
+            </Button>
           </div>
+
+          {isLoadingStat && (
+            <div className="modal">
+              <div className="modal-content">
+                <div className="spinner"></div>
+                <p>กำลังประมวลผล...</p>
+              </div>
+            </div>
+          )}
+
           <div>
             <Input
               placeholder='จังหวัด, รหัส 5 หลัก, ชื่อหน่วยบริการ...'
@@ -769,7 +804,7 @@ const HomeAdmin = () => {
           }}
           bordered
           size='small'
-        pagination={{pageSize:12}}
+          pagination={{ pageSize: 12 }}
         />
 
 

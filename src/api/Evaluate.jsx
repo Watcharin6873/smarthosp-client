@@ -489,3 +489,8 @@ export const changeStatusZoneApprove = async (token, values) =>{
         }
     )
 }
+
+//Split comma for check approve all
+export const runEvaluatePython = async () =>{
+    return await axios.get(import.meta.env.VITE_APP_API + `/runEvaluatePython`)
+}
