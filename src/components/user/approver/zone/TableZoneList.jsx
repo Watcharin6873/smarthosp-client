@@ -413,7 +413,7 @@ const TableZoneList = () => {
                 <p className='pl-5 flex'><Dot /> false คือ ไม่มีการดำเนินการ</p>
                 <p className='pl-5 flex'><Dot /> undefined คือ ไม่ได้ประเมินในข้อนั้นๆ</p>
                 <p className='text-green-700'>ต้องการ Export excel คลิก OK</p>
-                <p className='text-red-500'>ต้องการ Export excel คลิก Cancel</p>
+                <p className='text-red-500'>ไม่ต้องการ คลิก Cancel</p>
             </div>,
             onOk() {
                 exportResultToExcel(zone)

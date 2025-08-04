@@ -24,7 +24,7 @@ const SidebarProvApprover = () => {
     const navigate = useNavigate()
     const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
 
-    const isDisabled = false;
+    const isDisabled = true;
 
     const handleLogout = () => {
         //Code
@@ -225,7 +225,7 @@ const SidebarProvApprover = () => {
                         }}
                     >
                         <ExclamationCircleFilled style={{ color: 'orange' }} /> &nbsp;
-                        <span>แจ้งปิดปรับปรุงระบบ</span>
+                        <span>แจ้งปิดระบบ</span>
                     </div>
                 }
                 open={isOpenModalNotify}
@@ -235,8 +235,10 @@ const SidebarProvApprover = () => {
                 style={{ top: 20 }}
             >
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เรียนหน่วยบริการผู้ประเมินโรงพยาบาลอ้จฉริยะ คณะกรรมการระดับจังหวัด คณะกรรมการระดับเขตสุขภาพ ทุกท่าน
-                    สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดปรับปรุงระบบตั้งแต่วันที่ 1 พ.ค.68 ถึง 18 พ.ค.68</span> เพื่อให้สอดคล้องกับการเกณฑ์การประเมิน
-                    <span className='text-green-600 font-bold'> และจะเปิดระบบอีกครั้งในวันที่ 19 พ.ค.68</span> จึงขออภัยในความไม่สะดวกมา ณ ที่นี้ครับผม </p>
+                    สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดระบบตั้งแต่วันที่ 5 ส.ค. เวลา 00.01 น. เป็นต้นไป &nbsp;
+          {/* <i>"ในส่วนของการประเมิน การแนบหลักฐาน การอนุมัติของคณะกรรมการระดับจังหวัด และระดับเขตสุขภาพ"</i>&nbsp; */}
+          </span>
+          <span className='text-green-600 font-bold'>เพื่อให้คณะกรรมการส่วนกลางตรวจสอบผลการประเมิน และจัดเตรียมโล่รางวัลระดับเพชร และเกียรติบัตรระดับทองและระดับเงินต่อไป</span> </p>
                 <div className="flex justify-end mt-4">
                     <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
                 </div>

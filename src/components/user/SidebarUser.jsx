@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LogoMOPH from '../../assets/Logo_MOPH.png'
 import LogoSmartHosp from '../../assets/SmartHospital-Logo2.png'
 import { NavLink, useNavigate } from 'react-router-dom'
@@ -23,6 +23,9 @@ const SidebarUser = () => {
 
   const logout = useGlobalStore((state) => state.logout)
   const navigate = useNavigate()
+  const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
+
+  const isDisabled = false;
 
   const handleLogout = () => {
     //Code

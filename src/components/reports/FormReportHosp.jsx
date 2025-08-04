@@ -609,7 +609,7 @@ const FormReportHosp = () => {
                                                                                 <Button
                                                                                     size='small'
                                                                                     onClick={() => showUploadModal(item2)}
-                                                                                // disabled
+                                                                                disabled
                                                                                 >
                                                                                     <UploadOutlined /> เพิ่มไฟล์
                                                                                 </Button>
@@ -663,7 +663,7 @@ const FormReportHosp = () => {
                                                                         size='small'
                                                                         className='bg-yellow-400 text-white'
                                                                         onClick={() => showUpdateModal(item2.id)}
-                                                                    // disabled
+                                                                    disabled
                                                                     >
                                                                         <EditOutlined /> แก้ไข
                                                                     </Button>

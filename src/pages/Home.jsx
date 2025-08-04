@@ -5,11 +5,11 @@ import Gold from '../assets/Gold2.png'
 import Silver from '../assets/Silver2.png'
 import HospitalIcon from '../assets/Hospital.png'
 import The_Best from '../assets/The_Best.png'
-import { ArrowUpOutlined, ClearOutlined, SearchOutlined } from '@ant-design/icons'
+import { ArrowUpOutlined, ClearOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons'
 import { getListHospitalAll } from '../api/Hospital'
 import { Ban, Hospital } from 'lucide-react'
 import { getCheckApproveAll, getHospitalInListEvaluate, splitCommaForCheckApprove, sumEvaluateAll } from '../api/Evaluate'
-import { Alert, Button, Form, Select } from 'antd'
+import { Alert, Button, Form, Modal, Select } from 'antd'
 // import Chart from "react-apexcharts";
 import { BarChart, PieChart, pieArcLabelClasses } from '@mui/x-charts';
 import FormHome from '../components/FormHome'
@@ -34,6 +34,7 @@ const Home = () => {
   const [zoneSearch, setZoneSearch] = useState('')
   const [provSearch, setProvSearch] = useState('')
   const [values, setValues] = useState()
+  const [isOpenModalNotify, setIsOpenModalNotify] = useState(false)
 
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const Home = () => {
     loadHospitalInListEvaluate()
     loadTotalSumEvaluate()
     loadCheckApproveAll()
+    setIsOpenModalNotify(true)
   }, [])
 
   const loadCheckApproveAll = async () => {
@@ -171,25 +173,25 @@ const Home = () => {
     return {
       ...sq1,
       c_cat1: ap1 ? Number(ap1.c_cat1) : null,
-      ssj_approve_cat1:ap1 ? Number(ap1.ssj_approve_cat1) : null,
-      ssj_unapprove_cat1:ap1 ? Number(ap1.ssj_unapprove_cat1) : null,
-      zone_approve_cat1:ap1 ? Number(ap1.zone_approve_cat1) : null,
-      zone_unapprove_cat1:ap1 ? Number(ap1.zone_unapprove_cat1) : null,
-      c_cat2:ap1 ? Number(ap1.c_cat2) : null,
-      ssj_approve_cat2:ap1 ? Number(ap1.ssj_approve_cat2) : null,
-      ssj_unapprove_cat2:ap1 ? Number(ap1.ssj_unapprove_cat2) : null,
-      zone_approve_cat2:ap1 ? Number(ap1.zone_approve_cat2) : null,
-      zone_unapprove_cat2:ap1 ? Number(ap1.zone_unapprove_cat2) : null,
-      c_cat3:ap1 ? Number(ap1.c_cat3) : null,
-      ssj_approve_cat3:ap1 ? Number(ap1.ssj_approve_cat3) : null,
-      ssj_unapprove_cat3:ap1 ? Number(ap1.ssj_unapprove_cat3) : null,
-      zone_approve_cat3:ap1 ? Number(ap1.zone_approve_cat3) : null,
-      zone_unapprove_cat3:ap1 ? Number(ap1.zone_unapprove_cat3) : null,
-      c_cat4:ap1 ? Number(ap1.c_cat4) : null,
-      ssj_approve_cat4:ap1 ? Number(ap1.ssj_approve_cat4) : null,
-      ssj_unapprove_cat4:ap1 ? Number(ap1.ssj_unapprove_cat4) : null,
-      zone_approve_cat4:ap1 ? Number(ap1.zone_approve_cat4) : null,
-      zone_unapprove_cat4:ap1 ? Number(ap1.zone_unapprove_cat4) : null,
+      ssj_approve_cat1: ap1 ? Number(ap1.ssj_approve_cat1) : null,
+      ssj_unapprove_cat1: ap1 ? Number(ap1.ssj_unapprove_cat1) : null,
+      zone_approve_cat1: ap1 ? Number(ap1.zone_approve_cat1) : null,
+      zone_unapprove_cat1: ap1 ? Number(ap1.zone_unapprove_cat1) : null,
+      c_cat2: ap1 ? Number(ap1.c_cat2) : null,
+      ssj_approve_cat2: ap1 ? Number(ap1.ssj_approve_cat2) : null,
+      ssj_unapprove_cat2: ap1 ? Number(ap1.ssj_unapprove_cat2) : null,
+      zone_approve_cat2: ap1 ? Number(ap1.zone_approve_cat2) : null,
+      zone_unapprove_cat2: ap1 ? Number(ap1.zone_unapprove_cat2) : null,
+      c_cat3: ap1 ? Number(ap1.c_cat3) : null,
+      ssj_approve_cat3: ap1 ? Number(ap1.ssj_approve_cat3) : null,
+      ssj_unapprove_cat3: ap1 ? Number(ap1.ssj_unapprove_cat3) : null,
+      zone_approve_cat3: ap1 ? Number(ap1.zone_approve_cat3) : null,
+      zone_unapprove_cat3: ap1 ? Number(ap1.zone_unapprove_cat3) : null,
+      c_cat4: ap1 ? Number(ap1.c_cat4) : null,
+      ssj_approve_cat4: ap1 ? Number(ap1.ssj_approve_cat4) : null,
+      ssj_unapprove_cat4: ap1 ? Number(ap1.ssj_unapprove_cat4) : null,
+      zone_approve_cat4: ap1 ? Number(ap1.zone_approve_cat4) : null,
+      zone_unapprove_cat4: ap1 ? Number(ap1.zone_unapprove_cat4) : null,
       cyber_level: sq1.cyber_level,
       cyber_levelname: sq1.cyber_levelname
     }
@@ -517,6 +519,11 @@ const Home = () => {
   }
 
 
+  const cancelModal = () => {
+    setIsOpenModalNotify(false)
+  }
+
+
   return (
     <div>
       <div className='flex justify-between items-center'>
@@ -551,7 +558,7 @@ const Home = () => {
                 ))}
               </Select>
             </Form.Item>
-            
+
             <Form.Item>
               <Button
                 danger
@@ -834,6 +841,36 @@ const Home = () => {
       <div className='bg-white rounded-md shadow-md mt-3'>
         <FormHome />
       </div>
+
+      <Modal
+        title={
+          <div
+            style={{
+              justifyContent: 'center',
+              display: 'flex',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            <ExclamationCircleFilled style={{ color: 'orange' }} /> &nbsp;
+            <span>แจ้งปิดระบบ</span>
+          </div>
+        }
+        open={isOpenModalNotify}
+        onCancel={cancelModal}
+        footer={null}
+        width={700}
+        style={{ top: 20 }}
+      >
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เรียนหน่วยบริการผู้ประเมินโรงพยาบาลอ้จฉริยะ คณะกรรมการระดับจังหวัด คณะกรรมการระดับเขตสุขภาพ ทุกท่าน
+          สำนักสุขภาพดิจิทัล <span className='text-red-600 font-bold'>ขอแจ้งปิดระบบตั้งแต่วันที่ 5 ส.ค. เวลา 00.01 น. เป็นต้นไป &nbsp;
+          {/* <i>"ในส่วนของการประเมิน การแนบหลักฐาน การอนุมัติของคณะกรรมการระดับจังหวัด และระดับเขตสุขภาพ"</i>&nbsp; */}
+          </span>
+          <span className='text-green-600 font-bold'>เพื่อให้คณะกรรมการส่วนกลางตรวจสอบผลการประเมิน และจัดเตรียมโล่รางวัลระดับเพชร และเกียรติบัตรระดับทองและระดับเงินต่อไป</span> </p>
+        <div className="flex justify-end mt-4">
+          <Button color='danger' onClick={() => setIsOpenModalNotify(false)}>ปิด</Button>
+        </div>
+      </Modal>
 
     </div>
   )
