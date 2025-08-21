@@ -76,9 +76,12 @@ const SidebarZoneApprover = () => {
                 {isDisabled ? (
                     <>
                         <NavLink
-                            to={'/smarthosp-quest/user/zone-approve'}
-                            className=' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
-                            onClick={handleClick}
+                            to={'zone-usermanagement'}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? ' text-sm bg-green-900 rounded-md text-white px-4 py-2 flex items-center'
+                                    : ' text-sm text-gray-300 px-4 py-2 hover:bg-green-700 hover:text-white rounded flex items-center'
+                            }
                         >
                             <UserCog className='mr-2' />
                             จัดการผู้ใช้งาน (จังหวัด)
