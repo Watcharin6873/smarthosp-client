@@ -42,7 +42,7 @@ const Home = () => {
     loadHospitalInListEvaluate()
     loadTotalSumEvaluate()
     loadCheckApproveAll()
-    setIsOpenModalNotify(true)
+    // setIsOpenModalNotify(true)
   }, [])
 
   const loadCheckApproveAll = async () => {
