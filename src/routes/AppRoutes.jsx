@@ -42,6 +42,7 @@ import HomeSSJ from '../pages/user/approver/prov/HomeSSJ'
 import HomeZone from '../pages/user/approver/zone/HomeZone'
 import Cybersecuritycheck from '../pages/user/responder/Cybersecuritycheck'
 import ApproveAll from '../components/user/approver/zone/ApproveAll'
+import ViewReportHosp from '../pages/user/approver/prov/ViewReportHosp'
 
 
 
@@ -92,6 +93,7 @@ const router = createBrowserRouter([
       { path: 'ssj-approve-people', element: <SSJ_ApprovePeople /> },
       { path: 'report-prov', element: <ReportProv /> },
       { path: 'contact-us', element: <ContactUs /> },
+      { path: 'view-report-hosp/:hcode', element: <ViewReportHosp />}
     ]
   },
   {

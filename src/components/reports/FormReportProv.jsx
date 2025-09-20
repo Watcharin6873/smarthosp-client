@@ -102,33 +102,33 @@ const FormReportProv = () => {
     zone_unapprove_cat4: Number(item.zone_unapprove_cat4)
   }))
 
-  
+
 
   const listEvaluateByProv2 = listEvaluateByProv.map((item1) => {
     const item2 = apData?.filter(f => f.provname === province && f.hcode === item1.hcode);
     return {
       zone: Number(item1.zone),
-    provcode: item1.provcode,
-    provname: item1.provname,
-    hcode: item1.hcode,
-    hname_th: item1.hname_th,
-    point_total_cat1: item1.point_total_cat1,
-    point_require_cat1: item1.point_require_cat1,
-    ssjapp_cat1: item2[0]?.ssj_approve_cat1,
-    zoneapp_cat1: item2[0]?.zone_approve_cat1,
-    point_total_cat2: item1.point_total_cat2,
-    point_require_cat2: item1.point_require_cat2,
-    ssjapp_cat2: item2[0]?.ssj_approve_cat2,
-    zoneapp_cat2: item2[0]?.zone_approve_cat2,
-    point_total_cat3: item1.point_total_cat3,
-    point_require_cat3: item1.point_require_cat3,
-    ssjapp_cat3: item2[0]?.ssj_approve_cat3,
-    zoneapp_cat3: item2[0]?.zone_approve_cat3,
-    point_total_cat4: item1.point_total_cat4,
-    ssjapp_cat4: item2[0]?.ssj_approve_cat4,
-    zoneapp_cat4: item2[0]?.zone_approve_cat4,
-    cyber_level: item1.cyber_level,
-    cyber_levelname: item1.cyber_levelname
+      provcode: item1.provcode,
+      provname: item1.provname,
+      hcode: item1.hcode,
+      hname_th: item1.hname_th,
+      point_total_cat1: item1.point_total_cat1,
+      point_require_cat1: item1.point_require_cat1,
+      ssjapp_cat1: item2[0]?.ssj_approve_cat1,
+      zoneapp_cat1: item2[0]?.zone_approve_cat1,
+      point_total_cat2: item1.point_total_cat2,
+      point_require_cat2: item1.point_require_cat2,
+      ssjapp_cat2: item2[0]?.ssj_approve_cat2,
+      zoneapp_cat2: item2[0]?.zone_approve_cat2,
+      point_total_cat3: item1.point_total_cat3,
+      point_require_cat3: item1.point_require_cat3,
+      ssjapp_cat3: item2[0]?.ssj_approve_cat3,
+      zoneapp_cat3: item2[0]?.zone_approve_cat3,
+      point_total_cat4: item1.point_total_cat4,
+      ssjapp_cat4: item2[0]?.ssj_approve_cat4,
+      zoneapp_cat4: item2[0]?.zone_approve_cat4,
+      cyber_level: item1.cyber_level,
+      cyber_levelname: item1.cyber_levelname
     }
   })
 
@@ -261,7 +261,7 @@ const FormReportProv = () => {
                     <p>{item2.provname}</p>
                   </td>
                   <td className='border pl-1'>
-                    <p>{item2.hname_th} [{item2.hcode}]</p>
+                    <p className='cursor-pointer hover:text-blue-500' onClick={()=> window.open(`/smarthosp-quest/user/prov-approve/view-report-hosp/${item2.hcode}`, "_blank")}>{item2.hname_th} [{item2.hcode}]</p>
                   </td>
                   <td className='border text-center p-1'>
                     {
